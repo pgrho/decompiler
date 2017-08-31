@@ -8,7 +8,8 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadInt64Instruction : Instruction
     {
-        public LoadInt64Instruction(long value)
+        public LoadInt64Instruction(int offset, long value)
+            : base(offset)
         {
             Value = value;
         }

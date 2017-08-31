@@ -8,7 +8,8 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadArgumentInstruction : Instruction
     {
-        public LoadArgumentInstruction(int value)
+        public LoadArgumentInstruction(int offset, int value)
+            : base(offset)
         {
             Index = value;
         }

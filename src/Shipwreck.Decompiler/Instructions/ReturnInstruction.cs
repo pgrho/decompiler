@@ -8,6 +8,10 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class ReturnInstruction : Instruction
     {
+        public ReturnInstruction(int offset)
+            : base(offset)
+        { }
+
         public override FlowControl FlowControl
             => FlowControl.Return;
 

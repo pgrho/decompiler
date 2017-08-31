@@ -8,7 +8,8 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class BinaryInstruction : Instruction
     {
-        public BinaryInstruction(BinaryOperator @operator, bool unsigned = false)
+        public BinaryInstruction(int offset, BinaryOperator @operator, bool unsigned = false)
+            : base(offset)
         {
             Operator = @operator;
             IsUnsigned = unsigned;

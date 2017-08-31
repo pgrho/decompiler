@@ -8,7 +8,8 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadInt32Instruction : Instruction
     {
-        public LoadInt32Instruction(int value)
+        public LoadInt32Instruction(int offset, int value)
+            : base(offset)
         {
             Value = value;
         }

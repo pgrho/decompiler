@@ -8,7 +8,8 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class UnaryInstruction : Instruction
     {
-        public UnaryInstruction(UnaryOperator @operator)
+        public UnaryInstruction(int offset, UnaryOperator @operator)
+            : base(offset)
         {
             Operator = @operator;
         }

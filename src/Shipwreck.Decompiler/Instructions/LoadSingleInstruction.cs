@@ -8,7 +8,8 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadSingleInstruction : Instruction
     {
-        public LoadSingleInstruction(float value)
+        public LoadSingleInstruction(int offset, float value)
+            : base(offset)
         {
             Value = value;
         }

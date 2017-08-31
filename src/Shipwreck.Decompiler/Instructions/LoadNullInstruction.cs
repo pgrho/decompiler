@@ -8,6 +8,9 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadNullInstruction : Instruction
     {
+        public LoadNullInstruction(int offset)
+            : base(offset) { }
+
         public override FlowControl FlowControl
             => FlowControl.Next;
 

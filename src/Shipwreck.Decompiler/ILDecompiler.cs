@@ -27,15 +27,15 @@ namespace Shipwreck.Decompiler
                         case 0x03: // ldarg.1
                         case 0x04: // ldarg.2
                         case 0x05: // ldarg.3
-                            ret.Add(new LoadArgumentInstruction(b - 0x02));
+                            ret.Add(new LoadArgumentInstruction(i, b - 0x02));
                             break;
 
                         case 0x0e: // ldarg.s {index}
-                            ret.Add(new LoadArgumentInstruction(bytes[++i]));
+                            ret.Add(new LoadArgumentInstruction(i, bytes[++i]));
                             break;
 
                         case 0x14: // ldnull
-                            ret.Add(new LoadNullInstruction());
+                            ret.Add(new LoadNullInstruction(i));
                             break;
 
                         case 0x15: // ldc.i4.m1
@@ -48,63 +48,63 @@ namespace Shipwreck.Decompiler
                         case 0x1C: // ldc.i4.6
                         case 0x1D: // ldc.i4.7
                         case 0x1e: // ldc.i4.8
-                            ret.Add(new LoadInt32Instruction(b - 0x16));
+                            ret.Add(new LoadInt32Instruction(i, b - 0x16));
                             break;
 
                         case 0x1f: //ldc.i4.s {num}
-                            ret.Add(new LoadInt32Instruction(bytes[++i]));
+                            ret.Add(new LoadInt32Instruction(i, bytes[++i]));
                             break;
 
                         case 0x20: //ldc.i4 {num}
-                            ret.Add(new LoadInt32Instruction(*(int*)(bp + i + 1)));
+                            ret.Add(new LoadInt32Instruction(i, *(int*)(bp + i + 1)));
                             i += 4;
                             break;
 
                         case 0x21: //ldc.i8 {num}
-                            ret.Add(new LoadInt64Instruction(*(long*)(bp + i + 1)));
+                            ret.Add(new LoadInt64Instruction(i, *(long*)(bp + i + 1)));
                             i += 8;
                             break;
 
                         case 0x22: //ldc.r4 {num}
-                            ret.Add(new LoadSingleInstruction(*(float*)(bp + i + 1)));
+                            ret.Add(new LoadSingleInstruction(i, *(float*)(bp + i + 1)));
                             i += 4;
                             break;
 
                         case 0x23: //ldc.r8 {num}
-                            ret.Add(new LoadDoubleInstruction(*(double*)(bp + i + 1)));
+                            ret.Add(new LoadDoubleInstruction(i, *(double*)(bp + i + 1)));
                             i += 8;
                             break;
 
                         case 0x2a: // ret
-                            ret.Add(new ReturnInstruction());
+                            ret.Add(new ReturnInstruction(i));
                             break;
 
                         case 0x58: // add
                         case 0xd6: // add.ovf
                         case 0xd7: // add.ovf.un
-                            ret.Add(new BinaryInstruction(b == 0x58 ? BinaryOperator.Add : BinaryOperator.AddChecked, b == 0xd7));
+                            ret.Add(new BinaryInstruction(i, b == 0x58 ? BinaryOperator.Add : BinaryOperator.AddChecked, b == 0xd7));
                             break;
 
                         case 0x59: // sub
                         case 0xda: // sub.ovf
                         case 0xdb: // sub.ovf.un
-                            ret.Add(new BinaryInstruction(b == 0x59 ? BinaryOperator.Subtract : BinaryOperator.SubtractChecked, b == 0xdb));
+                            ret.Add(new BinaryInstruction(i, b == 0x59 ? BinaryOperator.Subtract : BinaryOperator.SubtractChecked, b == 0xdb));
                             break;
 
                         case 0x5a: // mul
                         case 0xd8: // mul.ovf
                         case 0xd9: // mul.ovf.un
-                            ret.Add(new BinaryInstruction(b == 0x5a ? BinaryOperator.Multiply : BinaryOperator.MultiplyChecked, b == 0xd9));
+                            ret.Add(new BinaryInstruction(i, b == 0x5a ? BinaryOperator.Multiply : BinaryOperator.MultiplyChecked, b == 0xd9));
                             break;
 
                         case 0x5b: // div
                         case 0x5c: // div.un
-                            ret.Add(new BinaryInstruction(BinaryOperator.Divide, b == 0x5c));
+                            ret.Add(new BinaryInstruction(i, BinaryOperator.Divide, b == 0x5c));
                             break;
 
                         case 0x65: // neg
                         case 0x66: // not
-                            ret.Add(new UnaryInstruction(b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not));
+                            ret.Add(new UnaryInstruction(i, b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not));
                             break;
 
                         case 0xfe:
@@ -112,7 +112,7 @@ namespace Shipwreck.Decompiler
                             switch (b2)
                             {
                                 case 0x09: //ldarg {index}
-                                    ret.Add(new LoadArgumentInstruction(*(int*)(bp + i + 1)));
+                                    ret.Add(new LoadArgumentInstruction(i, *(int*)(bp + i + 1)));
                                     i += 4;
                                     continue;
 
