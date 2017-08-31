@@ -37,6 +37,15 @@ namespace Shipwreck.Decompiler.Expressions
         public static BinaryExpression SubtractChecked(this Expression left, Expression right)
             => left.MakeBinary(right, BinaryOperator.SubtractChecked);
 
+        public static BinaryExpression Multiply(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Multiply);
+
+        public static BinaryExpression MultiplyChecked(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.MultiplyChecked);
+
+        public static BinaryExpression Divide(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Divide);
+
         #endregion BinaryExpression
 
         public static ReturnStatement ToReturnStatement(this Expression value)

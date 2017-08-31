@@ -91,6 +91,17 @@ namespace Shipwreck.Decompiler
                             ret.Add(new BinaryInstruction(b == 0x59 ? BinaryOperator.Subtract : BinaryOperator.SubtractChecked, b == 0xdb));
                             break;
 
+                        case 0x5a: // mul
+                        case 0xd8: // mul.ovf
+                        case 0xd9: // mul.ovf.un
+                            ret.Add(new BinaryInstruction(b == 0x5a ? BinaryOperator.Multiply : BinaryOperator.MultiplyChecked, b == 0xd9));
+                            break;
+
+                        case 0x5b: // div
+                        case 0x5c: // div.un
+                            ret.Add(new BinaryInstruction(BinaryOperator.Divide, b == 0x5c));
+                            break;
+
                         case 0x65: // neg
                         case 0x66: // not
                             ret.Add(new UnaryInstruction(b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not));
@@ -242,9 +253,6 @@ namespace Shipwreck.Decompiler
                         // TODO: OpCodes.Leave_S
                         // TODO: OpCodes.Localloc
                         // TODO: OpCodes.Mkrefany
-                        // TODO: OpCodes.Mul
-                        // TODO: OpCodes.Mul_Ovf
-                        // TODO: OpCodes.Mul_Ovf_Un
                         // TODO: OpCodes.Newarr
                         // TODO: OpCodes.Newobj
                         // TODO: OpCodes.Or

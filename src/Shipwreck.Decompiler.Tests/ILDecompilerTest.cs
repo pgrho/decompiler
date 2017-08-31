@@ -256,6 +256,47 @@ namespace Shipwreck.Decompiler
 
         #endregion Subtract
 
+        #region Multiply
+
+        private static int Multiply(int a) => unchecked(a * 3);
+
+        private static int MultiplyChecked(int a) => checked(a * 3);
+
+        private static uint MultiplyCheckedUnsigned(uint a) => checked(a * 3);
+
+        [Theory]
+        [InlineData(nameof(Multiply), BinaryOperator.Multiply, false)]
+        [InlineData(nameof(MultiplyChecked), BinaryOperator.MultiplyChecked, false)]
+        [InlineData(nameof(MultiplyCheckedUnsigned), BinaryOperator.MultiplyChecked, true)]
+        public void MultiplyTest(string methodName, BinaryOperator @operator, bool unsigned)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(0).MakeBinary(3.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion Multiply
+
+        #region Divide
+
+        private static int Divide(int a) => unchecked(a / 5);
+
+        private static uint DivideCheckedUnsigned(uint a) => checked(a / 5);
+
+        [Theory]
+        [InlineData(nameof(Divide), false)]
+        [InlineData(nameof(DivideCheckedUnsigned), true)]
+        public void DivideTest(string methodName, bool unsigned)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(0).Divide(5.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion Divide
+
         #endregion Binary
     }
 }

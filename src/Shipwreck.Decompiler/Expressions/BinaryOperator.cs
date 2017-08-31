@@ -5,6 +5,9 @@ namespace Shipwreck.Decompiler.Expressions
         Add,
         AddChecked,
         Subtract,
-        SubtractChecked
+        SubtractChecked,
+        Multiply,
+        MultiplyChecked,
+        Divide
     }
 }
