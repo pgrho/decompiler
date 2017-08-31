@@ -7,17 +7,20 @@ namespace Shipwreck.Decompiler
 {
     public static class ILDecompiler
     {
-        public static List<Instruction> Decompile(MethodBase method)
+        public static List<Syntax> Decompile(MethodBase method)
         {
             var bytes = method.GetMethodBody().GetILAsByteArray();
 
-            var ret = new List<Instruction>(Math.Min(bytes.Length, Math.Max(4, bytes.Length >> 2)));
+            var ret = new List<Syntax>(Math.Min(bytes.Length, Math.Max(4, bytes.Length >> 2)));
 
             for (var i = 0; i < bytes.Length; i++)
             {
                 var b = bytes[i];
                 switch (b)
                 {
+                    case 0x00: // nop
+                        continue;
+
                     case 0x15: // ldc.i4.m1
                     case 0x16: // ldc.i4.0
                     case 0x17: // ldc.i4.1
@@ -47,6 +50,28 @@ namespace Shipwreck.Decompiler
                         throw new NotImplementedException();
                 }
             }
+
+            bool transformed;
+            do
+            {
+                transformed = false;
+                for (var i = 0; i < ret.Count; i++)
+                {
+                    var il = ret[i] as Instruction;
+                    if (il != null)
+                    {
+                        int s = i, e = i;
+
+                        if (il.TryCreateStatement(method, ret, ref s, ref e, out var st))
+                        {
+                            ret.RemoveRange(s, e - s + 1);
+                            ret.Insert(s, st);
+                            transformed = true;
+                            break;
+                        }
+                    }
+                }
+            } while (transformed);
 
             return ret;
         }

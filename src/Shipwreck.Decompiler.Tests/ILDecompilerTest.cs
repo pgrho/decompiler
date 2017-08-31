@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Shipwreck.Decompiler.Instructions;
+using Shipwreck.Decompiler.Expressions;
 using Xunit;
 
 namespace Shipwreck.Decompiler
@@ -50,11 +50,10 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(LoadInt32_0x12345678), 0x12345678)]
         public void LoadInt32Test(string methodName, int value)
         {
-            var li = ILDecompiler.Decompile(GetMethod(methodName));
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
-            Assert.Equal(2, li.Count);
-            Assert.Equal(value, Assert.IsType<LoadInt32Instruction>(li[0]).Value);
-            Assert.IsType<ReturnInstruction>(li[1]);
+            Assert.Equal(1, ret.Count);
+            Assert.True(value.ToExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Constant
