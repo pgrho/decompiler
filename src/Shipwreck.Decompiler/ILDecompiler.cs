@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Instructions;
 
 namespace Shipwreck.Decompiler
@@ -78,6 +79,12 @@ namespace Shipwreck.Decompiler
                             ret.Add(new ReturnInstruction());
                             break;
 
+                        case 0x58: // add
+                        case 0xd6: // add.ovf
+                        case 0xd7: // add.ovf.un
+                            ret.Add(new BinaryInstruction(b == 0x58 ? BinaryOperator.Add : BinaryOperator.Add, b == 0xd7));
+                            break;
+
                         case 0x65: // neg
                             ret.Add(new NegateInstruction());
                             break;
@@ -98,10 +105,7 @@ namespace Shipwreck.Decompiler
                                 default:
                                     throw new NotImplementedException();
                             }
-
-                        // TODO: OpCodes.Add
-                        // TODO: OpCodes.Add_Ovf
-                        // TODO: OpCodes.Add_Ovf_Un
+                            
                         // TODO: OpCodes.And
                         // TODO: OpCodes.Arglist
                         // TODO: OpCodes.Beq

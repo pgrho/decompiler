@@ -20,7 +20,21 @@ namespace Shipwreck.Decompiler.Expressions
 
         #endregion UnaryExpression
 
+        #region BinaryExpression
+
+        public static BinaryExpression MakeBinary(this Expression left, Expression right, BinaryOperator @operator)
+            => new BinaryExpression(left, right, @operator);
+
+        public static BinaryExpression Add(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Add);
+
+        public static BinaryExpression AddChecked(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.AddChecked);
+
+        #endregion BinaryExpression
+
         public static ReturnStatement ToReturnStatement(this Expression value)
             => new ReturnStatement(value);
+
     }
 }

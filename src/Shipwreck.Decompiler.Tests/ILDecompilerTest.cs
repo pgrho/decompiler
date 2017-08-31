@@ -209,5 +209,31 @@ namespace Shipwreck.Decompiler
         #endregion NegateTest
 
         #endregion Unary
+
+        #region Binary
+
+        #region Add
+
+        private static int Add(int a) => unchecked(a + 1);
+
+        private static int AddChecked(int a) => checked(a + 1);
+
+        private static uint AddCheckedUnsigned(uint a) => checked(a + 1);
+
+        [Theory]
+        [InlineData(nameof(Add), BinaryOperator.Add, false)]
+        [InlineData(nameof(AddChecked), BinaryOperator.AddChecked, false)]
+        [InlineData(nameof(AddCheckedUnsigned), BinaryOperator.AddChecked, true)]
+        public void AddTest(string methodName, BinaryOperator binaryOperator, bool unsigned)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(0).Add(1.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion Add
+
+        #endregion Binary
     }
 }
