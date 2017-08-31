@@ -125,5 +125,25 @@ namespace Shipwreck.Decompiler
         #endregion LoadDoubleTest
 
         #endregion Constant
+
+        //#region Unary
+
+        //#region NotTest
+
+        //private static int Not(int a) => ~a;
+
+        //[Theory]
+        //[InlineData(nameof(Not))]
+        //public void NotTest(string methodName)
+        //{
+        //    var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+        //    Assert.Equal(1, ret.Count);
+        //    Assert.True(8.ToExpression().Not().ToReturnStatement().IsEquivalentTo(ret[0]));
+        //}
+
+        //#endregion NotTest
+
+        //#endregion Unary
     }
 }

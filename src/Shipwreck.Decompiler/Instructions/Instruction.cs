@@ -18,4 +18,5 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal abstract bool TryCreateStatement(MethodBase method, List<Syntax> list, ref int startIndex, ref int lastIndex, out Statement statement);
     }
+
 }

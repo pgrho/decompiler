@@ -26,7 +26,7 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
         {
-            expression = new ConstantExpression(Value);
+            expression = new ConstantExpression(Value).ProcessUnaryOperator(list, ref index);
             return true;
         }
 

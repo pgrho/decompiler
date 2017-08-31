@@ -6,29 +6,21 @@ using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class LoadInt32Instruction : Instruction
+    public sealed class NotInstruction : Instruction
     {
-        public LoadInt32Instruction(int value)
-        {
-            Value = value;
-        }
-
-        public int Value { get; }
-
         public override FlowControl FlowControl
-            => FlowControl.Next;
+            => FlowControl.Return;
 
         public override int PopCount
-            => 0;
+            => 1;
 
         public override int PushCount
-            => 1;
+            => 0;
 
         internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
         {
-            expression = new ConstantExpression(Value).ProcessUnaryOperator(list, ref index);
-
-            return true;
+            expression = null;
+            return false;
         }
 
         internal override bool TryCreateStatement(MethodBase method, List<Syntax> list, ref int startIndex, ref int lastIndex, out Statement statement)
@@ -38,6 +30,6 @@ namespace Shipwreck.Decompiler.Instructions
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is LoadInt32Instruction li && Value == li.Value;
+            => other is NotInstruction;
     }
 }
