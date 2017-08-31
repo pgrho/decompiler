@@ -31,10 +31,15 @@ namespace Shipwreck.Decompiler.Expressions
         public static BinaryExpression AddChecked(this Expression left, Expression right)
             => left.MakeBinary(right, BinaryOperator.AddChecked);
 
+        public static BinaryExpression Subtract(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Subtract);
+
+        public static BinaryExpression SubtractChecked(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.SubtractChecked);
+
         #endregion BinaryExpression
 
         public static ReturnStatement ToReturnStatement(this Expression value)
             => new ReturnStatement(value);
-
     }
 }

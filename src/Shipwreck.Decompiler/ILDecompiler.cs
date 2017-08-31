@@ -82,7 +82,13 @@ namespace Shipwreck.Decompiler
                         case 0x58: // add
                         case 0xd6: // add.ovf
                         case 0xd7: // add.ovf.un
-                            ret.Add(new BinaryInstruction(b == 0x58 ? BinaryOperator.Add : BinaryOperator.Add, b == 0xd7));
+                            ret.Add(new BinaryInstruction(b == 0x58 ? BinaryOperator.Add : BinaryOperator.AddChecked, b == 0xd7));
+                            break;
+
+                        case 0x59: // sub
+                        case 0xda: // sub.ovf
+                        case 0xdb: // sub.ovf.un
+                            ret.Add(new BinaryInstruction(b == 0x59 ? BinaryOperator.Subtract : BinaryOperator.SubtractChecked, b == 0xdb));
                             break;
 
                         case 0x65: // neg
@@ -290,9 +296,6 @@ namespace Shipwreck.Decompiler
                         // TODO: OpCodes.Stloc_S
                         // TODO: OpCodes.Stobj
                         // TODO: OpCodes.Stsfld
-                        // TODO: OpCodes.Sub
-                        // TODO: OpCodes.Sub_Ovf
-                        // TODO: OpCodes.Sub_Ovf_Un
                         // TODO: OpCodes.Switch
                         // TODO: OpCodes.Tailcall
                         // TODO: OpCodes.Throw
