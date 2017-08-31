@@ -6,8 +6,15 @@ using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public abstract class UnaryInstruction : Instruction
+    public sealed class UnaryInstruction : Instruction
     {
+        public UnaryInstruction(UnaryOperator @operator)
+        {
+            Operator = @operator;
+        }
+
+        public UnaryOperator Operator { get; }
+
         public override FlowControl FlowControl
             => FlowControl.Next;
 
@@ -16,8 +23,6 @@ namespace Shipwreck.Decompiler.Instructions
 
         public override int PushCount
             => 1;
-
-        internal abstract Expression MakeUnary(Expression expression);
 
         internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
         {
@@ -28,7 +33,7 @@ namespace Shipwreck.Decompiler.Instructions
                 if (prev != null && prev.TryCreateExpression(method, list, ref j, out var e))
                 {
                     index = j;
-                    expression = MakeUnary(e);
+                    expression = e.MakeUnary(Operator);
                     return true;
                 }
             }
@@ -41,5 +46,9 @@ namespace Shipwreck.Decompiler.Instructions
             statement = null;
             return false;
         }
+
+        public override bool IsEquivalentTo(Syntax other)
+            => other is UnaryInstruction ui
+                && Operator == ui.Operator;
     }
 }

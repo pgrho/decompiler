@@ -86,11 +86,8 @@ namespace Shipwreck.Decompiler
                             break;
 
                         case 0x65: // neg
-                            ret.Add(new NegateInstruction());
-                            break;
-
                         case 0x66: // not
-                            ret.Add(new NotInstruction());
+                            ret.Add(new UnaryInstruction(b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not));
                             break;
 
                         case 0xfe:
@@ -105,7 +102,7 @@ namespace Shipwreck.Decompiler
                                 default:
                                     throw new NotImplementedException();
                             }
-                            
+
                         // TODO: OpCodes.And
                         // TODO: OpCodes.Arglist
                         // TODO: OpCodes.Beq
