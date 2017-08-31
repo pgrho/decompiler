@@ -78,6 +78,10 @@ namespace Shipwreck.Decompiler
                             ret.Add(new ReturnInstruction());
                             break;
 
+                        case 0x65: // neg
+                            ret.Add(new NegateInstruction());
+                            break;
+
                         case 0x66: // not
                             ret.Add(new NotInstruction());
                             break;

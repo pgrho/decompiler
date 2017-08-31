@@ -15,6 +15,9 @@ namespace Shipwreck.Decompiler.Expressions
         public static UnaryExpression Not(this Expression operand)
             => operand.MakeUnary(UnaryOperator.Not);
 
+        public static UnaryExpression Negate(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.Negate);
+
         #endregion UnaryExpression
 
         public static ReturnStatement ToReturnStatement(this Expression value)

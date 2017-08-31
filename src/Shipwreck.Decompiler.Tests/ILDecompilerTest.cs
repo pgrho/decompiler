@@ -192,6 +192,22 @@ namespace Shipwreck.Decompiler
 
         #endregion NotTest
 
+        #region NegateTest
+
+        private static int Negate(int a) => -a;
+
+        [Theory]
+        [InlineData(nameof(Negate))]
+        public void NegateTest(string methodName)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(0).Negate().ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion NegateTest
+
         #endregion Unary
     }
 }
