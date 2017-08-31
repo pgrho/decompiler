@@ -39,5 +39,8 @@ namespace Shipwreck.Decompiler.Instructions
 
         public override bool IsEquivalentTo(Syntax other)
             => other is LoadInt64Instruction li && Value == li.Value;
+
+        public override string ToString()
+            => $"L_{Offset:X4}: ldc.i8 {Value:d}";
     }
 }

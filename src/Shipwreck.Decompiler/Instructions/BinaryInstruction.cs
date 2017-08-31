@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
 
@@ -63,5 +65,52 @@ namespace Shipwreck.Decompiler.Instructions
             => other is BinaryInstruction bi
                 && Operator == bi.Operator
                 && IsUnsigned == bi.IsUnsigned;
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("L_").Append(Offset.ToString("X4")).Append(' ');
+
+            switch (Operator)
+            {
+                case BinaryOperator.Add:
+                    sb.Append("add");
+                    break;
+
+                case BinaryOperator.AddChecked:
+                    sb.Append("add.ovf");
+                    break;
+
+                case BinaryOperator.Subtract:
+                    sb.Append("sub");
+                    break;
+
+                case BinaryOperator.SubtractChecked:
+                    sb.Append("sub.ovf");
+                    break;
+
+                case BinaryOperator.Multiply:
+                    sb.Append("mul");
+                    break;
+
+                case BinaryOperator.MultiplyChecked:
+                    sb.Append("mul.ovf");
+                    break;
+
+                case BinaryOperator.Divide:
+                    sb.Append("div");
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            if (IsUnsigned)
+            {
+                sb.Append(".un");
+            }
+
+            return sb.ToString();
+        }
     }
 }

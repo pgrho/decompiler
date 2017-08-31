@@ -51,5 +51,8 @@ namespace Shipwreck.Decompiler.Instructions
 
         public override bool IsEquivalentTo(Syntax other)
             => other is LoadArgumentInstruction li && Index == li.Index;
+
+        public override string ToString()
+            => $"L_{Offset:X4}: ldarg {Index}";
     }
 }

@@ -46,5 +46,8 @@ namespace Shipwreck.Decompiler.Instructions
 
         public override bool IsEquivalentTo(Syntax other)
             => other is ReturnInstruction;
+
+        public override string ToString()
+            => $"L_{Offset:X4}: ret";
     }
 }

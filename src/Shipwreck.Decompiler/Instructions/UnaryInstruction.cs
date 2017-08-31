@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
 
@@ -51,5 +53,28 @@ namespace Shipwreck.Decompiler.Instructions
         public override bool IsEquivalentTo(Syntax other)
             => other is UnaryInstruction ui
                 && Operator == ui.Operator;
+
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append("L_").Append(Offset.ToString("X4")).Append(' ');
+
+            switch (Operator)
+            {
+                case UnaryOperator.Negate:
+                    sb.Append("neg");
+                    break;
+
+                case UnaryOperator.Not:
+                    sb.Append("not");
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return sb.ToString();
+        }
     }
 }
