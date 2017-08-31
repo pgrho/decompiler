@@ -22,6 +22,10 @@ namespace Shipwreck.Decompiler
                         case 0x00: // nop
                             continue;
 
+                        case 0x14: // ldnull
+                            ret.Add(new LoadNullInstruction());
+                            break;
+
                         case 0x15: // ldc.i4.m1
                         case 0x16: // ldc.i4.0
                         case 0x17: // ldc.i4.1
@@ -42,6 +46,21 @@ namespace Shipwreck.Decompiler
                         case 0x20: //ldc.i4 {num}
                             ret.Add(new LoadInt32Instruction(*(int*)(bp + i + 1)));
                             i += 4;
+                            break;
+
+                        case 0x21: //ldc.i8 {num}
+                            ret.Add(new LoadInt64Instruction(*(long*)(bp + i + 1)));
+                            i += 8;
+                            break;
+
+                        case 0x22: //ldc.r4 {num}
+                            ret.Add(new LoadSingleInstruction(*(float*)(bp + i + 1)));
+                            i += 4;
+                            break;
+
+                        case 0x23: //ldc.r8 {num}
+                            ret.Add(new LoadDoubleInstruction(*(double*)(bp + i + 1)));
+                            i += 8;
                             break;
 
                         case 0x2a: // ret
