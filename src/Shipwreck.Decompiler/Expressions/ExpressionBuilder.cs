@@ -48,6 +48,9 @@ namespace Shipwreck.Decompiler.Expressions
 
         #endregion BinaryExpression
 
+        public static ArrayIndexExpression ArrayIndex(this Expression array, Expression index)
+            => new ArrayIndexExpression(array, index);
+
         public static ReturnStatement ToReturnStatement(this Expression value)
             => new ReturnStatement(value);
     }

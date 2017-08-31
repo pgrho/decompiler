@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
 using Xunit;
 
@@ -173,6 +174,55 @@ namespace Shipwreck.Decompiler
         }
 
         #endregion Argument
+
+        #region Array Element
+
+        public static sbyte LoadElement_I1(sbyte[] a) => a[1];
+
+        public static byte LoadElement_U1(byte[] a) => a[1];
+
+        public static short LoadElement_I2(short[] a) => a[1];
+
+        public static ushort LoadElement_U2(ushort[] a) => a[1];
+
+        public static int LoadElement_I4(int[] a) => a[1];
+
+        public static uint LoadElement_U4(uint[] a) => a[1];
+
+        public static long LoadElement_I8(long[] a) => a[1];
+
+        public static ulong LoadElement_U8(ulong[] a) => a[1];
+
+        public static IntPtr LoadElement_I(IntPtr[] a) => a[1];
+
+        public static float LoadElement_R4(float[] a) => a[1];
+
+        public static double LoadElement_R8(double[] a) => a[1];
+
+        public static object LoadElement_Ref(object[] a) => a[1];
+
+        [Theory]
+        [InlineData(nameof(LoadElement_I1))]
+        [InlineData(nameof(LoadElement_U1))]
+        [InlineData(nameof(LoadElement_I2))]
+        [InlineData(nameof(LoadElement_U2))]
+        [InlineData(nameof(LoadElement_I4))]
+        [InlineData(nameof(LoadElement_U4))]
+        [InlineData(nameof(LoadElement_I8))]
+        [InlineData(nameof(LoadElement_U8))]
+        [InlineData(nameof(LoadElement_I))]
+        [InlineData(nameof(LoadElement_R4))]
+        [InlineData(nameof(LoadElement_R8))]
+        [InlineData(nameof(LoadElement_Ref))]
+        public void LoadElementTest(string methodName)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(0).ArrayIndex(1.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion Array Element
 
         #region Unary
 

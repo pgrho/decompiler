@@ -107,6 +107,20 @@ namespace Shipwreck.Decompiler
                             ret.Add(new UnaryInstruction(i, b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not));
                             break;
 
+                        case 0x90: // ldelem.i1
+                        case 0x91: // ldelem.u1
+                        case 0x92: // ldelem.i2
+                        case 0x93: // ldelem.u2
+                        case 0x94: // ldelem.i4
+                        case 0x95: // ldelem.u4
+                        case 0x96: // ldelem.i8
+                        case 0x97: // ldelem.i
+                        case 0x98: // ldelem.r4
+                        case 0x99: // ldelem.r8
+                        case 0x9a: // ldelem.ref
+                            ret.Add(new LoadElementInstruction(i));
+                            continue;
+
                         case 0xfe:
                             var b2 = bytes[++i];
                             switch (b2)
@@ -208,17 +222,6 @@ namespace Shipwreck.Decompiler
                         // TODO: OpCodes.Ldarga
                         // TODO: OpCodes.Ldarga_S
                         // TODO: OpCodes.Ldelem
-                        // TODO: OpCodes.Ldelem_I
-                        // TODO: OpCodes.Ldelem_I1
-                        // TODO: OpCodes.Ldelem_I2
-                        // TODO: OpCodes.Ldelem_I4
-                        // TODO: OpCodes.Ldelem_I8
-                        // TODO: OpCodes.Ldelem_R4
-                        // TODO: OpCodes.Ldelem_R8
-                        // TODO: OpCodes.Ldelem_Ref
-                        // TODO: OpCodes.Ldelem_U1
-                        // TODO: OpCodes.Ldelem_U2
-                        // TODO: OpCodes.Ldelem_U4
                         // TODO: OpCodes.Ldelema
                         // TODO: OpCodes.Ldfld
                         // TODO: OpCodes.Ldflda

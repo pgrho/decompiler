@@ -2,15 +2,15 @@ namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class UnaryExpression : Expression
     {
-        public Expression Operand { get; }
-
-        public UnaryOperator Operator { get; }
-
         public UnaryExpression(Expression operand, UnaryOperator @operator)
         {
             Operand = operand;
             Operator = @operator;
         }
+
+        public Expression Operand { get; }
+
+        public UnaryOperator Operator { get; }
 
         public override bool IsEquivalentTo(Syntax other)
             => other is UnaryExpression ue

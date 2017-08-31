@@ -5,4 +5,5 @@ namespace Shipwreck.Decompiler.Expressions
         public override bool IsEquivalentTo(Syntax other)
             => other is ThisExpression;
     }
+
 }
