@@ -19,6 +19,17 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
         {
+            if (index > 0)
+            {
+                var j = index - 1;
+                var prev = list[j] as Instruction;
+                if (prev != null && prev.TryCreateExpression(method, list, ref j, out var e))
+                {
+                    index = j;
+                    expression = e.Not();
+                    return true;
+                }
+            }
             expression = null;
             return false;
         }

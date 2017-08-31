@@ -126,24 +126,72 @@ namespace Shipwreck.Decompiler
 
         #endregion Constant
 
-        //#region Unary
+        #region Argument
 
-        //#region NotTest
+        private static int LoadArgument_0(int a0) => a0;
 
-        //private static int Not(int a) => ~a;
+        private static int LoadArgument_1(int a0, int a1) => a1;
 
-        //[Theory]
-        //[InlineData(nameof(Not))]
-        //public void NotTest(string methodName)
-        //{
-        //    var ret = ILDecompiler.Decompile(GetMethod(methodName));
+        private static int LoadArgument_2(int a0, int a1, int a2) => a2;
 
-        //    Assert.Equal(1, ret.Count);
-        //    Assert.True(8.ToExpression().Not().ToReturnStatement().IsEquivalentTo(ret[0]));
-        //}
+        private static int LoadArgument_3(int a0, int a1, int a2, int a3) => a3;
 
-        //#endregion NotTest
+        private int LoadArgument_Instance_0(int a0) => a0;
 
-        //#endregion Unary
+        private int LoadArgument_Instance_1(int a0, int a1) => a1;
+
+        private int LoadArgument_Instance_2(int a0, int a1, int a2) => a2;
+
+        private int LoadArgument_Instance_3(int a0, int a1, int a2, int a3) => a3;
+
+        [Theory]
+        [InlineData(nameof(LoadArgument_0), 0)]
+        [InlineData(nameof(LoadArgument_1), 1)]
+        [InlineData(nameof(LoadArgument_2), 2)]
+        [InlineData(nameof(LoadArgument_3), 3)]
+        [InlineData(nameof(LoadArgument_Instance_0), 0)]
+        [InlineData(nameof(LoadArgument_Instance_1), 1)]
+        [InlineData(nameof(LoadArgument_Instance_2), 2)]
+        [InlineData(nameof(LoadArgument_Instance_3), 3)]
+        public void LoadArgumentTest(string methodName, int index)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(index).ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        private ILDecompilerTest LoadThis() => this;
+
+        [Fact]
+        public void LoadArgumentTest_This()
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(LoadThis)));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ThisExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion Argument
+
+        #region Unary
+
+        #region NotTest
+
+        private static int Not(int a) => ~a;
+
+        [Theory]
+        [InlineData(nameof(Not))]
+        public void NotTest(string methodName)
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+
+            Assert.Equal(1, ret.Count);
+            Assert.True(new ParameterExpression(0).Not().ToReturnStatement().IsEquivalentTo(ret[0]));
+        }
+
+        #endregion NotTest
+
+        #endregion Unary
     }
 }

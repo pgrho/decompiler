@@ -6,14 +6,14 @@ using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class LoadInt64Instruction : Instruction
+    public sealed class LoadArgumentInstruction : Instruction
     {
-        public LoadInt64Instruction(long value)
+        public LoadArgumentInstruction(int value)
         {
-            Value = value;
+            Index = value;
         }
 
-        public long Value { get; }
+        public int Index { get; }
 
         public override FlowControl FlowControl
             => FlowControl.Next;
@@ -26,7 +26,19 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
         {
-            expression = new ConstantExpression(Value);
+            if (method.IsStatic)
+            {
+                expression = new ParameterExpression(Index);
+            }
+            else if (Index == 0)
+            {
+                expression = new ThisExpression();
+            }
+            else
+            {
+                expression = new ParameterExpression(Index - 1);
+            }
+
             return true;
         }
 
@@ -37,6 +49,6 @@ namespace Shipwreck.Decompiler.Instructions
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is LoadInt64Instruction li && Value == li.Value;
+            => other is LoadArgumentInstruction li && Index == li.Index;
     }
 }

@@ -22,6 +22,17 @@ namespace Shipwreck.Decompiler
                         case 0x00: // nop
                             continue;
 
+                        case 0x02: // ldarg.0
+                        case 0x03: // ldarg.1
+                        case 0x04: // ldarg.2
+                        case 0x05: // ldarg.3
+                            ret.Add(new LoadArgumentInstruction(b - 0x02));
+                            break;
+
+                        case 0x0e: // ldarg.s {index}
+                            ret.Add(new LoadArgumentInstruction(bytes[++i]));
+                            break;
+
                         case 0x14: // ldnull
                             ret.Add(new LoadNullInstruction());
                             break;
@@ -71,6 +82,19 @@ namespace Shipwreck.Decompiler
                             ret.Add(new NotInstruction());
                             break;
 
+                        case 0xfe:
+                            var b2 = bytes[++i];
+                            switch (b2)
+                            {
+                                case 0x09: //ldarg {index}
+                                    ret.Add(new LoadArgumentInstruction(*(int*)(bp + i + 1)));
+                                    i += 4;
+                                    continue;
+
+                                default:
+                                    throw new NotImplementedException();
+                            }
+
                         default:
                             throw new NotImplementedException();
                     }
@@ -101,5 +125,41 @@ namespace Shipwreck.Decompiler
 
             return ret;
         }
+
+        #region Delegates
+
+        public static List<Syntax> Decompile(Delegate @delegate)
+            => Decompile(@delegate.GetMethodInfo());
+
+        #region Action
+
+        public static List<Syntax> Decompile(Action action)
+            => Decompile(action);
+
+        public static List<Syntax> Decompile<T>(Action<T> action)
+            => Decompile(action);
+
+        public static List<Syntax> Decompile<T1, T2>(Action<T1, T2> action)
+            => Decompile(action);
+
+        public static List<Syntax> Decompile<T1, T2, T3>(Action<T1, T2, T3> action)
+            => Decompile(action);
+
+        #endregion Action
+
+        #region Func
+
+        public static List<Syntax> Decompile<T>(Func<T> func)
+            => Decompile(func);
+
+        public static List<Syntax> Decompile<T1, T2>(Func<T1, T2> func)
+            => Decompile(func);
+
+        public static List<Syntax> Decompile<T1, T2, T3>(Func<T1, T2, T3> func)
+            => Decompile(func);
+
+        #endregion Func
+
+        #endregion Delegates
     }
 }
