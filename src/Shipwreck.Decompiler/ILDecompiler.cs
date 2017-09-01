@@ -95,8 +95,26 @@ namespace Shipwreck.Decompiler
                 case 0x05: // ldarg.3
                     return new LoadArgumentInstruction(b - 0x02);
 
+                case 0x06: // ldloc.0
+                case 0x07: // ldloc.1
+                case 0x08: // ldloc.2
+                case 0x09: // ldloc.3
+                    return new LoadLocalInstruction(b - 0x06);
+
+                case 0x0a: // stloc.0
+                case 0x0b: // stloc.1
+                case 0x0c: // stloc.2
+                case 0x0d: // stloc.3
+                    return new StoreLocalInstruction(b - 0x0a);
+
                 case 0x0e: // ldarg.s {index}
                     return new LoadArgumentInstruction(bp[++i]);
+
+                case 0x11: // ldloc.s {index}
+                    return new LoadLocalInstruction(bp[++i]);
+
+                case 0x13: // stloc.s {index}
+                    return new StoreLocalInstruction(bp[++i]);
 
                 case 0x14: // ldnull
                     return new LoadNullInstruction();
@@ -132,8 +150,18 @@ namespace Shipwreck.Decompiler
                     i += 8;
                     return new LoadDoubleInstruction(*(double*)(bp + i - 7));
 
+                case 0x25: // dup
+                    return new DuplicateInstruction();
+
                 case 0x2a: // ret
                     return new ReturnInstruction();
+
+                case 0x2b: // br.s {num}
+                    return new BranchInstruction(i + 2 + (sbyte)bp[++i]);
+
+                case 0x38: // br {num}
+                    i += 4;
+                    return new BranchInstruction(i + 1 + *(int*)(bp + i - 3));
 
                 case 0x58: // add
                 case 0xd6: // add.ovf
@@ -181,8 +209,12 @@ namespace Shipwreck.Decompiler
                     switch (b2)
                     {
                         case 0x09: //ldarg {index}
-                            i += 4;
-                            return new LoadArgumentInstruction(*(int*)(bp + i - 3));
+                            i += 2;
+                            return new LoadArgumentInstruction(*(ushort*)(bp + i - 1));
+
+                        case 0x0c: //ldloc {index}
+                            i += 2;
+                            return new LoadLocalInstruction(*(ushort*)(bp + i - 1));
 
                         default:
                             throw new NotImplementedException();
@@ -211,8 +243,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Bne_Un
                 // TODO: OpCodes.Bne_Un_S
                 // TODO: OpCodes.Box
-                // TODO: OpCodes.Br
-                // TODO: OpCodes.Br_S
                 // TODO: OpCodes.Break
                 // TODO: OpCodes.Brfalse
                 // TODO: OpCodes.Brfalse_S
@@ -264,9 +294,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Conv_U8
                 // TODO: OpCodes.Cpblk
                 // TODO: OpCodes.Cpobj
-                // TODO: OpCodes.Div
-                // TODO: OpCodes.Div_Un
-                // TODO: OpCodes.Dup
                 // TODO: OpCodes.Endfilter
                 // TODO: OpCodes.Endfinally
                 // TODO: OpCodes.Initblk
@@ -291,12 +318,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Ldind_U2
                 // TODO: OpCodes.Ldind_U4
                 // TODO: OpCodes.Ldlen
-                // TODO: OpCodes.Ldloc
-                // TODO: OpCodes.Ldloc_0
-                // TODO: OpCodes.Ldloc_1
-                // TODO: OpCodes.Ldloc_2
-                // TODO: OpCodes.Ldloc_3
-                // TODO: OpCodes.Ldloc_S
                 // TODO: OpCodes.Ldloca
                 // TODO: OpCodes.Ldloca_S
                 // TODO: OpCodes.Ldobj
@@ -352,12 +373,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Stind_R4
                 // TODO: OpCodes.Stind_R8
                 // TODO: OpCodes.Stind_Ref
-                // TODO: OpCodes.Stloc
-                // TODO: OpCodes.Stloc_0
-                // TODO: OpCodes.Stloc_1
-                // TODO: OpCodes.Stloc_2
-                // TODO: OpCodes.Stloc_3
-                // TODO: OpCodes.Stloc_S
                 // TODO: OpCodes.Stobj
                 // TODO: OpCodes.Stsfld
                 // TODO: OpCodes.Switch

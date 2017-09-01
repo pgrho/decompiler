@@ -48,10 +48,41 @@ namespace Shipwreck.Decompiler.Expressions
 
         #endregion BinaryExpression
 
+        #region AssignmentExpression
+
+        public static AssignmentExpression Assign(this Expression left, Expression right, BinaryOperator @operator = BinaryOperator.Default)
+            => new AssignmentExpression(left, right, @operator);
+
+        public static AssignmentExpression AddAssign(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.Add);
+
+        public static AssignmentExpression AddAssignChecked(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.AddChecked);
+
+        public static AssignmentExpression SubtractAssign(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.Subtract);
+
+        public static AssignmentExpression SubtractAssignChecked(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.SubtractChecked);
+
+        public static AssignmentExpression MultiplyAssign(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.Multiply);
+
+        public static AssignmentExpression MultiplyAssignChecked(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.MultiplyChecked);
+
+        public static AssignmentExpression DivideAssign(this Expression left, Expression right)
+            => left.Assign(right, BinaryOperator.Divide);
+
+        #endregion AssignmentExpression
+
         public static ArrayIndexExpression ArrayIndex(this Expression array, Expression index)
             => new ArrayIndexExpression(array, index);
 
         public static ReturnStatement ToReturnStatement(this Expression value)
             => new ReturnStatement(value);
+
+        public static ExpressionStatement ToStatement(this Expression value)
+            => new ExpressionStatement(value);
     }
 }

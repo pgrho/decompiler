@@ -1,8 +1,8 @@
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class BinaryExpression : Expression
+    public sealed class AssignmentExpression : Expression
     {
-        public BinaryExpression(Expression left, Expression right, BinaryOperator @operator)
+        public AssignmentExpression(Expression left, Expression right, BinaryOperator @operator = BinaryOperator.Default)
         {
             Left = left;
             Right = right;
@@ -15,10 +15,9 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-                || (other is BinaryExpression be
-                    && Left.IsEquivalentTo(be.Left)
-                    && Right.IsEquivalentTo(be.Right)
-                    && Operator == be.Operator);
+                || (other is AssignmentExpression ae
+                    && Left.IsEquivalentTo(ae.Left)
+                    && Right.IsEquivalentTo(ae.Right)
+                    && Operator == ae.Operator);
     }
-
 }

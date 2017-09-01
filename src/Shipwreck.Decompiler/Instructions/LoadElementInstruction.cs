@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
@@ -12,7 +10,7 @@ namespace Shipwreck.Decompiler.Instructions
             => FlowControl.Next;
 
         public override int PopCount
-            => 0;
+            => 2;
 
         public override int PushCount
             => 1;
