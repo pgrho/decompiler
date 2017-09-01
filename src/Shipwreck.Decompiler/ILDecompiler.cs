@@ -121,6 +121,12 @@ namespace Shipwreck.Decompiler
                             ret.Add(new LoadElementInstruction(i));
                             continue;
 
+                        case 0xa3: // ldelem {type}
+                            ret.Add(new LoadElementInstruction(i));
+                            // method.Module.ResolveType( *(int*)(bp + i + 1))
+                            i += 4;
+                            break;
+
                         case 0xfe:
                             var b2 = bytes[++i];
                             switch (b2)
@@ -221,7 +227,6 @@ namespace Shipwreck.Decompiler
                         // TODO: OpCodes.Jmp
                         // TODO: OpCodes.Ldarga
                         // TODO: OpCodes.Ldarga_S
-                        // TODO: OpCodes.Ldelem
                         // TODO: OpCodes.Ldelema
                         // TODO: OpCodes.Ldfld
                         // TODO: OpCodes.Ldflda

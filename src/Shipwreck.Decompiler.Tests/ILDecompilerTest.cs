@@ -201,6 +201,8 @@ namespace Shipwreck.Decompiler
 
         public static object LoadElement_Ref(object[] a) => a[1];
 
+        public static DateTime LoadElement(DateTime[] a) => a[1];
+
         [Theory]
         [InlineData(nameof(LoadElement_I1))]
         [InlineData(nameof(LoadElement_U1))]
@@ -214,6 +216,7 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(LoadElement_R4))]
         [InlineData(nameof(LoadElement_R8))]
         [InlineData(nameof(LoadElement_Ref))]
+        [InlineData(nameof(LoadElement))]
         public void LoadElementTest(string methodName)
         {
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
