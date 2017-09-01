@@ -227,6 +227,26 @@ namespace Shipwreck.Decompiler
 
         #endregion Array Element
 
+        #region Store
+
+        #region Local
+
+        public static int StoreLocal(int a)
+        {
+            var b = a;
+            return b + 30;
+        }
+
+        public static int StoreLocal_Expression(int a)
+        {
+            var b = a;
+            return (b += 30) * b;
+        }
+
+        #endregion Local
+
+        #endregion Store
+
         #region Unary
 
         #region NotTest
