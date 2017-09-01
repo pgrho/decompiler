@@ -71,5 +71,8 @@ namespace Shipwreck.Decompiler
 
         internal void ClearTo()
             => SetTo((SyntaxContainer)null);
+
+        public override string ToString()
+            => $"L_{Offset:x4}: {Syntax}";
     }
 }

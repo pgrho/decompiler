@@ -10,7 +10,7 @@ namespace Shipwreck.Decompiler.Instructions
         }
 
         internal override Expression CreateStoreExpression(DecompilationContext context, Expression value)
-            => context.GetParameter(context.Method.IsStatic ? Index : (Index - 1)).Assign(value);
+            => new VariableExpression(Index).Assign(value);
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other

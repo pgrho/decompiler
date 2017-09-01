@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
 using Xunit;
@@ -7,6 +8,7 @@ namespace Shipwreck.Decompiler
 {
     public class ILDecompilerTest
     {
+        [DebuggerStepThrough]
         private static MethodInfo GetMethod(string name)
             => typeof(ILDecompilerTest).GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
 
@@ -241,6 +243,22 @@ namespace Shipwreck.Decompiler
         {
             var b = a;
             return (b += 30) * b;
+        }
+
+        [Fact]
+        public void StoreLocalTest()
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(StoreLocal)));
+
+            // TODO: Test
+        }
+
+        [Fact]
+        public void StoreLocalTest_Expression()
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(StoreLocal_Expression)));
+
+            // TODO: Test
         }
 
         #endregion Local
