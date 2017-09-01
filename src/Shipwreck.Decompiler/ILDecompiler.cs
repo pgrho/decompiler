@@ -5,15 +5,18 @@ using System.Linq;
 using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Instructions;
+using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler
 {
     public static class ILDecompiler
     {
-        public static unsafe List<Syntax> Decompile(MethodBase method)
+        public static unsafe List<Statement> Decompile(MethodBase method)
         {
-            var bytes = method.GetMethodBody().GetILAsByteArray();
             var ctx = new DecompilationContext(method);
+
+            // Parse IL instructions
+            var bytes = method.GetMethodBody().GetILAsByteArray();
             fixed (byte* bp = bytes)
             {
                 for (var i = 0; i < bytes.Length; i++)
@@ -28,11 +31,13 @@ namespace Shipwreck.Decompiler
                 }
             }
 
+            // Collect flow information
             for (var i = 0; i < ctx.Flow.Count - 1; i++)
             {
                 ((Instruction)ctx.Flow[i].Syntax).SetTo(ctx, i);
             }
 
+            // Translate Instruction to Statement.
             bool transformed;
             do
             {
@@ -78,7 +83,22 @@ namespace Shipwreck.Decompiler
                 }
             } while (transformed);
 
-            return ctx.Flow.Select(f => f.Syntax).ToList();
+            List<Statement> statements;
+            try
+            {
+                statements = ctx.Flow.Select(c => (Statement)c.Syntax).ToList();
+            }
+            catch
+            {
+                throw new InvalidOperationException("Cannot translate il instructions to statements");
+            }
+
+            // TODO: insert labels
+            // TODO: replace goto to block
+
+            // TODO: reduce variable scope
+
+            return statements;
         }
 
         private unsafe static Instruction GetInstruction(byte* bp, ref int i)
@@ -388,41 +408,5 @@ namespace Shipwreck.Decompiler
                     throw new NotImplementedException();
             }
         }
-
-        #region Delegates
-
-        public static List<Syntax> Decompile(Delegate @delegate)
-            => Decompile(@delegate.GetMethodInfo());
-
-        #region Action
-
-        public static List<Syntax> Decompile(Action action)
-            => Decompile(action);
-
-        public static List<Syntax> Decompile<T>(Action<T> action)
-            => Decompile(action);
-
-        public static List<Syntax> Decompile<T1, T2>(Action<T1, T2> action)
-            => Decompile(action);
-
-        public static List<Syntax> Decompile<T1, T2, T3>(Action<T1, T2, T3> action)
-            => Decompile(action);
-
-        #endregion Action
-
-        #region Func
-
-        public static List<Syntax> Decompile<T>(Func<T> func)
-            => Decompile(func);
-
-        public static List<Syntax> Decompile<T1, T2>(Func<T1, T2> func)
-            => Decompile(func);
-
-        public static List<Syntax> Decompile<T1, T2, T3>(Func<T1, T2, T3> func)
-            => Decompile(func);
-
-        #endregion Func
-
-        #endregion Delegates
     }
 }
