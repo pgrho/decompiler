@@ -107,7 +107,7 @@ namespace Shipwreck.Decompiler.Expressions
                 case BinaryOperator.MultiplyChecked:
                     return "*";
 
-                case BinaryOperator.Default:
+                case BinaryOperator.Divide:
                     return "/";
 
                 default:
