@@ -1,9 +1,14 @@
+using System.IO;
+
 namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class ArrayIndexExpression : Expression
     {
         public ArrayIndexExpression(Expression array, Expression index)
         {
+            array.ArgumentIsNotNull(nameof(array));
+            index.ArgumentIsNotNull(nameof(index));
+
             Array = array;
             Index = index;
         }
@@ -15,5 +20,14 @@ namespace Shipwreck.Decompiler.Expressions
             => other is ArrayIndexExpression aie
                 && Array.IsEquivalentTo(aie.Array)
                 && Index.IsEquivalentTo(aie.Index);
+
+        public override void WriteTo(TextWriter writer)
+        {
+            writer.Write('(');
+            Array.WriteTo(writer);
+            writer.Write(")[");
+            Index.WriteTo(writer);
+            writer.Write(']');
+        }
     }
 }

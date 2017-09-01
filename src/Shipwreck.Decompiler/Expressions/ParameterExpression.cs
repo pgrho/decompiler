@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -7,6 +8,9 @@ namespace Shipwreck.Decompiler.Expressions
     {
         public ParameterExpression(string name, Type type)
         {
+            name.ArgumentIsNotNull(nameof(name));
+            type.ArgumentIsNotNull(nameof(type));
+
             Name = name;
             Type = type;
         }
@@ -22,5 +26,8 @@ namespace Shipwreck.Decompiler.Expressions
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
                 || (other is ParameterExpression pe && Name == pe.Name && Type == pe.Type);
+
+        public override void WriteTo(TextWriter writer)
+            => writer.Write(Name);
     }
 }

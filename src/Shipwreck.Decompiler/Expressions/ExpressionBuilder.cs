@@ -1,4 +1,5 @@
-﻿using Shipwreck.Decompiler.Statements;
+﻿using System;
+using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -84,5 +85,34 @@ namespace Shipwreck.Decompiler.Expressions
 
         public static ExpressionStatement ToStatement(this Expression value)
             => new ExpressionStatement(value);
+
+        internal static bool IsChecked(this BinaryOperator @operator)
+            => @operator == BinaryOperator.AddChecked
+            || @operator == BinaryOperator.SubtractChecked
+            || @operator == BinaryOperator.MultiplyChecked;
+
+        internal static string GetToken(this BinaryOperator @operator)
+        {
+            switch (@operator)
+            {
+                case BinaryOperator.Add:
+                case BinaryOperator.AddChecked:
+                    return "+";
+
+                case BinaryOperator.Subtract:
+                case BinaryOperator.SubtractChecked:
+                    return "-";
+
+                case BinaryOperator.Multiply:
+                case BinaryOperator.MultiplyChecked:
+                    return "*";
+
+                case BinaryOperator.Default:
+                    return "/";
+
+                default:
+                    throw new ArgumentException();
+            }
+        }
     }
 }

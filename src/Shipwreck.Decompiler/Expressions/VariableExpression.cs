@@ -1,16 +1,24 @@
+using System.IO;
+
 namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class VariableExpression : Expression
     {
-        public VariableExpression(int value)
+        public VariableExpression(int index)
         {
-            Value = value;
+            Index = index;
         }
 
-        public int Value { get; }
+        public int Index { get; }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-                || (other is VariableExpression ve && Value == ve.Value);
+                || (other is VariableExpression ve && Index == ve.Index);
+
+        public override void WriteTo(TextWriter writer)
+        {
+            writer.Write("$$arg");
+            writer.Write(Index);
+        }
     }
 }
