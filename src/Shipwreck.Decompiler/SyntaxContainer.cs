@@ -18,14 +18,14 @@ namespace Shipwreck.Decompiler
 
         public Syntax Syntax { get; set; }
 
-        public bool HasFrom
-            => _From?.Count > 0;
+        public int FromCount
+            => _From?.Count ?? 0;
 
         public IEnumerable<SyntaxContainer> From
             => _From?.AsEnumerable() ?? Enumerable.Empty<SyntaxContainer>();
 
-        public bool HasTo
-            => _To?.Count > 0;
+        public int ToCount
+            => _To?.Count ?? 0;
 
         public IEnumerable<SyntaxContainer> To
             => _To?.AsEnumerable() ?? Enumerable.Empty<SyntaxContainer>();
