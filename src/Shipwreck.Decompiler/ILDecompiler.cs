@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
@@ -27,6 +28,11 @@ namespace Shipwreck.Decompiler
                 }
             }
 
+            for (var i = 0; i < ctx.Flow.Count - 1; i++)
+            {
+                ((Instruction)ctx.Flow[i].Syntax).SetTo(ctx, i);
+            }
+
             bool transformed;
             do
             {
@@ -40,8 +46,31 @@ namespace Shipwreck.Decompiler
 
                         if (il.TryCreateStatement(ctx, ref s, ref e, out var st))
                         {
-                            ctx.Flow.RemoveRange(s + 1, e - s);
-                            ctx.Flow[s].Syntax = st;
+                            Debug.Assert(s <= i);
+                            Debug.Assert(e >= i);
+
+                            var remain = ctx.Flow[s];
+                            if (s != i || e != i)
+                            {
+                                var removing = ctx.Flow.Skip(s + 1).Take(e - s).ToList();
+                                var froms = removing.SelectMany(r => r.From).Distinct().Except(removing).ToList();
+                                var tos = removing.SelectMany(r => r.To).Distinct().Except(removing).ToList();
+
+                                foreach (var r in removing)
+                                {
+                                    r.ClearTo();
+                                }
+
+                                ctx.Flow.RemoveRange(s + 1, e - s);
+
+                                foreach (var f in froms)
+                                {
+                                    f.SetTo(f.To.Except(removing).Union(new[] { remain }));
+                                }
+
+                                remain.SetTo(tos);
+                            }
+                            remain.Syntax = st;
                             transformed = true;
                             break;
                         }

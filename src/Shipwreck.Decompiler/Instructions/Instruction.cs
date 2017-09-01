@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Reflection;
+using System;
 using System.Reflection.Emit;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
@@ -17,5 +16,20 @@ namespace Shipwreck.Decompiler.Instructions
         internal abstract bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression);
 
         internal abstract bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement);
+
+        internal virtual void SetTo(DecompilationContext context, int index)
+        {
+            switch (FlowControl)
+            {
+                case FlowControl.Next:
+                    context.Flow[index].SetTo(context.Flow[index + 1]);
+                    return;
+
+                case FlowControl.Return:
+                    context.Flow[index].ClearTo();
+                    return;
+            }
+            throw new NotImplementedException();
+        }
     }
 }
