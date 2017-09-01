@@ -14,8 +14,8 @@ namespace Shipwreck.Decompiler.Instructions
 
         public abstract int PushCount { get; }
 
-        internal abstract bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression);
+        internal abstract bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression);
 
-        internal abstract bool TryCreateStatement(MethodBase method, List<Syntax> list, ref int startIndex, ref int lastIndex, out Statement statement);
+        internal abstract bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement);
     }
 }

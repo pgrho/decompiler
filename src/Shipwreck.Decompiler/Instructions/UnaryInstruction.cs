@@ -26,13 +26,13 @@ namespace Shipwreck.Decompiler.Instructions
         public override int PushCount
             => 1;
 
-        internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
+        internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
             if (index > 0)
             {
                 var j = index - 1;
-                var prev = list[j] as Instruction;
-                if (prev != null && prev.TryCreateExpression(method, list, ref j, out var e))
+                var prev = context.Flow[j].Syntax as Instruction;
+                if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
                 {
                     index = j;
                     expression = e.MakeUnary(Operator);
@@ -43,7 +43,7 @@ namespace Shipwreck.Decompiler.Instructions
             return false;
         }
 
-        internal override bool TryCreateStatement(MethodBase method, List<Syntax> list, ref int startIndex, ref int lastIndex, out Statement statement)
+        internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
             statement = null;
             return false;

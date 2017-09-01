@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Instructions;
@@ -11,17 +12,17 @@ namespace Shipwreck.Decompiler
         public static unsafe List<Syntax> Decompile(MethodBase method)
         {
             var bytes = method.GetMethodBody().GetILAsByteArray();
-
-            var ret = new List<Syntax>(Math.Min(bytes.Length, Math.Max(4, bytes.Length >> 2)));
+            var ctx = new DecompilationContext(method);
             fixed (byte* bp = bytes)
             {
                 for (var i = 0; i < bytes.Length; i++)
                 {
+                    var offset = i;
                     var il = GetInstruction(bp, ref i);
 
                     if (il != null)
                     {
-                        ret.Add(il);
+                        ctx.Flow.Add(new SyntaxContainer(i, il));
                     }
                 }
             }
@@ -30,17 +31,17 @@ namespace Shipwreck.Decompiler
             do
             {
                 transformed = false;
-                for (var i = 0; i < ret.Count; i++)
+                for (var i = 0; i < ctx.Flow.Count; i++)
                 {
-                    var il = ret[i] as Instruction;
+                    var il = ctx.Flow[i].Syntax as Instruction;
                     if (il != null)
                     {
                         int s = i, e = i;
 
-                        if (il.TryCreateStatement(method, ret, ref s, ref e, out var st))
+                        if (il.TryCreateStatement(ctx, ref s, ref e, out var st))
                         {
-                            ret.RemoveRange(s, e - s + 1);
-                            ret.Insert(s, st);
+                            ctx.Flow.RemoveRange(s + 1, e - s);
+                            ctx.Flow[s].Syntax = st;
                             transformed = true;
                             break;
                         }
@@ -48,7 +49,7 @@ namespace Shipwreck.Decompiler
                 }
             } while (transformed);
 
-            return ret;
+            return ctx.Flow.Select(f => f.Syntax).ToList();
         }
 
         private unsafe static Instruction GetInstruction(byte* bp, ref int i)

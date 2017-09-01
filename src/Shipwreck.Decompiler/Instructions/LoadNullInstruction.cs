@@ -17,13 +17,13 @@ namespace Shipwreck.Decompiler.Instructions
         public override int PushCount
             => 1;
 
-        internal override bool TryCreateExpression(MethodBase method, List<Syntax> list, ref int index, out Expression expression)
+        internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
             expression = new ConstantExpression(null);
             return true;
         }
 
-        internal override bool TryCreateStatement(MethodBase method, List<Syntax> list, ref int startIndex, ref int lastIndex, out Statement statement)
+        internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
             statement = null;
             return false;
