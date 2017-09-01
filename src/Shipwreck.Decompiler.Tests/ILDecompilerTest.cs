@@ -159,7 +159,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(index).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a" + index, typeof(int)).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         private ILDecompilerTest LoadThis() => this;
@@ -204,25 +204,25 @@ namespace Shipwreck.Decompiler
         public static DateTime LoadElement(DateTime[] a) => a[1];
 
         [Theory]
-        [InlineData(nameof(LoadElement_I1))]
-        [InlineData(nameof(LoadElement_U1))]
-        [InlineData(nameof(LoadElement_I2))]
-        [InlineData(nameof(LoadElement_U2))]
-        [InlineData(nameof(LoadElement_I4))]
-        [InlineData(nameof(LoadElement_U4))]
-        [InlineData(nameof(LoadElement_I8))]
-        [InlineData(nameof(LoadElement_U8))]
-        [InlineData(nameof(LoadElement_I))]
-        [InlineData(nameof(LoadElement_R4))]
-        [InlineData(nameof(LoadElement_R8))]
-        [InlineData(nameof(LoadElement_Ref))]
-        [InlineData(nameof(LoadElement))]
-        public void LoadElementTest(string methodName)
+        [InlineData(nameof(LoadElement_I1), typeof(sbyte))]
+        [InlineData(nameof(LoadElement_U1), typeof(byte))]
+        [InlineData(nameof(LoadElement_I2), typeof(short))]
+        [InlineData(nameof(LoadElement_U2), typeof(ushort))]
+        [InlineData(nameof(LoadElement_I4), typeof(int))]
+        [InlineData(nameof(LoadElement_U4), typeof(uint))]
+        [InlineData(nameof(LoadElement_I8), typeof(long))]
+        [InlineData(nameof(LoadElement_U8), typeof(ulong))]
+        [InlineData(nameof(LoadElement_I), typeof(IntPtr))]
+        [InlineData(nameof(LoadElement_R4), typeof(float))]
+        [InlineData(nameof(LoadElement_R8), typeof(double))]
+        [InlineData(nameof(LoadElement_Ref), typeof(object))]
+        [InlineData(nameof(LoadElement), typeof(DateTime))]
+        public void LoadElementTest(string methodName, Type type)
         {
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).ArrayIndex(1.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", type.MakeArrayType()).ArrayIndex(1.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Array Element
@@ -260,7 +260,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).Not().ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", typeof(int)).Not().ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion NotTest
@@ -276,7 +276,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).Negate().ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", typeof(int)).Negate().ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion NegateTest
@@ -302,7 +302,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).MakeBinary(1.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).MakeBinary(1.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Add
@@ -324,7 +324,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).MakeBinary(1.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).MakeBinary(1.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Subtract
@@ -346,7 +346,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).MakeBinary(3.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).MakeBinary(3.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Multiply
@@ -365,7 +365,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression(0).Divide(5.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).Divide(5.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Divide

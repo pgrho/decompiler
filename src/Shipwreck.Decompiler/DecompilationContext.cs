@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler
 {
@@ -14,5 +15,22 @@ namespace Shipwreck.Decompiler
         public MethodBase Method { get; }
 
         public List<SyntaxContainer> Flow { get; }
+
+        private ThisExpression _This;
+        public ThisExpression This
+            => _This ?? (_This = new ThisExpression());
+
+        private ParameterExpression[] _Parameters;
+
+        public Expression GetParameter(int index)
+        {
+            var @params = Method.GetParameters();
+            if (_Parameters == null)
+            {
+                _Parameters = new ParameterExpression[@params.Length];
+            }
+
+            return _Parameters[index] ?? (_Parameters[index] = new ParameterExpression(@params[index]));
+        }
     }
 }

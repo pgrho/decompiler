@@ -28,15 +28,15 @@ namespace Shipwreck.Decompiler.Instructions
         {
             if (context.Method.IsStatic)
             {
-                expression = new ParameterExpression(Index);
+                expression = context.GetParameter(Index);
             }
             else if (Index == 0)
             {
-                expression = new ThisExpression();
+                expression = context.This;
             }
             else
             {
-                expression = new ParameterExpression(Index - 1);
+                expression = context.GetParameter(Index - 1);
             }
 
             return true;

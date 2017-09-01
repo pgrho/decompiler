@@ -1,15 +1,26 @@
+using System;
+using System.Reflection;
+
 namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class ParameterExpression : Expression
     {
-        public ParameterExpression(int index)
+        public ParameterExpression(string name, Type type)
         {
-            Index = index;
+            Name = name;
+            Type = type;
         }
 
-        public int Index { get; }
+        internal ParameterExpression(ParameterInfo parameter)
+            : this(parameter.Name, parameter.ParameterType)
+        {
+        }
+
+        public string Name { get; }
+        public Type Type { get; }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is ParameterExpression ce && Index == ce.Index;
+            => this == (object)other
+                || (other is ParameterExpression pe && Name == pe.Name && Type == pe.Type);
     }
 }
