@@ -10,8 +10,7 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class UnaryInstruction : Instruction
     {
-        public UnaryInstruction(int offset, UnaryOperator @operator)
-            : base(offset)
+        public UnaryInstruction(UnaryOperator @operator)
         {
             Operator = @operator;
         }
@@ -54,11 +53,9 @@ namespace Shipwreck.Decompiler.Instructions
             => other is UnaryInstruction ui
                 && Operator == ui.Operator;
 
-
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("L_").Append(Offset.ToString("X4")).Append(' ');
 
             switch (Operator)
             {

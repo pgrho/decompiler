@@ -8,8 +8,7 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadInt32Instruction : Instruction
     {
-        public LoadInt32Instruction(int offset, int value)
-            : base(offset)
+        public LoadInt32Instruction(int value)
         {
             Value = value;
         }
@@ -41,6 +40,6 @@ namespace Shipwreck.Decompiler.Instructions
             => other is LoadInt32Instruction li && Value == li.Value;
 
         public override string ToString()
-            => $"L_{Offset:X4}: ldc.i4 {Value:d}";
+            => $"ldc.i4 {Value:d}";
     }
 }

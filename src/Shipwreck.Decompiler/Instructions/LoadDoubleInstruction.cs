@@ -8,8 +8,7 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadDoubleInstruction : Instruction
     {
-        public LoadDoubleInstruction(int offset, double value)
-            : base(offset)
+        public LoadDoubleInstruction(double value)
         {
             Value = value;
         }
@@ -41,6 +40,6 @@ namespace Shipwreck.Decompiler.Instructions
             => other is LoadDoubleInstruction li && Value == li.Value;
 
         public override string ToString()
-            => $"L_{Offset:X4}: ldc.r8 {Value:r}";
+            => $"ldc.r8 {Value:r}";
     }
 }

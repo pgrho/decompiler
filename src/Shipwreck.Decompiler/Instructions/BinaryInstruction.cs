@@ -10,8 +10,7 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class BinaryInstruction : Instruction
     {
-        public BinaryInstruction(int offset, BinaryOperator @operator, bool unsigned = false)
-            : base(offset)
+        public BinaryInstruction(BinaryOperator @operator, bool unsigned = false)
         {
             Operator = @operator;
             IsUnsigned = unsigned;
@@ -69,7 +68,6 @@ namespace Shipwreck.Decompiler.Instructions
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("L_").Append(Offset.ToString("X4")).Append(' ');
 
             switch (Operator)
             {

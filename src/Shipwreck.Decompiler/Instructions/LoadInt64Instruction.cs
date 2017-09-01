@@ -8,8 +8,7 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadInt64Instruction : Instruction
     {
-        public LoadInt64Instruction(int offset, long value)
-            : base(offset)
+        public LoadInt64Instruction(long value)
         {
             Value = value;
         }
@@ -41,6 +40,6 @@ namespace Shipwreck.Decompiler.Instructions
             => other is LoadInt64Instruction li && Value == li.Value;
 
         public override string ToString()
-            => $"L_{Offset:X4}: ldc.i8 {Value:d}";
+            => $"ldc.i8 {Value:d}";
     }
 }

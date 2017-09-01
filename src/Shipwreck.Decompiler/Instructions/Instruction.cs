@@ -8,14 +8,6 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public abstract class Instruction : Syntax
     {
-        internal Instruction(int offset)
-        {
-            Offset = offset;
-        }
-
-        public int Offset { get; }
-
-
         public abstract FlowControl FlowControl { get; }
 
         public abstract int PopCount { get; }

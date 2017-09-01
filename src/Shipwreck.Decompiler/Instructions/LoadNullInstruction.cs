@@ -8,9 +8,6 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadNullInstruction : Instruction
     {
-        public LoadNullInstruction(int offset)
-            : base(offset) { }
-
         public override FlowControl FlowControl
             => FlowControl.Next;
 
@@ -36,6 +33,6 @@ namespace Shipwreck.Decompiler.Instructions
             => other is LoadNullInstruction;
 
         public override string ToString()
-            => $"L_{Offset:X4}: ldnull";
+            => "ldnull";
     }
 }

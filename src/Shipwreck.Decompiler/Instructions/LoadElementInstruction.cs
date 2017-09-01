@@ -8,11 +8,6 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadElementInstruction : Instruction
     {
-        public LoadElementInstruction(int offset)
-            : base(offset)
-        {
-        }
-
         public override FlowControl FlowControl
             => FlowControl.Next;
 
@@ -57,6 +52,6 @@ namespace Shipwreck.Decompiler.Instructions
             => other is LoadElementInstruction;
 
         public override string ToString()
-            => $"L_{Offset:X4}: ldelem";
+            => "ldelem";
     }
 }

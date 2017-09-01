@@ -8,8 +8,7 @@ namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadArgumentInstruction : Instruction
     {
-        public LoadArgumentInstruction(int offset, int value)
-            : base(offset)
+        public LoadArgumentInstruction(int value)
         {
             Index = value;
         }
@@ -53,6 +52,6 @@ namespace Shipwreck.Decompiler.Instructions
             => other is LoadArgumentInstruction li && Index == li.Index;
 
         public override string ToString()
-            => $"L_{Offset:X4}: ldarg {Index}";
+            => $"ldarg {Index}";
     }
 }
