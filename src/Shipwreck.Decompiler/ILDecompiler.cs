@@ -156,11 +156,15 @@ namespace Shipwreck.Decompiler
                     return new ReturnInstruction();
 
                 case 0x2b: // br.s {num}
-                    return new BranchInstruction(i + 2 + (sbyte)bp[++i]);
+                case 0x2c: // br.false.s {num}
+                case 0x2d: // br.true.s {num}
+                    return new BranchInstruction(i + 2 + (sbyte)bp[++i], b == 0x2b ? (bool?)null : b != 0x2c);
 
                 case 0x38: // br {num}
+                case 0x39: // br.false {num}
+                case 0x3a: // br.true {num}
                     i += 4;
-                    return new BranchInstruction(i + 1 + *(int*)(bp + i - 3));
+                    return new BranchInstruction(i + 1 + *(int*)(bp + i - 3), b == 0x38 ? (bool?)null : b != 0x39);
 
                 case 0x58: // add
                 case 0xd6: // add.ovf
@@ -243,10 +247,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Bne_Un_S
                 // TODO: OpCodes.Box
                 // TODO: OpCodes.Break
-                // TODO: OpCodes.Brfalse
-                // TODO: OpCodes.Brfalse_S
-                // TODO: OpCodes.Brtrue
-                // TODO: OpCodes.Brtrue_S
                 // TODO: OpCodes.Call
                 // TODO: OpCodes.Calli
                 // TODO: OpCodes.Callvirt

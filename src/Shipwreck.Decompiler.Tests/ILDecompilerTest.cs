@@ -389,5 +389,51 @@ namespace Shipwreck.Decompiler
         #endregion Divide
 
         #endregion Binary
+
+        #region Branch
+
+        private static int BranchTrue(bool c, int a)
+        {
+            var v = a;
+            if (c)
+            {
+                v += 20;
+            }
+            else
+            {
+                v -= 20;
+            }
+            v *= 3;
+            return v;
+        }
+
+        private static int BranchFalse(bool c, int a)
+        {
+            var v = a;
+            if (c)
+            {
+                v += 20;
+            }
+
+            return v;
+        }
+
+        [Fact]
+        public void BranchTrueTest()
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(BranchTrue)));
+
+            // TODO: Test
+        }
+
+        [Fact]
+        public void BranchFalseTest()
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(BranchFalse)));
+
+            // TODO: Test
+        }
+
+        #endregion Branch
     }
 }
