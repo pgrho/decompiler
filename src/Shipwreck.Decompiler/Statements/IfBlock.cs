@@ -48,12 +48,12 @@ namespace Shipwreck.Decompiler.Statements
             writer.WriteLine('{');
             if (_TruePart?.Count > 0)
             {
-                writer.Indent += 4;
+                writer.Indent++;
                 foreach (var s in _TruePart)
                 {
                     s.WriteTo(writer);
                 }
-                writer.Indent -= 4;
+                writer.Indent--;
             }
             writer.WriteLine('}');
 
@@ -68,12 +68,12 @@ namespace Shipwreck.Decompiler.Statements
                 {
                     writer.WriteLine("else");
                     writer.WriteLine('{');
-                    writer.Indent += 4;
+                    writer.Indent++;
                     foreach (var s in _FalsePart)
                     {
                         s.WriteTo(writer);
                     }
-                    writer.Indent -= 4;
+                    writer.Indent--;
                     writer.WriteLine('}');
                 }
             }

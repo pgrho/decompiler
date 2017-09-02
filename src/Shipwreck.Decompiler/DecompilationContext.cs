@@ -99,6 +99,9 @@ namespace Shipwreck.Decompiler
         public void ClearTo(Syntax syntax)
             => SetTo(syntax, (Syntax)null);
 
+        public void ReplaceInstructionFlow(Syntax newNode, params Syntax[] oldNodes)
+            => ReplaceInstructionFlow(newNode, (IEnumerable<Syntax>)oldNodes);
+
         public void ReplaceInstructionFlow(Syntax newNode, IEnumerable<Syntax> oldNodes)
         {
             var removing = oldNodes as IReadOnlyCollection<Syntax> ?? oldNodes.ToList();
@@ -117,6 +120,31 @@ namespace Shipwreck.Decompiler
             }
 
             SetTo(newNode, tos);
+        }
+        public void ReplaceInstructionFlow(IEnumerable<Syntax> newNodes, params Syntax[] oldNodes)
+            => ReplaceInstructionFlow(newNodes, (IEnumerable<Syntax>)oldNodes);
+
+        public void ReplaceInstructionFlow(IEnumerable<Syntax> newNodes, IEnumerable<Syntax> oldNodes)
+        {
+            var removing = oldNodes as IReadOnlyCollection<Syntax> ?? oldNodes.ToList();
+
+            var nf = newNodes.First();
+            var nl = newNodes.Last();
+
+            var froms = removing.SelectMany(r => GetInfo(r).From ?? Enumerable.Empty<Syntax>()).Distinct().Except(removing).ToList();
+            var tos = removing.SelectMany(r => GetInfo(r).To ?? Enumerable.Empty<Syntax>()).Distinct().Except(removing).ToList();
+
+            foreach (var r in removing)
+            {
+                ClearTo(r);
+            }
+
+            foreach (var f in froms)
+            {
+                SetTo(f, GetTo(f).Except(removing).Union(new[] { nf }));
+            }
+
+            SetTo(nl, tos);
         }
 
         #endregion SyntaxInfo Methods

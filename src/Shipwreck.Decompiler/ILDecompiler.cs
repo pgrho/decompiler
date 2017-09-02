@@ -72,12 +72,44 @@ namespace Shipwreck.Decompiler
                 throw new InvalidOperationException("Cannot translate il instructions to statements");
             }
 
-            // TODO: insert labels
+            // insert labels
+            foreach (var s in ctx.RootStatements.ToArray())
+            {
+                if (s is TemporalGoToStatement g)
+                {
+                    ctx.RootStatements[ctx.RootStatements.IndexOf(g)] = ReplaceGoToStatement(ctx, g);
+                }
+                else if (s is IfBlock ib)
+                {
+                    for (int i = 0; i < ib.TruePart.Count; i++)
+                    {
+                        if (ib.TruePart[i] is TemporalGoToStatement cg)
+                        {
+                            ib.TruePart[i] = ReplaceGoToStatement(ctx, cg);
+                        }
+                    }
+                }
+            }
+
             // TODO: replace goto to block
 
             // TODO: reduce variable scope
 
             return ctx.RootStatements.Cast<Statement>().ToList();
+        }
+
+        private static GoToStatement ReplaceGoToStatement(DecompilationContext ctx, TemporalGoToStatement g)
+        {
+            var tg = ctx.GetSyntaxAt(g.Target);
+            var lb = tg as LabelTarget;
+            if (lb == null)
+            {
+                lb = new LabelTarget($"L_{g.Target:x4}");
+                ctx.RootStatements.Insert(ctx.RootStatements.IndexOf(tg), lb);
+                ctx.SetOffset(lb, g.Target);
+            }
+
+            return new GoToStatement(lb);
         }
 
         private unsafe static Instruction GetInstruction(byte* bp, ref int i)

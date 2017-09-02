@@ -3,11 +3,19 @@ using System.Diagnostics;
 using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Shipwreck.Decompiler
 {
     public class ILDecompilerTest
     {
+        private readonly ITestOutputHelper Output;
+
+        public ILDecompilerTest(ITestOutputHelper output = null)
+        {
+            Output = output;
+        }
+
         [DebuggerStepThrough]
         private static MethodInfo GetMethod(string name)
             => typeof(ILDecompilerTest).GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
@@ -251,6 +259,10 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(nameof(StoreLocal)));
 
             // TODO: Test
+            foreach (var s in ret)
+            {
+                Output?.WriteLine(s.ToString());
+            }
         }
 
         [Fact]
@@ -259,6 +271,10 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(nameof(StoreLocal_Expression)));
 
             // TODO: Test
+            foreach (var s in ret)
+            {
+                Output?.WriteLine(s.ToString());
+            }
         }
 
         #endregion Local
@@ -424,6 +440,10 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(nameof(BranchTrue)));
 
             // TODO: Test
+            foreach (var s in ret)
+            {
+                Output?.WriteLine(s.ToString());
+            }
         }
 
         [Fact]
@@ -432,6 +452,10 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(nameof(BranchFalse)));
 
             // TODO: Test
+            foreach (var s in ret)
+            {
+                Output?.WriteLine(s.ToString());
+            }
         }
 
         #endregion Branch

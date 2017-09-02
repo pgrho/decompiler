@@ -27,7 +27,7 @@ namespace Shipwreck.Decompiler.Expressions
 
             Left = left;
             Right = right;
-            Operator = Operator;
+            Operator = @operator;
         }
 
         public Expression Left { get; }
