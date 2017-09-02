@@ -25,10 +25,10 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
-            if (context.Flow[startIndex].FromCount <= 1 && startIndex > 0)
+            if (context.GetFromCount(this) <= 1 && startIndex > 0)
             {
                 var j = startIndex - 1;
-                var prev = context.Flow[j].Syntax as Instruction;
+                var prev = context.RootStatements[j] as Instruction;
                 if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
                 {
                     startIndex = j;

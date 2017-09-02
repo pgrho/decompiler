@@ -28,10 +28,10 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
-            if (context.Flow[index].FromCount <= 1 && index > 0)
+            if (context.GetFromCount(this) <= 1 && index > 0)
             {
                 var j = index - 1;
-                var prev = context.Flow[j].Syntax as Instruction;
+                var prev = context.RootStatements[j] as Instruction;
                 if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
                 {
                     index = j;

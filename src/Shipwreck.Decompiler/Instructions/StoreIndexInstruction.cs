@@ -26,13 +26,13 @@ namespace Shipwreck.Decompiler.Instructions
         {
             // If previous instruction is dup
 
-            if (context.Flow[index].FromCount <= 1 && index >= 2)
+            if (context.GetFromCount(this) <= 1 && index >= 2)
             {
-                if (context.Flow[index - 1].Syntax is DuplicateInstruction)
+                if (context.RootStatements[index - 1] is DuplicateInstruction)
                 {
                     var j = index - 2;
 
-                    var prev = context.Flow[j].Syntax as Instruction;
+                    var prev = context.RootStatements[j] as Instruction;
                     if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
                     {
                         index = j;
@@ -49,11 +49,11 @@ namespace Shipwreck.Decompiler.Instructions
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
             // If previous instruction is not dup
-            if (context.Flow[startIndex].FromCount <= 1 && startIndex >= 1)
+            if (context.GetFromCount(this) <= 1 && startIndex >= 1)
             {
                 var j = startIndex - 1;
 
-                var prev = context.Flow[j].Syntax as Instruction;
+                var prev = context.RootStatements[j] as Instruction;
                 if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
                 {
                     startIndex = j;

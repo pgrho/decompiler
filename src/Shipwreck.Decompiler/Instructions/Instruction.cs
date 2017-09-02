@@ -22,11 +22,11 @@ namespace Shipwreck.Decompiler.Instructions
             switch (FlowControl)
             {
                 case FlowControl.Next:
-                    context.Flow[index].SetTo(context.Flow[index + 1]);
+                    context.SetTo(this, context.RootStatements[index + 1]);
                     return;
 
                 case FlowControl.Return:
-                    context.Flow[index].ClearTo();
+                    context.ClearTo(this);
                     return;
             }
             throw new NotImplementedException();

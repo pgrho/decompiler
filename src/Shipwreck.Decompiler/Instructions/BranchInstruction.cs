@@ -34,13 +34,13 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
-            var to = context.Flow.FirstOrDefault(t => t.Offset >= Offset);
-            var toi = context.Flow.IndexOf(to);
+            var to = context.GetTo(this).FirstOrDefault();
+            var toi = context.RootStatements.IndexOf(to);
 
             // Remove br if the target is next to this instance.
             if (toi == startIndex + 1)
             {
-                statement = to.Syntax as Statement;
+                statement = to as Statement;
                 if (statement != null)
                 {
                     lastIndex = toi;
@@ -61,7 +61,7 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override void SetTo(DecompilationContext context, int index)
         {
-            context.Flow[index].SetTo(context.Flow.FirstOrDefault(t => t.Offset >= Offset));
+            context.SetTo(this, context.GetSyntaxAt(Offset));
         }
     }
 }

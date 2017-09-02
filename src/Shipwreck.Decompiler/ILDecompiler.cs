@@ -26,15 +26,16 @@ namespace Shipwreck.Decompiler
 
                     if (il != null)
                     {
-                        ctx.Flow.Add(new SyntaxContainer(i, il));
+                        ctx.RootStatements.Add(il);
+                        ctx.SetOffset(il, offset);
                     }
                 }
             }
 
             // Collect flow information
-            for (var i = 0; i < ctx.Flow.Count - 1; i++)
+            for (var i = 0; i < ctx.RootStatements.Count - 1; i++)
             {
-                ((Instruction)ctx.Flow[i].Syntax).SetTo(ctx, i);
+                ((Instruction)ctx.RootStatements[i]).SetTo(ctx, i);
             }
 
             // Translate Instruction to Statement.
@@ -42,40 +43,23 @@ namespace Shipwreck.Decompiler
             do
             {
                 transformed = false;
-                for (var i = 0; i < ctx.Flow.Count; i++)
+                for (var i = 0; i < ctx.RootStatements.Count; i++)
                 {
-                    var il = ctx.Flow[i].Syntax as Instruction;
+                    var il = ctx.RootStatements[i] as Instruction;
                     if (il != null)
                     {
                         int s = i, e = i;
-
                         if (il.TryCreateStatement(ctx, ref s, ref e, out var st))
                         {
                             Debug.Assert(s <= i);
                             Debug.Assert(e >= i);
 
-                            var remain = ctx.Flow[s];
-                            if (s != i || e != i)
-                            {
-                                var removing = ctx.Flow.Skip(s + 1).Take(e - s).ToList();
-                                var froms = removing.SelectMany(r => r.From).Distinct().Except(removing).ToList();
-                                var tos = removing.SelectMany(r => r.To).Distinct().Except(removing).ToList();
+                            var offset = ctx.GetOffset(s);
+                            ctx.ReplaceInstructionFlow(st, ctx.RootStatements.Skip(s).Take(e - s + 1));
+                            ctx.RootStatements.RemoveRange(s + 1, e - s);
+                            ctx.RootStatements[s] = st;
+                            ctx.SetOffset(st, offset);
 
-                                foreach (var r in removing)
-                                {
-                                    r.ClearTo();
-                                }
-
-                                ctx.Flow.RemoveRange(s + 1, e - s);
-
-                                foreach (var f in froms)
-                                {
-                                    f.SetTo(f.To.Except(removing).Union(new[] { remain }));
-                                }
-
-                                remain.SetTo(tos);
-                            }
-                            remain.Syntax = st;
                             transformed = true;
                             break;
                         }
@@ -83,12 +67,7 @@ namespace Shipwreck.Decompiler
                 }
             } while (transformed);
 
-            List<Statement> statements;
-            try
-            {
-                statements = ctx.Flow.Select(c => (Statement)c.Syntax).ToList();
-            }
-            catch
+            if (ctx.RootStatements.OfType<Instruction>().Any())
             {
                 throw new InvalidOperationException("Cannot translate il instructions to statements");
             }
@@ -98,7 +77,7 @@ namespace Shipwreck.Decompiler
 
             // TODO: reduce variable scope
 
-            return statements;
+            return ctx.RootStatements.Cast<Statement>().ToList();
         }
 
         private unsafe static Instruction GetInstruction(byte* bp, ref int i)
