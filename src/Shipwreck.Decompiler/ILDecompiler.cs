@@ -11,6 +11,7 @@ namespace Shipwreck.Decompiler
 {
     public static class ILDecompiler
     {
+        // TODO: change return type to DecompiledMethod
         public static unsafe List<Statement> Decompile(MethodBase method)
         {
             var ctx = new DecompilationContext(method);
@@ -91,11 +92,26 @@ namespace Shipwreck.Decompiler
                 }
             }
 
-            // TODO: replace goto to block
+            var dm = new DecompiledMethod();
+            dm.RootStatements.AddRange(ctx.RootStatements.Cast<Statement>());
+
+            do
+            {
+                transformed = false;
+                for (int i = 0; i < dm.RootStatements.Count; i++)
+                {
+                    // TODO: replace goto to block
+                    if (dm.RootStatements[i].Reduce())
+                    {
+                        transformed = true;
+                        break;
+                    }
+                }
+            } while (transformed);
 
             // TODO: reduce variable scope
 
-            return ctx.RootStatements.Cast<Statement>().ToList();
+            return dm.RootStatements.ToList();
         }
 
         private static GoToStatement ReplaceGoToStatement(DecompilationContext ctx, TemporalGoToStatement g)

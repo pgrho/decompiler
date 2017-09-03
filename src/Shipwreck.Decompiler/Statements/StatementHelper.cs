@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Shipwreck.Decompiler.Statements
 {
     public static class StatementHelper
@@ -22,5 +25,29 @@ namespace Shipwreck.Decompiler.Statements
             }
             return true;
         }
+
+        public static IEnumerable<Statement> TreeStatements(this IStatementNode statement)
+            => statement.Collection?.Owner?.SelfAndDescendants()
+                ?? statement.Collection?.Descendants()
+                ?? statement.SelfAndDescendants();
+
+        public static IEnumerable<Statement> SelfAndDescendants(this IStatementNode statements)
+        {
+            if (statements is Statement s)
+            {
+                yield return s;
+            }
+
+            foreach (var c in statements.GetChildCollections())
+            {
+                foreach (var cs in c.Descendants())
+                {
+                    yield return cs;
+                }
+            }
+        }
+
+        public static IEnumerable<Statement> Descendants(this StatementCollection collection)
+            => collection.SelectMany(s => s.SelfAndDescendants());
     }
 }

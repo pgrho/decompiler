@@ -1,4 +1,7 @@
 using System.CodeDom.Compiler;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -22,5 +25,21 @@ namespace Shipwreck.Decompiler.Statements
             writer.Write(Name);
             writer.Write(':');
         }
+
+        public override bool Reduce()
+        {
+            if (Collection != null)
+            {
+                if (!ReferencedFrom().Any())
+                {
+                    Collection.Remove(this);
+                    return true;
+                }
+            }
+            return base.Reduce();
+        }
+
+        internal IEnumerable<GoToStatement> ReferencedFrom()
+            => this.TreeStatements().OfType<GoToStatement>().Where(g => g.Target == this);
     }
 }

@@ -1,5 +1,5 @@
 using System.CodeDom.Compiler;
-using Shipwreck.Decompiler.Expressions;
+using System.Collections.Generic;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -19,7 +19,7 @@ namespace Shipwreck.Decompiler.Statements
         private StatementCollection _TruePart;
 
         public StatementCollection TruePart
-            => _TruePart ?? (_TruePart = new StatementCollection());
+            => _TruePart ?? (_TruePart = new StatementCollection(this));
 
         #endregion TruePart
 
@@ -28,7 +28,7 @@ namespace Shipwreck.Decompiler.Statements
         private StatementCollection _FalsePart;
 
         public StatementCollection FalsePart
-            => _FalsePart ?? (_FalsePart = new StatementCollection());
+            => _FalsePart ?? (_FalsePart = new StatementCollection(this));
 
         #endregion FalsePart
 
@@ -76,6 +76,63 @@ namespace Shipwreck.Decompiler.Statements
                     writer.Indent--;
                     writer.WriteLine('}');
                 }
+            }
+        }
+
+        public override bool Reduce()
+        {
+            if (Collection != null)
+            {
+                var reduced1 = false;
+                bool reduced;
+                do
+                {
+                    reduced = false;
+                    if (_TruePart != null)
+                    {
+                        foreach (var s in _TruePart)
+                        {
+                            if (s.Reduce())
+                            {
+                                reduced1 = reduced = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (_FalsePart != null)
+                    {
+                        foreach (var s in _FalsePart)
+                        {
+                            if (s.Reduce())
+                            {
+                                reduced1 = reduced = true;
+                                break;
+                            }
+                        }
+                    }
+                } while (reduced);
+
+                if (!(_TruePart?.Count > 0) && !(_FalsePart?.Count > 0))
+                {
+                    Collection.Remove(this);
+                    return true;
+                }
+
+                return reduced1;
+            }
+
+            return base.Reduce();
+        }
+
+        public override IEnumerable<StatementCollection> GetChildCollections()
+        {
+            if (_TruePart?.Count > 0)
+            {
+                yield return _TruePart;
+            }
+            if (_FalsePart?.Count > 0)
+            {
+                yield return _FalsePart;
             }
         }
     }
