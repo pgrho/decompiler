@@ -5,7 +5,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class DoWhileStatement : Statement, IBreakableStatement
+    public sealed class DoWhileStatement : Statement, IBreakableStatement, IContinuableStatement
     {
         public DoWhileStatement()
         {

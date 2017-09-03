@@ -49,5 +49,21 @@ namespace Shipwreck.Decompiler.Statements
 
         public static IEnumerable<Statement> Descendants(this StatementCollection collection)
             => collection.SelectMany(s => s.SelfAndDescendants());
+
+        public static IEnumerable<Statement> Ancestors(this Statement statement)
+        {
+            var c = statement.Collection;
+            while (c != null)
+            {
+                var s = c.Owner as Statement;
+                if (s == null)
+                {
+                    yield break;
+                }
+                yield return s;
+
+                c = s.Collection;
+            }
+        }
     }
 }

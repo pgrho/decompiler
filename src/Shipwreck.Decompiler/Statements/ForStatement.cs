@@ -1,23 +1,16 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Linq;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class WhileStatement : Statement, IBreakableStatement, IContinuableStatement
+    public sealed class ForStatement : Statement, IBreakableStatement, IContinuableStatement
     {
-        public WhileStatement()
-        {
-            Condition = ExpressionBuilder.True;
-        }
-
-        public WhileStatement(Expression condition)
-        {
-            Condition = condition ?? ExpressionBuilder.True;
-        }
+        // TODO: allow variable declaration
+        public Expression Initializer { get; set; }
 
         public Expression Condition { get; set; }
+        public Expression Iterator { get; set; }
 
         #region Statements
 
@@ -33,14 +26,20 @@ namespace Shipwreck.Decompiler.Statements
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is WhileStatement ws
-                && Condition.IsEquivalentTo(ws.Condition)
+            || (other is ForStatement ws
+                && (Initializer?.IsEquivalentTo(ws.Initializer) ?? ws.Initializer == null)
+                && (Condition?.IsEquivalentTo(ws.Condition) ?? ws.Condition == null)
+                && (Iterator?.IsEquivalentTo(ws.Iterator) ?? ws.Iterator == null)
                 && _Statements.IsEquivalentTo(ws._Statements));
 
         public override void WriteTo(IndentedTextWriter writer)
         {
-            writer.Write("while (");
-            Condition.WriteTo(writer);
+            writer.Write("for (");
+            Initializer?.WriteTo(writer);
+            writer.Write("; ");
+            Condition?.WriteTo(writer);
+            writer.Write("; ");
+            Iterator?.WriteTo(writer);
             writer.WriteLine(")");
             writer.WriteLine('{');
             if (ShouldSerializeStatements())
@@ -65,10 +64,30 @@ namespace Shipwreck.Decompiler.Statements
 
         public override bool Reduce()
         {
-            var thisReduced = Condition.TryReduce(out var nc);
-            if (thisReduced)
+            var thisReduced = false;
+            if (Iterator != null)
             {
-                Condition = nc;
+                if (Iterator.TryReduce(out var e))
+                {
+                    Iterator = e;
+                    thisReduced = true;
+                }
+            }
+            if (Condition != null)
+            {
+                if (Condition.TryReduce(out var e))
+                {
+                    Condition = e;
+                    thisReduced = true;
+                }
+            }
+            if (Iterator != null)
+            {
+                if (Iterator.TryReduce(out var e))
+                {
+                    Iterator = e;
+                    thisReduced = true;
+                }
             }
 
             if (Collection != null)
@@ -78,43 +97,21 @@ namespace Shipwreck.Decompiler.Statements
                     // TODO: WhileStatement.Condition is constant
                 }
 
-                var ls = _Statements?.LastOrDefault() as ExpressionStatement;
-                if (ls != null)
-                {
-                    // Include initializer or second to last label
-                    var i = Collection.IndexOf(this);
-
-                    var sts = _Statements.Take(_Statements.Count - 1).ToArray();
-                    var fs = new ForStatement();
-
-                    fs.Condition = Condition;
-                    fs.Iterator = ls.Expression;
-
-                    _Statements.Clear();
-                    fs.Statements.AddRange(sts);
-
-                    var ct = Collection;
-                    ct[i] = fs;
-
-                    return true;
-                }
-
                 bool iterReduced;
                 do
                 {
-                    iterReduced = false;
-                    if (_Statements != null)
+                    iterReduced = false; if (_Statements != null)
                     {
                         foreach (var s in _Statements)
                         {
                             if (s.Reduce())
                             {
-                                thisReduced = iterReduced = true;
-                                break;
+                                thisReduced = iterReduced = true; break;
                             }
                         }
                     }
-                } while (iterReduced);
+                }
+                while (iterReduced);
 
                 // TODO: Determine the Statements is empty
             }

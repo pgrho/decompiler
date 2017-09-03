@@ -1,5 +1,8 @@
 ﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Shipwreck.Decompiler.Expressions;
@@ -286,31 +289,55 @@ namespace Shipwreck.Decompiler
         #region Convert
 
         private static SByte ConvertSByte(float a) => (SByte)a;
+
         private static Int16 ConvertInt16(float a) => (Int16)a;
+
         private static Int32 ConvertInt32(float a) => (Int32)a;
+
         private static Int64 ConvertInt64(float a) => (Int64)a;
+
         private static Byte ConvertByte(float a) => (Byte)a;
+
         private static UInt16 ConvertUInt16(float a) => (UInt16)a;
+
         private static UInt32 ConvertUInt32(float a) => (UInt32)a;
+
         private static UInt64 ConvertUInt64(float a) => (UInt64)a;
+
         private static SByte ConvertSByteChecked(float a) => checked((SByte)a);
+
         private static Int16 ConvertInt16Checked(float a) => checked((Int16)a);
+
         private static Int32 ConvertInt32Checked(float a) => checked((Int32)a);
+
         private static Int64 ConvertInt64Checked(float a) => checked((Int64)a);
+
         private static Byte ConvertByteChecked(float a) => checked((Byte)a);
+
         private static UInt16 ConvertUInt16Checked(float a) => checked((UInt16)a);
+
         private static UInt32 ConvertUInt32Checked(float a) => checked((UInt32)a);
+
         private static UInt64 ConvertUInt64Checked(float a) => checked((UInt64)a);
+
         private static SByte ConvertSByteUnsignedChecked(ulong a) => checked((SByte)a);
+
         private static Int16 ConvertInt16UnsignedChecked(ulong a) => checked((Int16)a);
+
         private static Int32 ConvertInt32UnsignedChecked(ulong a) => checked((Int32)a);
+
         private static Int64 ConvertInt64UnsignedChecked(ulong a) => checked((Int64)a);
+
         private static Byte ConvertByteUnsignedChecked(ulong a) => checked((Byte)a);
+
         private static UInt16 ConvertUInt16UnsignedChecked(ulong a) => checked((UInt16)a);
+
         private static UInt32 ConvertUInt32UnsignedChecked(ulong a) => checked((UInt32)a);
+
         private static UInt64 ConvertUInt64UnsignedChecked(uint a) => checked((UInt64)a);
 
         private static float ConvertSingle(int a) => a;
+
         private static double ConvertDouble(int a) => a;
 
         private static float ConvertFloatUnsigned(ulong a) => a;
@@ -342,8 +369,7 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(ConvertByteUnsignedChecked))]
         [InlineData(nameof(ConvertUInt16UnsignedChecked))]
         [InlineData(nameof(ConvertUInt32UnsignedChecked))]
-        // TODO: Test conv.ovf.u8.un
-        // [InlineData(nameof(ConvertUInt64UnsignedChecked))]
+        // TODO: Test conv.ovf.u8.un [InlineData(nameof(ConvertUInt64UnsignedChecked))]
         [InlineData(nameof(ConvertSingle))]
         [InlineData(nameof(ConvertDouble))]
         // TODO: test conv.r.un
@@ -601,5 +627,82 @@ namespace Shipwreck.Decompiler
         }
 
         #endregion Loop
+
+        private static int Continue(int c)
+        {
+            var r = 0;
+            for (var i = 0; i < c; i++)
+            {
+                if (c > 5)
+                {
+                    continue;
+                }
+                r *= i;
+                if (c > 10)
+                {
+                    continue;
+                }
+                r += i;
+            }
+            return r;
+        }
+
+        [Theory]
+        [InlineData(nameof(Continue))]
+        public void ContinueTest(string methodName)
+            => AssertMethod(GetMethod(methodName));
+
+        private void AssertMethod(MethodInfo method, params Statement[] expectedStatement)
+        {
+            List<Statement> dm;
+            try
+            {
+                dm = ILDecompiler.Decompile(method);
+            }
+            catch
+            {
+                throw;
+            }
+
+            if (expectedStatement.Any())
+            {
+                try
+                {
+                    Assert.Equal(expectedStatement.Length, dm.Count);
+                    for (int i = 0; i < dm.Count; i++)
+                    {
+                        Assert.True(expectedStatement[i].IsEquivalentTo(dm[i]));
+                    }
+                }
+                catch
+                {
+                    WriteStatements(dm);
+                    throw;
+                }
+            }
+            else
+            {
+                WriteStatements(dm);
+            }
+        }
+
+        private void WriteStatements(List<Statement> dm)
+        {
+            if (Output != null)
+            {
+                using (var sw = new StringWriter())
+                using (var tw = new IndentedTextWriter(sw))
+                {
+                    foreach (var s in dm)
+                    {
+                        s.WriteTo(tw);
+                    }
+
+                    tw.Flush();
+
+                    Output.WriteLine(sw.ToString());
+                }
+            }
+        }
     }
 }

@@ -59,6 +59,19 @@ namespace Shipwreck.Decompiler.Statements
                         return true;
                     }
                 }
+                else
+                {
+                    var cs = this.Ancestors().OfType<IContinuableStatement>().FirstOrDefault();
+
+                    if (cs != null && cs.ShouldSerializeStatements())
+                    {
+                        if (cs.Statements.LastOrDefault() == Target)
+                        {
+                            Collection[i] = new ContinueStatement();
+                            return true;
+                        }
+                    }
+                }
             }
 
             return base.Reduce();

@@ -42,6 +42,7 @@ namespace Shipwreck.Decompiler.Instructions
                         if (prev != null && prev.TryCreateExpression(context, ref j, out var left))
                         {
                             index = j;
+                            // TODO: make unsigned
                             expression = left.MakeBinary(right, Operator);
                             return true;
                         }

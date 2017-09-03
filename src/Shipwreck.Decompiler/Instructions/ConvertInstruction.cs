@@ -43,6 +43,7 @@ namespace Shipwreck.Decompiler.Instructions
                 if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
                 {
                     index = j;
+                    // TODO: make unsigned
                     expression = IsChecked ? e.ConvertChecked(Type) : e.Convert(Type);
                     return true;
                 }
