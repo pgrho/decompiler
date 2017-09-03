@@ -3,6 +3,8 @@ namespace Shipwreck.Decompiler.Expressions
     public enum UnaryOperator
     {
         Not,
-        Negate
+        Negate,
+        Convert,
+        ConvertChecked
     }
 }

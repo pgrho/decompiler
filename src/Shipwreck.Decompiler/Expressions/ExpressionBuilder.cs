@@ -41,6 +41,12 @@ namespace Shipwreck.Decompiler.Expressions
         public static UnaryExpression Negate(this Expression operand)
             => operand.MakeUnary(UnaryOperator.Negate);
 
+        public static UnaryExpression Convert(this Expression operand, Type type)
+            => new UnaryExpression(operand, UnaryOperator.Convert, type);
+
+        public static UnaryExpression ConvertChecked(this Expression operand, Type type)
+            => new UnaryExpression(operand, UnaryOperator.Convert, type);
+
         #endregion UnaryExpression
 
         #region BinaryExpression

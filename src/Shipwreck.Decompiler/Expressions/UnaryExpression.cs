@@ -7,15 +7,48 @@ namespace Shipwreck.Decompiler.Expressions
     {
         public UnaryExpression(Expression operand, UnaryOperator @operator)
         {
+            switch (@operator)
+            {
+                case UnaryOperator.Negate:
+                case UnaryOperator.Not:
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported {nameof(@operator)}");
+            }
+
             operand.ArgumentIsNotNull(nameof(operand));
 
             Operand = operand;
             Operator = @operator;
         }
 
+        public UnaryExpression(Expression operand, UnaryOperator @operator, Type type)
+        {
+            switch (@operator)
+            {
+                case UnaryOperator.Convert:
+                case UnaryOperator.ConvertChecked:
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported {nameof(@operator)}");
+            }
+
+            operand.ArgumentIsNotNull(nameof(operand));
+            type.ArgumentIsNotNull(nameof(type));
+
+            Operand = operand;
+            Operator = @operator;
+            Type = type;
+        }
+
         public Expression Operand { get; }
 
         public UnaryOperator Operator { get; }
+
+        // TODO: Add Expression.Type
+        internal Type Type { get; }
 
         public override bool IsEquivalentTo(Syntax other)
             => other is UnaryExpression ue
@@ -32,6 +65,13 @@ namespace Shipwreck.Decompiler.Expressions
 
                 case UnaryOperator.Negate:
                     writer.Write('!'); // TODO: minus sign for non-bool operand
+                    break;
+
+                case UnaryOperator.Convert:
+                case UnaryOperator.ConvertChecked:
+                    writer.Write('(');
+                    writer.Write(Type.FullName);
+                    writer.Write(')');
                     break;
 
                 default:
