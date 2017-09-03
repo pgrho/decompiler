@@ -459,5 +459,34 @@ namespace Shipwreck.Decompiler
         }
 
         #endregion Branch
+
+        #region Loop
+
+        private static int While(int a)
+        {
+            var c = a;
+            var v = 0;
+            while (c > 0)
+            {
+                v += c;
+
+                c--;
+            }
+            return v;
+        }
+
+        [Fact]
+        public void WhileTest()
+        {
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(While)));
+
+            // TODO: Test
+            foreach (var s in ret)
+            {
+                Output?.WriteLine(s.ToString());
+            }
+        }
+
+        #endregion Loop
     }
 }
