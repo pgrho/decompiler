@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
@@ -72,7 +73,23 @@ namespace Shipwreck.Decompiler.Statements
 
             if (Collection != null)
             {
-                // TODO: Determine the Condition is constant
+                if (Condition is ConstantExpression c)
+                {
+                    // TODO: DoWhileStatement.Condition is constant
+                }
+                else if (Condition is VariableExpression v)
+                {
+                    // TODO: Add Expression.TryReplace(out Expression)
+                    if (_Statements?.LastOrDefault() is ExpressionStatement es
+                        && es.Expression is AssignmentExpression ae
+                        && ae.Left.IsEquivalentTo(v))
+                    {
+                        _Statements.RemoveAt(_Statements.Count - 1);
+                        Condition = ae;
+
+                        return true;
+                    }
+                }
 
                 bool iterReduced;
                 do
