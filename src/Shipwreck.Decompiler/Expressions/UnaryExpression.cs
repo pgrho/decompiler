@@ -53,7 +53,8 @@ namespace Shipwreck.Decompiler.Expressions
         public override bool IsEquivalentTo(Syntax other)
             => other is UnaryExpression ue
                 && Operand.IsEquivalentTo(ue.Operand)
-                && Operator == ue.Operator;
+                && Operator == ue.Operator
+                && Type == ue.Type;
 
         public override void WriteTo(TextWriter writer)
         {

@@ -45,7 +45,7 @@ namespace Shipwreck.Decompiler.Expressions
             => new UnaryExpression(operand, UnaryOperator.Convert, type);
 
         public static UnaryExpression ConvertChecked(this Expression operand, Type type)
-            => new UnaryExpression(operand, UnaryOperator.Convert, type);
+            => new UnaryExpression(operand, UnaryOperator.ConvertChecked, type);
 
         #endregion UnaryExpression
 

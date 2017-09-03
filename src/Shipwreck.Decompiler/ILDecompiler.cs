@@ -239,6 +239,63 @@ namespace Shipwreck.Decompiler
                 case 0x66: // not
                     return new UnaryInstruction(b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not);
 
+                case 0x67: // conv.i1
+                    return new ConvertInstruction(typeof(sbyte), false);
+
+                case 0x68: // conv.i2
+                    return new ConvertInstruction(typeof(short), false);
+
+                case 0x69: // conv.i4
+                    return new ConvertInstruction(typeof(int), false);
+
+                case 0x6a: // conv.i8
+                    return new ConvertInstruction(typeof(long), false);
+
+                case 0x6b: // conv.r4
+                    return new ConvertInstruction(typeof(float), false);
+
+                case 0x6c: // conv.r8
+                    return new ConvertInstruction(typeof(double), false);
+
+                case 0x6d: // conv.u4
+                    return new ConvertInstruction(typeof(uint), false);
+
+                case 0x6e: // conv.u8
+                    return new ConvertInstruction(typeof(ulong), false);
+
+                case 0x76: // conv.r.un
+                    return new ConvertInstruction(typeof(double), false, true);
+
+                case 0x82: // conv.ovf.i1.un
+                    return new ConvertInstruction(typeof(sbyte), true, true);
+
+                case 0x83: // conv.ovf.i2.un
+                    return new ConvertInstruction(typeof(short), true, true);
+
+                case 0x84: // conv.ovf.i4.un
+                    return new ConvertInstruction(typeof(int), true, true);
+
+                case 0x85: // conv.ovf.i8.un
+                    return new ConvertInstruction(typeof(long), true, true);
+
+                case 0x86: // conv.ovf.u1.un
+                    return new ConvertInstruction(typeof(byte), true, true);
+
+                case 0x87: // conv.ovf.u2.un
+                    return new ConvertInstruction(typeof(ushort), true, true);
+
+                case 0x88: // conv.ovf.u4.un
+                    return new ConvertInstruction(typeof(uint), true, true);
+
+                case 0x89: // conv.ovf.u8.un
+                    return new ConvertInstruction(typeof(ulong), true, true);
+
+                case 0x8a: // conv.ovf.i.un
+                    return new ConvertInstruction(typeof(IntPtr), true, true);
+
+                case 0x8b: // conv.ovf.u.un
+                    return new ConvertInstruction(typeof(UIntPtr), true, true);
+
                 case 0x90: // ldelem.i1
                 case 0x91: // ldelem.u1
                 case 0x92: // ldelem.i2
@@ -256,6 +313,44 @@ namespace Shipwreck.Decompiler
                     // method.Module.ResolveType( *(int*)(bp + i + 1))
                     i += 4;
                     return new LoadElementInstruction();
+
+                case 0xb3: // conv.ovf.i1
+                    return new ConvertInstruction(typeof(sbyte), true);
+
+                case 0xb4: // conv.ovf.u1
+                    return new ConvertInstruction(typeof(byte), true);
+
+                case 0xb5: // conv.ovf.i2
+                    return new ConvertInstruction(typeof(short), true);
+
+                case 0xb6: // conv.ovf.u2
+                    return new ConvertInstruction(typeof(ushort), true);
+
+                case 0xb7: // conv.ovf.14
+                    return new ConvertInstruction(typeof(int), true);
+
+                case 0xb8: // conv.ovf.u4
+                    return new ConvertInstruction(typeof(uint), true);
+
+                case 0xb9: // conv.ovf.i8
+                    return new ConvertInstruction(typeof(long), true);
+
+                case 0xba: // conv.ovf.u8
+                    return new ConvertInstruction(typeof(ulong), true);
+
+                case 0xd1: // conv.u2
+                    return new ConvertInstruction(typeof(ushort), false);
+
+                case 0xd2: // conv.u1
+                    return new ConvertInstruction(typeof(byte), false);
+
+                case 0xd3: // conv.i
+                case 0xd4: // conv.ovf.i
+                case 0xd5: // conv.ovf.u
+                    return new ConvertInstruction(b == 0xd5 ? typeof(UIntPtr) : typeof(IntPtr), b != 0xd3);
+
+                case 0xe0: // conv.u
+                    return new ConvertInstruction(typeof(ulong), false);
 
                 case 0xfe:
                     var b2 = bp[++i];
@@ -281,7 +376,7 @@ namespace Shipwreck.Decompiler
                             return new LoadLocalInstruction(*(ushort*)(bp + i - 1));
 
                         default:
-                            throw new NotImplementedException();
+                            throw new NotImplementedException($"Invalid IL '{b:x2} {b2:x2}'");
                     }
 
                 // TODO: OpCodes.And
@@ -314,39 +409,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Castclass
                 // TODO: OpCodes.Ckfinite
                 // TODO: OpCodes.Constrained
-                // TODO: OpCodes.Conv_I
-                // TODO: OpCodes.Conv_I1
-                // TODO: OpCodes.Conv_I2
-                // TODO: OpCodes.Conv_I4
-                // TODO: OpCodes.Conv_I8
-                // TODO: OpCodes.Conv_Ovf_I
-                // TODO: OpCodes.Conv_Ovf_I_Un
-                // TODO: OpCodes.Conv_Ovf_I1
-                // TODO: OpCodes.Conv_Ovf_I1_Un
-                // TODO: OpCodes.Conv_Ovf_I2
-                // TODO: OpCodes.Conv_Ovf_I2_Un
-                // TODO: OpCodes.Conv_Ovf_I4
-                // TODO: OpCodes.Conv_Ovf_I4_Un
-                // TODO: OpCodes.Conv_Ovf_I8
-                // TODO: OpCodes.Conv_Ovf_I8_Un
-                // TODO: OpCodes.Conv_Ovf_U
-                // TODO: OpCodes.Conv_Ovf_U_Un
-                // TODO: OpCodes.Conv_Ovf_U1
-                // TODO: OpCodes.Conv_Ovf_U1_Un
-                // TODO: OpCodes.Conv_Ovf_U2
-                // TODO: OpCodes.Conv_Ovf_U2_Un
-                // TODO: OpCodes.Conv_Ovf_U4
-                // TODO: OpCodes.Conv_Ovf_U4_Un
-                // TODO: OpCodes.Conv_Ovf_U8
-                // TODO: OpCodes.Conv_Ovf_U8_Un
-                // TODO: OpCodes.Conv_R_Un
-                // TODO: OpCodes.Conv_R4
-                // TODO: OpCodes.Conv_R8
-                // TODO: OpCodes.Conv_U
-                // TODO: OpCodes.Conv_U1
-                // TODO: OpCodes.Conv_U2
-                // TODO: OpCodes.Conv_U4
-                // TODO: OpCodes.Conv_U8
                 // TODO: OpCodes.Cpblk
                 // TODO: OpCodes.Cpobj
                 // TODO: OpCodes.Endfilter
@@ -440,7 +502,7 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Xor
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"Invalid IL '{b:x2}'");
             }
         }
     }
