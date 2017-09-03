@@ -470,6 +470,45 @@ namespace Shipwreck.Decompiler
 
         #endregion Binary
 
+        #region NewObject
+
+        private static IntPtr NewObjectIntPtr() => new IntPtr(1);
+
+        private static DateTime NewObjectDateTime() => new DateTime(1, 2, 3, 4, 5, 6, 7);
+
+        [Theory]
+        [InlineData(nameof(NewObjectIntPtr), 1)]
+        [InlineData(nameof(NewObjectDateTime), 7)]
+        public void NewObjectTest(string methodName, int count)
+        {
+            var m = GetMethod(methodName);
+            var t = m.ReturnType;
+            var expected = new NewExpression(t.GetConstructor(Enumerable.Repeat(typeof(int), count).ToArray()), Enumerable.Range(1, count).Select(i => i.ToExpression())).ToReturnStatement();
+
+            AssertMethod(m, expected);
+        }
+
+        #endregion NewObject
+
+        #region Call
+
+        private static IntPtr Call() => NewObjectIntPtr();
+
+        private string CallVirt() => ToString();
+
+        private string CallBase() => base.ToString();
+
+        [Theory]
+        [InlineData(nameof(Call))]
+        [InlineData(nameof(CallVirt))]
+        [InlineData(nameof(CallBase))]
+        public void CallTest(string methodName)
+        {
+            AssertMethod(GetMethod(methodName));
+        }
+
+        #endregion Call
+
         #region Branch
 
         private static int BranchTrue(bool c, int a)

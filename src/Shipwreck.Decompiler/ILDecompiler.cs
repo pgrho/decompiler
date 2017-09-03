@@ -202,6 +202,11 @@ namespace Shipwreck.Decompiler
                 case 0x25: // dup
                     return new DuplicateInstruction();
 
+                case 0x28: // call
+                case 0x29: // calli
+                    i += 4;
+                    return new CallInstruction(context.Method.Module.ResolveMethod(*(int*)(bp + i - 3)), false);
+
                 case 0x2a: // ret
                     return new ReturnInstruction();
 
@@ -312,9 +317,17 @@ namespace Shipwreck.Decompiler
                 case 0x6e: // conv.u8
                     return new ConvertInstruction(typeof(ulong), false);
 
+                case 0x6f: // callvirt
+                    i += 4;
+                    return new CallInstruction(context.Method.Module.ResolveMethod(*(int*)(bp + i - 3)), true);
+
                 case 0x72: //ldstr {value}
                     i += 4;
                     return new LoadStringInstruction(context.Method.Module.ResolveString(*(int*)(bp + i - 3)));
+
+                case 0x73: // newobj
+                    i += 4;
+                    return new NewObjectInstruction((ConstructorInfo)context.Method.Module.ResolveMethod(*(int*)(bp + i - 3)));
 
                 case 0x76: // conv.r.un
                     return new ConvertInstruction(typeof(double), false, true);
@@ -428,6 +441,10 @@ namespace Shipwreck.Decompiler
                             i += 2;
                             return new LoadLocalInstruction(*(ushort*)(bp + i - 1));
 
+                        case 0x16: // constrained {type}
+                            i += 4;
+                            return null;
+
                         default:
                             throw new NotImplementedException($"Invalid IL '{b:x2} {b2:x2}'");
                     }
@@ -436,12 +453,8 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Arglist
                 // TODO: OpCodes.Box
                 // TODO: OpCodes.Break
-                // TODO: OpCodes.Call
-                // TODO: OpCodes.Calli
-                // TODO: OpCodes.Callvirt
                 // TODO: OpCodes.Castclass
                 // TODO: OpCodes.Ckfinite
-                // TODO: OpCodes.Constrained
                 // TODO: OpCodes.Cpblk
                 // TODO: OpCodes.Cpobj
                 // TODO: OpCodes.Endfilter
@@ -480,7 +493,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Localloc
                 // TODO: OpCodes.Mkrefany
                 // TODO: OpCodes.Newarr
-                // TODO: OpCodes.Newobj
                 // TODO: OpCodes.Or
                 // TODO: OpCodes.Pop
                 // TODO: OpCodes.Prefix1
