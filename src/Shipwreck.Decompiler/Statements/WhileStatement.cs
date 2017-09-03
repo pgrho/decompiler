@@ -5,14 +5,14 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class DoWhileStatement : Statement, IBreakableStatement
+    public sealed class WhileStatement : Statement, IBreakableStatement
     {
-        public DoWhileStatement()
+        public WhileStatement()
         {
             Condition = ExpressionBuilder.False;
         }
 
-        public DoWhileStatement(Expression condition)
+        public WhileStatement(Expression condition)
         {
             Condition = condition ?? ExpressionBuilder.False;
         }
@@ -33,13 +33,15 @@ namespace Shipwreck.Decompiler.Statements
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is DoWhileStatement dw
-                && Condition.IsEquivalentTo(dw.Condition)
-                && _Statements.IsEquivalentTo(dw._Statements));
+            || (other is WhileStatement ws
+                && Condition.IsEquivalentTo(ws.Condition)
+                && _Statements.IsEquivalentTo(ws._Statements));
 
         public override void WriteTo(IndentedTextWriter writer)
         {
-            writer.WriteLine("do");
+            writer.Write("while (");
+            Condition.WriteTo(writer);
+            writer.WriteLine(")");
             writer.WriteLine('{');
             if (ShouldSerializeStatements())
             {
@@ -50,9 +52,7 @@ namespace Shipwreck.Decompiler.Statements
                 }
                 writer.Indent--;
             }
-            writer.Write("} while (");
-            Condition.WriteTo(writer);
-            writer.WriteLine(");");
+            writer.WriteLine('}');
         }
 
         public override IEnumerable<StatementCollection> GetChildCollections()
@@ -75,38 +75,7 @@ namespace Shipwreck.Decompiler.Statements
             {
                 if (Condition is ConstantExpression c)
                 {
-                    // TODO: DoWhileStatement.Condition is constant
-                }
-                else
-                {
-                    if (_Statements?.LastOrDefault() is ExpressionStatement es
-                        && es.Expression is AssignmentExpression ae
-                        && Condition.TryReplace(ae.Left, ae, out var replaced))
-                    {
-                        _Statements.RemoveAt(_Statements.Count - 1);
-                        Condition = replaced;
-
-                        return true;
-                    }
-                }
-
-                var i = Collection.IndexOf(this);
-
-                if (i > 0
-                    && Collection[i - 1] is GoToStatement gs
-                    && _Statements?.LastOrDefault() is LabelTarget lb
-                    && gs.Target == lb)
-                {
-                    var sts = _Statements.ToArray();
-                    var w = new WhileStatement(Condition);
-                    _Statements.Clear();
-                    w.Statements.AddRange(sts);
-
-                    var ct = Collection;
-                    ct.RemoveAt(i);
-                    ct[i - 1] = w;
-
-                    return true;
+                    // TODO: WhileStatement.Condition is constant
                 }
 
                 bool iterReduced;
