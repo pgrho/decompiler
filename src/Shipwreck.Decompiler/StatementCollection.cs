@@ -82,6 +82,14 @@ namespace Shipwreck.Decompiler
             }
         }
 
+        public void InsertRange(int index, IEnumerable<Statement> values)
+        {
+            foreach (var v in values)
+            {
+                Insert(index++, v);
+            }
+        }
+
         public void RemoveRange(int index, int count)
         {
             if (Owner != null)

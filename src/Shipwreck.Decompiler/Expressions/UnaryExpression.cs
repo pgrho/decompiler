@@ -82,5 +82,27 @@ namespace Shipwreck.Decompiler.Expressions
             Operand.WriteTo(writer);
             writer.Write(')');
         }
+
+        internal override Expression ReduceCore()
+        {
+            switch (Operator)
+            {
+                case UnaryOperator.Negate:
+                case UnaryOperator.Not:
+                    if (Operand is UnaryExpression u && u.Operator == Operator)
+                    {
+                        return u.Operand;
+                    }
+                    break;
+            }
+
+            if (Operand.TryReduce(out var l))
+            {
+                return Type == null ? new UnaryExpression(l, Operator)
+                        : new UnaryExpression(l, Operator, Type);
+            }
+
+            return base.ReduceCore();
+        }
     }
 }

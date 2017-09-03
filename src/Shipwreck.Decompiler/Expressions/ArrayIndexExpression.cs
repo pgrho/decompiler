@@ -29,5 +29,15 @@ namespace Shipwreck.Decompiler.Expressions
             Index.WriteTo(writer);
             writer.Write(']');
         }
+
+        internal override Expression ReduceCore()
+        {
+            if (Array.TryReduce(out var a) | Index.TryReduce(out var i))
+            {
+                return new ArrayIndexExpression(a, i);
+            }
+
+            return base.ReduceCore();
+        }
     }
 }

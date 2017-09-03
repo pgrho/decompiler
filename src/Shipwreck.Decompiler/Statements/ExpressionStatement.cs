@@ -1,5 +1,4 @@
 using System.CodeDom.Compiler;
-using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -10,7 +9,7 @@ namespace Shipwreck.Decompiler.Statements
             Expression = expression;
         }
 
-        public Expression Expression { get; }
+        public Expression Expression { get; set; }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
@@ -20,6 +19,16 @@ namespace Shipwreck.Decompiler.Statements
         {
             Expression.WriteTo(writer);
             writer.WriteLine(';');
+        }
+
+        public override bool Reduce()
+        {
+            if (Expression.TryReduce(out var e))
+            {
+                Expression = e;
+                return true;
+            }
+            return base.Reduce();
         }
     }
 }

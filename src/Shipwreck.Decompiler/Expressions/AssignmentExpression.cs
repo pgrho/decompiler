@@ -10,25 +10,14 @@ namespace Shipwreck.Decompiler.Expressions
             left.ArgumentIsNotNull(nameof(left));
             right.ArgumentIsNotNull(nameof(right));
 
-            switch (@operator)
+            if (!@operator.CanAssign())
             {
-                case BinaryOperator.Default:
-                case BinaryOperator.Add:
-                case BinaryOperator.AddChecked:
-                case BinaryOperator.Subtract:
-                case BinaryOperator.SubtractChecked:
-                case BinaryOperator.Multiply:
-                case BinaryOperator.MultiplyChecked:
-                case BinaryOperator.Divide:
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported {nameof(@operator)}");
+                throw new ArgumentException($"Unsupported {nameof(@operator)}");
             }
 
             Left = left;
             Right = right;
-            Operator = Operator;
+            Operator = @operator;
         }
 
         public Expression Left { get; }
@@ -68,6 +57,23 @@ namespace Shipwreck.Decompiler.Expressions
             {
                 writer.Write(")");
             }
+        }
+
+        internal override Expression ReduceCore()
+        {
+            if (Operator == BinaryOperator.Default
+                && Right is BinaryExpression b
+                && b.Left.IsEquivalentTo(Left))
+            {
+                return Left.Assign(b.Right, b.Operator);
+            }
+
+            if (Left.TryReduce(out var l) | Right.TryReduce(out var r))
+            {
+                return new AssignmentExpression(l, r, Operator);
+            }
+
+            return this;
         }
     }
 }

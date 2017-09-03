@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,9 +93,29 @@ namespace Shipwreck.Decompiler.Statements
 
         public override bool Reduce()
         {
+            var thisReduced = Condition.TryReduce(out var nc);
+            if (thisReduced)
+            {
+                Condition = nc;
+            }
+
             if (Collection != null)
             {
-                var thisReduced = false;
+                if (Condition is ConstantExpression ce)
+                {
+                    var i = Collection.IndexOf(this);
+
+                    var block = ce.Value == null || Activator.CreateInstance(ce.GetType()).Equals(ce.Value) ? _FalsePart : _TruePart;
+
+                    Collection.RemoveAt(i);
+                    if (block.ShouldSerialize())
+                    {
+                        var items = block.ToArray();
+                        Collection.InsertRange(i, items);
+                    }
+                    return true;
+                }
+
                 bool iterReduced;
                 do
                 {
@@ -145,11 +166,9 @@ namespace Shipwreck.Decompiler.Statements
                     }
                     return true;
                 }
-
-                return thisReduced;
             }
 
-            return base.Reduce();
+            return thisReduced;
         }
 
         private bool ReduceLastGoto(StatementCollection block)

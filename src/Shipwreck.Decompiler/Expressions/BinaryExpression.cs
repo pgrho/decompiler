@@ -67,5 +67,15 @@ namespace Shipwreck.Decompiler.Expressions
                 writer.Write(')');
             }
         }
+
+        internal override Expression ReduceCore()
+        {
+            if (Left.TryReduce(out var l) | Right.TryReduce(out var r))
+            {
+                return new BinaryExpression(l, r, Operator);
+            }
+
+            return base.ReduceCore();
+        }
     }
 }
