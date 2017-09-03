@@ -30,19 +30,34 @@ namespace Shipwreck.Decompiler.Statements
             if (Collection != null)
             {
                 var i = Collection.IndexOf(this);
+                var j = Collection.IndexOf(Target);
 
-                if (Collection.ElementAtOrDefault(i + 1) == Target)
+                if (j >= 0)
                 {
-                    if (Target.ReferencedFrom().Count() < 2)
+                    if (j < i)
                     {
-                        Collection.RemoveRange(i, 2);
-                    }
-                    else
-                    {
-                        Collection.Remove(this);
-                    }
+                        var items = Collection.Skip(j + 1).Take(i - j - 1).ToArray();
+                        Collection.RemoveRange(j + 1, i - j - 1);
 
-                    return true;
+                        var w = new WhileStatement();
+                        w.Statements.AddRange(items);
+
+                        Collection[j + 1] = w;
+                        return true;
+                    }
+                    else if (j == i + 1)
+                    {
+                        if (Target.ReferencedFrom().Count() < 2)
+                        {
+                            Collection.RemoveRange(i, 2);
+                        }
+                        else
+                        {
+                            Collection.Remove(this);
+                        }
+
+                        return true;
+                    }
                 }
             }
 

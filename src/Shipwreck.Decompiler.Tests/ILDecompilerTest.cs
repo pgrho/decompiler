@@ -475,10 +475,36 @@ namespace Shipwreck.Decompiler
             return v;
         }
 
+        private static void WhileInfinite(int a)
+        {
+            var c = a;
+            var v = 0;
+            while (true)
+            {
+                v += c;
+
+                c--;
+            }
+        }
+
         [Fact]
         public void WhileTest()
         {
             var ret = ILDecompiler.Decompile(GetMethod(nameof(While)));
+
+            // TODO: Test
+            foreach (var s in ret)
+            {
+                Output?.WriteLine(s.ToString());
+            }
+        }
+
+        [Fact]
+        public void WhileInfiniteTest()
+        {
+            // TODO: remove unused variable assignment
+            // TODO: remove goto last in infinite loop
+            var ret = ILDecompiler.Decompile(GetMethod(nameof(WhileInfinite)));
 
             // TODO: Test
             foreach (var s in ret)

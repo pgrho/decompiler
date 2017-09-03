@@ -9,12 +9,12 @@ namespace Shipwreck.Decompiler.Statements
     {
         public WhileStatement()
         {
-            Condition = ExpressionBuilder.False;
+            Condition = ExpressionBuilder.True;
         }
 
         public WhileStatement(Expression condition)
         {
-            Condition = condition ?? ExpressionBuilder.False;
+            Condition = condition ?? ExpressionBuilder.True;
         }
 
         public Expression Condition { get; set; }

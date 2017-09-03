@@ -78,7 +78,8 @@ namespace Shipwreck.Decompiler
             {
                 if (s is TemporalGoToStatement g)
                 {
-                    ctx.RootStatements[ctx.RootStatements.IndexOf(g)] = ReplaceGoToStatement(ctx, g);
+                    var gg = ReplaceGoToStatement(ctx, g);
+                    ctx.RootStatements[ctx.RootStatements.IndexOf(g)] = gg;
                 }
                 else if (s is IfBlock ib)
                 {
@@ -86,7 +87,8 @@ namespace Shipwreck.Decompiler
                     {
                         if (ib.TruePart[i] is TemporalGoToStatement cg)
                         {
-                            ib.TruePart[i] = ReplaceGoToStatement(ctx, cg);
+                            var gg = ReplaceGoToStatement(ctx, cg);
+                            ib.TruePart[i] = gg;
                         }
                     }
                 }
