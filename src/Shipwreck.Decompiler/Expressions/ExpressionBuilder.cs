@@ -5,6 +5,28 @@ namespace Shipwreck.Decompiler.Expressions
 {
     public static class ExpressionBuilder
     {
+        #region Constant
+
+        #region True
+
+        private static ConstantExpression _True;
+
+        internal static ConstantExpression True
+            => _True ?? (_True = new ConstantExpression(true));
+
+        #endregion True
+
+        #region False
+
+        private static ConstantExpression _False;
+
+        internal static ConstantExpression False
+            => _False ?? (_False = new ConstantExpression(false));
+
+        #endregion False
+
+        #endregion Constant
+
         public static ConstantExpression ToExpression(this object value)
             => new ConstantExpression(value);
 

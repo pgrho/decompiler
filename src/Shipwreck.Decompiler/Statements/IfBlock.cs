@@ -1,18 +1,23 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
+using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
     public sealed class IfBlock : Statement
     {
-        public IfBlock(Expression condition)
+        public IfBlock()
         {
-            condition.ArgumentIsNotNull(nameof(condition));
-
-            Condition = condition;
+            Condition = ExpressionBuilder.False;
         }
 
-        public Expression Condition { get; }
+        public IfBlock(Expression condition)
+        {
+            Condition = condition ?? ExpressionBuilder.False;
+        }
+
+        public Expression Condition { get; set; }
 
         #region TruePart
 
@@ -20,6 +25,9 @@ namespace Shipwreck.Decompiler.Statements
 
         public StatementCollection TruePart
             => _TruePart ?? (_TruePart = new StatementCollection(this));
+
+        public bool ShouldSerializeTruePart()
+            => _TruePart.ShouldSerialize();
 
         #endregion TruePart
 
@@ -29,6 +37,9 @@ namespace Shipwreck.Decompiler.Statements
 
         public StatementCollection FalsePart
             => _FalsePart ?? (_FalsePart = new StatementCollection(this));
+
+        public bool ShouldSerializeFalsePart()
+            => _FalsePart.ShouldSerialize();
 
         #endregion FalsePart
 
@@ -46,7 +57,7 @@ namespace Shipwreck.Decompiler.Statements
             writer.WriteLine(')');
 
             writer.WriteLine('{');
-            if (_TruePart?.Count > 0)
+            if (ShouldSerializeTruePart())
             {
                 writer.Indent++;
                 foreach (var s in _TruePart)
@@ -57,7 +68,7 @@ namespace Shipwreck.Decompiler.Statements
             }
             writer.WriteLine('}');
 
-            if (_FalsePart?.Count > 0)
+            if (ShouldSerializeFalsePart())
             {
                 if (_FalsePart.Count == 1 && _FalsePart[0] is IfBlock cib)
                 {
@@ -83,21 +94,25 @@ namespace Shipwreck.Decompiler.Statements
         {
             if (Collection != null)
             {
-                var reduced1 = false;
-                bool reduced;
+                var thisReduced = false;
+                bool iterReduced;
                 do
                 {
-                    reduced = false;
+                    iterReduced = false;
                     if (_TruePart != null)
                     {
                         foreach (var s in _TruePart)
                         {
                             if (s.Reduce())
                             {
-                                reduced1 = reduced = true;
+                                thisReduced = iterReduced = true;
                                 break;
                             }
                         }
+
+                        var r = ReduceLastGoto(_TruePart);
+                        thisReduced |= r;
+                        iterReduced |= r;
                     }
                     if (_FalsePart != null)
                     {
@@ -105,32 +120,80 @@ namespace Shipwreck.Decompiler.Statements
                         {
                             if (s.Reduce())
                             {
-                                reduced1 = reduced = true;
+                                thisReduced = iterReduced = true;
                                 break;
                             }
                         }
+                        var r = ReduceLastGoto(_FalsePart);
+                        thisReduced |= r;
+                        iterReduced |= r;
                     }
-                } while (reduced);
+                } while (iterReduced);
 
-                if (!(_TruePart?.Count > 0) && !(_FalsePart?.Count > 0))
+                if (!ShouldSerializeTruePart())
                 {
-                    Collection.Remove(this);
+                    if (ShouldSerializeFalsePart())
+                    {
+                        var items = FalsePart.ToArray();
+                        FalsePart.Clear();
+                        TruePart.AddRange(items);
+                        Condition = Condition.Negate();
+                    }
+                    else
+                    {
+                        Collection.Remove(this);
+                    }
                     return true;
                 }
 
-                return reduced1;
+                return thisReduced;
             }
 
             return base.Reduce();
         }
 
+        private bool ReduceLastGoto(StatementCollection block)
+        {
+            var gt = block.LastOrDefault() as GoToStatement;
+
+            if (gt != null)
+            {
+                var j = Collection.IndexOf(gt.Target);
+
+                if (j >= 0)
+                {
+                    var i = Collection.IndexOf(this);
+
+                    if (i + 1 == j)
+                    {
+                        block.RemoveAt(block.Count - 1);
+
+                        return true;
+                    }
+                    else if (i < j)
+                    {
+                        var mid = Collection.Skip(i + 1).Take(j - i - 1);
+                        if (!mid.OfType<LabelTarget>().Any())
+                        {
+                            var m = mid.ToArray();
+                            Collection.RemoveRange(i + 1, j - i - 1);
+                            (block == _TruePart ? FalsePart : TruePart).AddRange(m);
+
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         public override IEnumerable<StatementCollection> GetChildCollections()
         {
-            if (_TruePart?.Count > 0)
+            if (ShouldSerializeTruePart())
             {
                 yield return _TruePart;
             }
-            if (_FalsePart?.Count > 0)
+            if (ShouldSerializeFalsePart())
             {
                 yield return _FalsePart;
             }
