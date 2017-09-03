@@ -77,14 +77,14 @@ namespace Shipwreck.Decompiler.Statements
                 {
                     // TODO: DoWhileStatement.Condition is constant
                 }
-                else if (Condition is VariableExpression v)
+                else
                 {
                     if (_Statements?.LastOrDefault() is ExpressionStatement es
                         && es.Expression is AssignmentExpression ae
-                        && ae.Left.IsEquivalentTo(v))
+                        && Condition.TryReplace(ae.Left, ae, out var replaced))
                     {
                         _Statements.RemoveAt(_Statements.Count - 1);
-                        Condition = ae;
+                        Condition = replaced;
 
                         return true;
                     }

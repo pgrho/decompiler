@@ -115,6 +115,20 @@ namespace Shipwreck.Decompiler.Statements
                     }
                     return true;
                 }
+                else
+                {
+                    var i = Collection.IndexOf(this);
+                    if (i > 0
+                        && Collection[i - 1] is ExpressionStatement es
+                        && es.Expression is AssignmentExpression ae
+                        && Condition.TryReplace(ae.Left, ae, out var replaced))
+                    {
+                        Collection.RemoveAt(i - 1);
+                        Condition = replaced;
+
+                        return true;
+                    }
+                }
 
                 bool iterReduced;
                 do

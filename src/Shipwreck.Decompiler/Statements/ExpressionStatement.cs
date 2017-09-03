@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -28,6 +29,22 @@ namespace Shipwreck.Decompiler.Statements
                 Expression = e;
                 return true;
             }
+
+            if (Collection != null)
+            {
+                var i = Collection.IndexOf(this);
+                if (i > 0
+                    && Collection[i - 1] is ExpressionStatement es
+                    && es.Expression is AssignmentExpression ae
+                    && Expression.TryReplace(ae.Left, ae, out var replaced))
+                {
+                    Collection.RemoveAt(i - 1);
+                    Expression = replaced;
+
+                    return true;
+                }
+            }
+
             return base.Reduce();
         }
     }
