@@ -75,5 +75,17 @@ namespace Shipwreck.Decompiler.Expressions
 
             return this;
         }
+        internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
+        {
+            if (IsEquivalentTo(currentExpression))
+            {
+                return newExpression;
+            }
+
+            var l = Left.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
+            var r = replaceAll || l == Left ? Right.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional) : Right;
+
+            return l == Left && r == Right ? this : new AssignmentExpression(l, r, Operator);
+        }
     }
 }

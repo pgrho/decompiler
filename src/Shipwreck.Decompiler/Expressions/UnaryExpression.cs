@@ -98,11 +98,33 @@ namespace Shipwreck.Decompiler.Expressions
 
             if (Operand.TryReduce(out var l))
             {
-                return Type == null ? new UnaryExpression(l, Operator)
-                        : new UnaryExpression(l, Operator, Type);
+                return Create(l, Operator, Type);
             }
 
             return base.ReduceCore();
+        }
+
+        internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
+        {
+            if (IsEquivalentTo(currentExpression))
+            {
+                return newExpression;
+            }
+
+            var op = Operand.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
+
+            return op == Operand ? this : Create(op, Operator, Type);
+        }
+
+        private static UnaryExpression Create(Expression operand, UnaryOperator @operator, Type type)
+        {
+            switch (@operator)
+            {
+                case UnaryOperator.Negate:
+                case UnaryOperator.Not:
+                    return new UnaryExpression(operand, @operator);
+            }
+            return new UnaryExpression(operand, @operator, type);
         }
     }
 }

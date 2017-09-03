@@ -79,7 +79,6 @@ namespace Shipwreck.Decompiler.Statements
                 }
                 else if (Condition is VariableExpression v)
                 {
-                    // TODO: Add Expression.TryReplace(out Expression)
                     if (_Statements?.LastOrDefault() is ExpressionStatement es
                         && es.Expression is AssignmentExpression ae
                         && ae.Left.IsEquivalentTo(v))

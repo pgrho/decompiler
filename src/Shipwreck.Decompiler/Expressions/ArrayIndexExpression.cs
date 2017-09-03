@@ -39,5 +39,18 @@ namespace Shipwreck.Decompiler.Expressions
 
             return base.ReduceCore();
         }
+
+        internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
+        {
+            if (IsEquivalentTo(currentExpression))
+            {
+                return newExpression;
+            }
+
+            var a = Array.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
+            var i = replaceAll || a == Array ? Index.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional) : Index;
+
+            return a == Array && i == Index ? this : new ArrayIndexExpression(a, i);
+        }
     }
 }

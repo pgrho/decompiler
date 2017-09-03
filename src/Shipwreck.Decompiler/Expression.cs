@@ -15,6 +15,8 @@ namespace Shipwreck.Decompiler
             }
         }
 
+        #region Reduce
+
         public Expression Reduce()
         {
             var r = ReduceCore();
@@ -29,5 +31,17 @@ namespace Shipwreck.Decompiler
 
         internal virtual Expression ReduceCore()
             => this;
+
+        #endregion Reduce
+
+        #region Replace
+
+        public bool TryReplace(Expression currentExpression, Expression newExpression, out Expression result)
+            => (result = ReplaceCore(currentExpression, newExpression, false, false)) != this;
+
+        internal virtual Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
+            => IsEquivalentTo(currentExpression) ? newExpression : this;
+
+        #endregion Replace
     }
 }
