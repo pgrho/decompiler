@@ -23,7 +23,7 @@ namespace Shipwreck.Decompiler
                 for (var i = 0; i < bytes.Length; i++)
                 {
                     var offset = i;
-                    var il = GetInstruction(bp, ref i);
+                    var il = GetInstruction(ctx, bp, ref i);
 
                     if (il != null)
                     {
@@ -130,7 +130,7 @@ namespace Shipwreck.Decompiler
             return new GoToStatement(lb);
         }
 
-        private unsafe static Instruction GetInstruction(byte* bp, ref int i)
+        private unsafe static Instruction GetInstruction(DecompilationContext context, byte* bp, ref int i)
         {
             var b = bp[i];
             switch (b)
@@ -262,6 +262,10 @@ namespace Shipwreck.Decompiler
 
                 case 0x6e: // conv.u8
                     return new ConvertInstruction(typeof(ulong), false);
+
+                case 0x72: //ldstr {value}
+                    i += 4;
+                    return new LoadStringInstruction(context.Method.Module.ResolveString(*(int*)(bp + i - 3)));
 
                 case 0x76: // conv.r.un
                     return new ConvertInstruction(typeof(double), false, true);
@@ -440,7 +444,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Ldobj
                 // TODO: OpCodes.Ldsfld
                 // TODO: OpCodes.Ldsflda
-                // TODO: OpCodes.Ldstr
                 // TODO: OpCodes.Ldtoken
                 // TODO: OpCodes.Ldvirtftn
                 // TODO: OpCodes.Leave

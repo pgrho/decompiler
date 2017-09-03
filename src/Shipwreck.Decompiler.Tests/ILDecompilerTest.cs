@@ -27,22 +27,6 @@ namespace Shipwreck.Decompiler
 
         #region Constant
 
-        #region LoadNullTest
-
-        private static object LoadNull() => null;
-
-        [Theory]
-        [InlineData(nameof(LoadNull))]
-        public void LoadNullTest(string methodName)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(((object)null).ToExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
-        #endregion LoadNullTest
-
         #region LoadInt32Test
 
         private static int LoadInt32_M1() => -1;
@@ -69,76 +53,43 @@ namespace Shipwreck.Decompiler
 
         private static int LoadInt32_0x12345678() => 0x12345678;
 
-        [Theory]
-        [InlineData(nameof(LoadInt32_M1), -1)]
-        [InlineData(nameof(LoadInt32_0), 0)]
-        [InlineData(nameof(LoadInt32_1), 1)]
-        [InlineData(nameof(LoadInt32_2), 2)]
-        [InlineData(nameof(LoadInt32_3), 3)]
-        [InlineData(nameof(LoadInt32_4), 4)]
-        [InlineData(nameof(LoadInt32_5), 5)]
-        [InlineData(nameof(LoadInt32_6), 6)]
-        [InlineData(nameof(LoadInt32_7), 7)]
-        [InlineData(nameof(LoadInt32_8), 8)]
-        [InlineData(nameof(LoadInt32_127), 127)]
-        [InlineData(nameof(LoadInt32_0x12345678), 0x12345678)]
-        public void LoadInt32Test(string methodName, int value)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(value.ToExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
         #endregion LoadInt32Test
 
-        #region LoadInt64Test
+        private static object LoadNull() => null;
 
         private static long LoadInt64() => 0x123456789abcdef0;
 
-        [Theory]
-        [InlineData(nameof(LoadInt64), 0x123456789abcdef0)]
-        public void LoadInt64Test(string methodName, long value)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(value.ToExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
-        #endregion LoadInt64Test
-
-        #region LoadSingleTest
-
         private static float LoadSingle() => float.MaxValue;
-
-        [Theory]
-        [InlineData(nameof(LoadSingle), float.MaxValue)]
-        public void LoadSingleTest(string methodName, float value)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(value.ToExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
-        #endregion LoadSingleTest
-
-        #region LoadDoubleTest
 
         private static double LoadDouble() => float.MaxValue * float.MaxValue;
 
+        private static string LoadString() => "hoge";
+
         [Theory]
-        [InlineData(nameof(LoadDouble), float.MaxValue * float.MaxValue)]
-        public void LoadDoubleTest(string methodName, double value)
+        [InlineData(nameof(LoadInt32_M1))]
+        [InlineData(nameof(LoadInt32_0))]
+        [InlineData(nameof(LoadInt32_1))]
+        [InlineData(nameof(LoadInt32_2))]
+        [InlineData(nameof(LoadInt32_3))]
+        [InlineData(nameof(LoadInt32_4))]
+        [InlineData(nameof(LoadInt32_5))]
+        [InlineData(nameof(LoadInt32_6))]
+        [InlineData(nameof(LoadInt32_7))]
+        [InlineData(nameof(LoadInt32_8))]
+        [InlineData(nameof(LoadInt32_127))]
+        [InlineData(nameof(LoadInt32_0x12345678))]
+        [InlineData(nameof(LoadInt64))]
+        [InlineData(nameof(LoadNull))]
+        [InlineData(nameof(LoadSingle))]
+        [InlineData(nameof(LoadDouble))]
+        [InlineData(nameof(LoadString))]
+        public void LoadStringTest(string methodName)
         {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+            var m = GetMethod(methodName);
+            var v = m.Invoke(null, null);
 
-            Assert.Equal(1, ret.Count);
-            Assert.True(value.ToExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
+            AssertMethod(m, v.ToExpression().ToReturnStatement());
         }
-
-        #endregion LoadDoubleTest
 
         #endregion Constant
 

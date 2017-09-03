@@ -2,14 +2,14 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class LoadInt64Instruction : LoadConstantInstruction
+    public sealed class LoadStringInstruction : LoadConstantInstruction
     {
-        public LoadInt64Instruction(long value)
+        public LoadStringInstruction(string value)
         {
             Value = value;
         }
 
-        public long Value { get; }
+        public string Value { get; }
 
         internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
@@ -19,9 +19,9 @@ namespace Shipwreck.Decompiler.Instructions
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            && (other is LoadInt64Instruction li && Value == li.Value);
+            && (other is LoadStringInstruction li && Value == li.Value);
 
         public override string ToString()
-            => $"ldc.i8 {Value:d}";
+            => $"ldstr {Value:r}";
     }
 }

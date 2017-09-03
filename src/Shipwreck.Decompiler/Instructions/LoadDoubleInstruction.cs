@@ -18,7 +18,8 @@ namespace Shipwreck.Decompiler.Instructions
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is LoadDoubleInstruction li && Value == li.Value;
+            => this == (object)other
+            && (other is LoadDoubleInstruction li && Value == li.Value);
 
         public override string ToString()
             => $"ldc.r8 {Value:r}";
