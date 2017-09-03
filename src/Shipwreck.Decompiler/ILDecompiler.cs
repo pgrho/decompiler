@@ -210,12 +210,6 @@ namespace Shipwreck.Decompiler
                 case 0x2d: // br.true.s {num}
                     return new BranchInstruction(i + 2 + (sbyte)bp[++i], b == 0x2b ? (bool?)null : b != 0x2c);
 
-                case 0x38: // br {num}
-                case 0x39: // br.false {num}
-                case 0x3a: // br.true {num}
-                    i += 4;
-                    return new BranchInstruction(i + 1 + *(int*)(bp + i - 3), b == 0x38 ? (bool?)null : b != 0x39);
-
                 case 0x2e: // beq
                 case 0x2f: // bge
                 case 0x30: // bgt
@@ -238,6 +232,12 @@ namespace Shipwreck.Decompiler
 
                         return new BranchBinaryInstruction(bp[++i], op, u);
                     }
+
+                case 0x38: // br {num}
+                case 0x39: // br.false {num}
+                case 0x3a: // br.true {num}
+                    i += 4;
+                    return new BranchInstruction(i + 1 + *(int*)(bp + i - 3), b == 0x38 ? (bool?)null : b != 0x39);
 
                 case 0x3b: // beq
                 case 0x3c: // bge
