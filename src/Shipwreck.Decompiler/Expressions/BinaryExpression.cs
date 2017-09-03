@@ -19,6 +19,12 @@ namespace Shipwreck.Decompiler.Expressions
                 case BinaryOperator.Multiply:
                 case BinaryOperator.MultiplyChecked:
                 case BinaryOperator.Divide:
+                case BinaryOperator.Equal:
+                case BinaryOperator.NotEqual:
+                case BinaryOperator.LessThan:
+                case BinaryOperator.LessThanOrEqual:
+                case BinaryOperator.GreaterThan:
+                case BinaryOperator.GreaterThanOrEqual:
                     break;
 
                 default:

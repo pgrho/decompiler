@@ -45,6 +45,24 @@ namespace Shipwreck.Decompiler.Expressions
                 case BinaryOperator.Divide:
                     return "/";
 
+                case BinaryOperator.Equal:
+                    return "==";
+
+                case BinaryOperator.NotEqual:
+                    return "!=";
+
+                case BinaryOperator.LessThan:
+                    return "<";
+
+                case BinaryOperator.LessThanOrEqual:
+                    return "<=";
+
+                case BinaryOperator.GreaterThan:
+                    return ">";
+
+                case BinaryOperator.GreaterThanOrEqual:
+                    return ">=";
+
                 default:
                     throw new ArgumentException();
             }

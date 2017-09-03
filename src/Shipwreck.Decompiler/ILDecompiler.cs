@@ -259,6 +259,17 @@ namespace Shipwreck.Decompiler
                     var b2 = bp[++i];
                     switch (b2)
                     {
+                        case 0x01: // ceq
+                            return new BinaryInstruction(BinaryOperator.Equal);
+
+                        case 0x02: // cgt
+                        case 0x03: // cgt.un
+                            return new BinaryInstruction(BinaryOperator.GreaterThan, b2 == 0x03);
+
+                        case 0x04: // clt
+                        case 0x05: // clt.un
+                            return new BinaryInstruction(BinaryOperator.LessThan, b2 == 0x05);
+
                         case 0x09: //ldarg {index}
                             i += 2;
                             return new LoadArgumentInstruction(*(ushort*)(bp + i - 1));
@@ -299,12 +310,7 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Calli
                 // TODO: OpCodes.Callvirt
                 // TODO: OpCodes.Castclass
-                // TODO: OpCodes.Ceq
-                // TODO: OpCodes.Cgt
-                // TODO: OpCodes.Cgt_Un
                 // TODO: OpCodes.Ckfinite
-                // TODO: OpCodes.Clt
-                // TODO: OpCodes.Clt_Un
                 // TODO: OpCodes.Constrained
                 // TODO: OpCodes.Conv_I
                 // TODO: OpCodes.Conv_I1
