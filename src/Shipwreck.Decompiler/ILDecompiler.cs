@@ -216,6 +216,55 @@ namespace Shipwreck.Decompiler
                     i += 4;
                     return new BranchInstruction(i + 1 + *(int*)(bp + i - 3), b == 0x38 ? (bool?)null : b != 0x39);
 
+                case 0x2e: // beq
+                case 0x2f: // bge
+                case 0x30: // bgt
+                case 0x31: // ble
+                case 0x32: // blt
+                case 0x33: // bne.un
+                case 0x34: // bge.un
+                case 0x35: // bgt.un
+                case 0x36: // ble.un
+                case 0x37: // blt.un
+                    {
+                        var op = b == 0x2e ? BinaryOperator.Equal
+                                : b == 0x33 ? BinaryOperator.NotEqual
+                                : b == 0x2f || b == 0x34 ? BinaryOperator.GreaterThanOrEqual
+                                : b == 0x30 || b == 0x35 ? BinaryOperator.GreaterThan
+                                : b == 0x31 || b == 0x36 ? BinaryOperator.LessThanOrEqual
+                                : BinaryOperator.LessThan;
+
+                        var u = b >= 0x33;
+
+                        return new BranchBinaryInstruction(bp[++i], op, u);
+                    }
+
+                case 0x3b: // beq
+                case 0x3c: // bge
+                case 0x3d: // bgt
+                case 0x3e: // ble
+                case 0x3f: // blt
+                case 0x40: // bne.un
+                case 0x41: // bge.un
+                case 0x42: // bgt.un
+                case 0x43: // ble.un
+                case 0x44: // blt.un
+                    {
+                        i += 4;
+                        var t = i + 1 + *(int*)(bp + i - 3);
+
+                        var op = b == 0x3b ? BinaryOperator.Equal
+                                : b == 0x40 ? BinaryOperator.NotEqual
+                                : b == 0x3c || b == 0x41 ? BinaryOperator.GreaterThanOrEqual
+                                : b == 0x3d || b == 0x42 ? BinaryOperator.GreaterThan
+                                : b == 0x3e || b == 0x43 ? BinaryOperator.LessThanOrEqual
+                                : BinaryOperator.LessThan;
+
+                        var u = b >= 0x40;
+
+                        return new BranchBinaryInstruction(t, op, u);
+                    }
+
                 case 0x58: // add
                 case 0xd6: // add.ovf
                 case 0xd7: // add.ovf.un
@@ -385,26 +434,6 @@ namespace Shipwreck.Decompiler
 
                 // TODO: OpCodes.And
                 // TODO: OpCodes.Arglist
-                // TODO: OpCodes.Beq
-                // TODO: OpCodes.Beq_S
-                // TODO: OpCodes.Bge
-                // TODO: OpCodes.Bge_S
-                // TODO: OpCodes.Bge_Un
-                // TODO: OpCodes.Bge_Un_S
-                // TODO: OpCodes.Bgt
-                // TODO: OpCodes.Bgt_S
-                // TODO: OpCodes.Bgt_Un
-                // TODO: OpCodes.Bgt_Un_S
-                // TODO: OpCodes.Ble
-                // TODO: OpCodes.Ble_S
-                // TODO: OpCodes.Ble_Un
-                // TODO: OpCodes.Ble_Un_S
-                // TODO: OpCodes.Blt
-                // TODO: OpCodes.Blt_S
-                // TODO: OpCodes.Blt_Un
-                // TODO: OpCodes.Blt_Un_S
-                // TODO: OpCodes.Bne_Un
-                // TODO: OpCodes.Bne_Un_S
                 // TODO: OpCodes.Box
                 // TODO: OpCodes.Break
                 // TODO: OpCodes.Call
@@ -467,7 +496,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Refanyval
                 // TODO: OpCodes.Rem
                 // TODO: OpCodes.Rem_Un
-                // TODO: OpCodes.Ret
                 // TODO: OpCodes.Rethrow
                 // TODO: OpCodes.Shl
                 // TODO: OpCodes.Shr

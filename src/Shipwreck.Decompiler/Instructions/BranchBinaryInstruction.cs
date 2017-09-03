@@ -1,47 +1,54 @@
-using System;
+﻿using System;
 using System.Reflection.Emit;
 using System.Text;
 using Shipwreck.Decompiler.Expressions;
+using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class BinaryInstruction : BinaryInstructionBase
+    public sealed class BranchBinaryInstruction : BinaryInstructionBase
     {
-        public BinaryInstruction(BinaryOperator @operator, bool unsigned = false)
+        public BranchBinaryInstruction(int target, BinaryOperator @operator, bool unsigned = false)
         {
+            Target = target;
             Operator = @operator;
             IsUnsigned = unsigned;
         }
+
+        public int Target { get; }
 
         public BinaryOperator Operator { get; }
 
         public bool IsUnsigned { get; }
 
         public override FlowControl FlowControl
-            => FlowControl.Next;
+            => FlowControl.Branch;
 
         public override int PushCount
-            => 1;
+            => 0;
 
         internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
-            if (TryCreateOperands(context, ref index, out var l, out var r))
-            {
-                expression = l.MakeBinary(r, Operator);
-                return true;
-            }
             expression = null;
             return false;
         }
 
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
+            if (TryCreateOperands(context, ref startIndex, out var l, out var r))
+            {
+                var ib = new IfBlock(l.MakeBinary(r, Operator));
+                ib.TruePart.Add(new TemporalGoToStatement(Target));
+                statement = ib;
+                return true;
+            }
             statement = null;
             return false;
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is BinaryInstruction bi
+            => other is BranchBinaryInstruction bi
+                && Target == bi.Target
                 && Operator == bi.Operator
                 && IsUnsigned == bi.IsUnsigned;
 
@@ -51,32 +58,28 @@ namespace Shipwreck.Decompiler.Instructions
 
             switch (Operator)
             {
-                case BinaryOperator.Add:
-                    sb.Append("add");
+                case BinaryOperator.Equal:
+                    sb.Append("beq");
                     break;
 
-                case BinaryOperator.AddChecked:
-                    sb.Append("add.ovf");
+                case BinaryOperator.NotEqual:
+                    sb.Append("bne");
                     break;
 
-                case BinaryOperator.Subtract:
-                    sb.Append("sub");
+                case BinaryOperator.GreaterThan:
+                    sb.Append("bgt");
                     break;
 
-                case BinaryOperator.SubtractChecked:
-                    sb.Append("sub.ovf");
+                case BinaryOperator.GreaterThanOrEqual:
+                    sb.Append("bge");
                     break;
 
-                case BinaryOperator.Multiply:
-                    sb.Append("mul");
+                case BinaryOperator.LessThan:
+                    sb.Append("blt");
                     break;
 
-                case BinaryOperator.MultiplyChecked:
-                    sb.Append("mul.ovf");
-                    break;
-
-                case BinaryOperator.Divide:
-                    sb.Append("div");
+                case BinaryOperator.LessThanOrEqual:
+                    sb.Append("ble");
                     break;
 
                 default:
@@ -87,6 +90,9 @@ namespace Shipwreck.Decompiler.Instructions
             {
                 sb.Append(".un");
             }
+
+            sb.Append(" L_");
+            sb.Append(Target.ToString("x4"));
 
             return sb.ToString();
         }
