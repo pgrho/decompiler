@@ -23,7 +23,7 @@ namespace Shipwreck.Decompiler.Statements
         public override void WriteTo(IndentedTextWriter writer)
         {
             writer.Write(Name);
-            writer.Write(':');
+            writer.WriteLine(':');
         }
 
         public override bool Reduce()

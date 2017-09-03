@@ -119,6 +119,11 @@ namespace Shipwreck.Decompiler.Statements
                 bool iterReduced;
                 do
                 {
+                    if (Collection == null)
+                    {
+                        return true;
+                    }
+
                     iterReduced = false;
                     if (_TruePart != null)
                     {
@@ -173,6 +178,10 @@ namespace Shipwreck.Decompiler.Statements
 
         private bool ReduceLastGoto(StatementCollection block)
         {
+            if (Collection == null)
+            {
+                return false;
+            }
             var gt = block.LastOrDefault() as GoToStatement;
 
             if (gt != null)
@@ -183,13 +192,41 @@ namespace Shipwreck.Decompiler.Statements
                 {
                     var i = Collection.IndexOf(this);
 
-                    if (i + 1 == j)
+                    if (j < i)
+                    {
+                        if (block.Count == 1)
+                        {
+                            Expression c;
+                            if (block == _TruePart && !ShouldSerializeFalsePart())
+                            {
+                                c = Condition;
+                            }
+                            else if (block == _FalsePart && !ShouldSerializeTruePart())
+                            {
+                                c = Condition.Negate().Reduce();
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
+                            var cls = Collection;
+                            var sts = cls.Skip(j + 1).Take(i - j - 1).ToArray();
+                            cls.RemoveRange(j + 1, sts.Length + 1);
+                            var dw = new DoWhileStatement(c);
+                            dw.Statements.AddRange(sts);
+
+                            cls.Insert(j + 1, dw);
+                            return true;
+                        }
+                    }
+                    else if (i + 1 == j)
                     {
                         block.RemoveAt(block.Count - 1);
 
                         return true;
                     }
-                    else if (i < j)
+                    else
                     {
                         var mid = Collection.Skip(i + 1).Take(j - i - 1);
                         if (!mid.OfType<LabelTarget>().Any())

@@ -27,7 +27,7 @@ namespace Shipwreck.Decompiler.Statements
         }
 
         public static IEnumerable<Statement> TreeStatements(this IStatementNode statement)
-            => statement.Collection?.Owner?.SelfAndDescendants()
+            => statement.Collection?.Owner?.TreeStatements()
                 ?? statement.Collection?.Descendants()
                 ?? statement.SelfAndDescendants();
 
