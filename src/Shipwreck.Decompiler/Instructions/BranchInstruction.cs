@@ -1,60 +1,26 @@
-using System.Linq;
-using System.Reflection.Emit;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class BranchInstruction : Instruction
+    public sealed class BranchInstruction : BranchInstructionBase
     {
-        public BranchInstruction(int offset, bool? branchWhen = null)
+        public BranchInstruction(int target, bool? branchWhen = null)
+            : base(target)
         {
-            Offset = offset;
             BranchWhen = branchWhen;
         }
 
         public bool? BranchWhen { get; }
 
-        /// <summary>
-        /// Gets the absolute bytes offset from the beginning of the IL where instruction will transfer the control to.
-        /// </summary>
-        public int Offset { get; }
-
-        public override FlowControl FlowControl
-            => FlowControl.Branch;
-
         public override int PopCount
             => BranchWhen != null ? 1 : 0;
-
-        public override int PushCount
-            => 0;
-
-        internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
-        {
-            expression = null;
-            return false;
-        }
 
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
             if (BranchWhen == null)
             {
-                var to = context.GetTo(this).FirstOrDefault();
-                var toi = context.RootStatements.IndexOf(to);
-
-                // Remove br if the target is next to this instance.
-                if (toi == startIndex + 1)
-                {
-                    statement = to as Statement;
-                    if (statement != null)
-                    {
-                        lastIndex = toi;
-                        return true;
-                    }
-                }
-
-                statement = new TemporalGoToStatement(Offset);
-                return true;
+                return base.TryCreateStatement(context, ref startIndex, ref lastIndex, out statement);
             }
             else
             {
@@ -73,36 +39,35 @@ namespace Shipwreck.Decompiler.Instructions
                         }
 
                         var ib = new IfBlock(e);
-                        ib.TruePart.Add(new TemporalGoToStatement(Offset));
+                        ib.TruePart.Add(new TemporalGoToStatement(Target));
                         statement = ib;
 
                         return true;
                     }
                 }
+                statement = null;
+                return false;
             }
-
-            statement = null;
-            return false;
         }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is BranchInstruction bs && BranchWhen == bs.BranchWhen && Offset == bs.Offset);
+            || (other is BranchInstruction bs && BranchWhen == bs.BranchWhen && Target == bs.Target);
 
         public override string ToString()
-            => BranchWhen == null ? $"br L_{Offset:x4}"
-                : BranchWhen == true ? $"br.true L_{Offset:x4}"
-                : $"br.false L_{Offset:x4}";
+            => BranchWhen == null ? $"br L_{Target:x4}"
+                : BranchWhen == true ? $"br.true L_{Target:x4}"
+                : $"br.false L_{Target:x4}";
 
         internal override void SetTo(DecompilationContext context, int index)
         {
             if (BranchWhen != null)
             {
-                context.SetTo(this, new[] { context.RootStatements[index + 1], context.GetSyntaxAt(Offset) });
+                context.SetTo(this, new[] { context.RootStatements[index + 1], context.GetSyntaxAt(Target) });
             }
             else
             {
-                context.SetTo(this, context.GetSyntaxAt(Offset));
+                base.SetTo(context, index);
             }
         }
     }

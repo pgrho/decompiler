@@ -68,11 +68,6 @@ namespace Shipwreck.Decompiler
                 }
             } while (transformed);
 
-            if (ctx.RootStatements.OfType<Instruction>().Any())
-            {
-                throw new InvalidOperationException("Cannot translate il instructions to statements");
-            }
-
             // insert labels
             foreach (var s in ctx.RootStatements.ToArray())
             {
@@ -93,6 +88,14 @@ namespace Shipwreck.Decompiler
                     }
                 }
             }
+
+            InsertTryBlocks(ctx);
+
+            if (ctx.RootStatements.OfType<Instruction>().Any())
+            {
+                throw new InvalidOperationException("Cannot translate il instructions to statements");
+            }
+
 
             var dm = new DecompiledMethod();
             dm.RootStatements.AddRange(ctx.RootStatements.Cast<Statement>());
@@ -116,14 +119,65 @@ namespace Shipwreck.Decompiler
             return dm.RootStatements.ToList();
         }
 
+        private static unsafe void InsertTryBlocks(DecompilationContext context)
+        {
+            foreach (var c in context.Method.GetMethodBody()
+                                    .ExceptionHandlingClauses
+                                    .OrderByDescending(cc => cc.TryOffset)
+                                    .ThenBy(cc => cc.TryLength)
+                                    .ThenBy(cc => cc.HandlerOffset))
+            {
+                var first = context.GetSyntaxAt(c.TryOffset);
+                var tryIndex = context.RootStatements.IndexOf(first);
+                var nextIndex = context.RootStatements.IndexOf(context.GetSyntaxAt(c.TryOffset + c.TryLength));
+                var tb = first as TryBlock;
+                if (tb == null || tryIndex + 1 < nextIndex)
+                {
+                    //var sts = ctx.RootStatements.Skip(fi).Take(li - fi).SkipWhile(s => s is PopInstruction).ToArray();
+                    var sts = context.RootStatements.Skip(tryIndex).Take(nextIndex - tryIndex).ToArray();
+
+                    tb = new TryBlock();
+                    tb.TryStatements.AddRange(sts.Cast<Statement>());
+
+                    context.RootStatements.RemoveRange(tryIndex, nextIndex - tryIndex);
+                    context.RootStatements[tryIndex] = tb;
+                    context.SetOffset(tb, c.TryOffset);
+                }
+
+                {
+                    var fi = context.RootStatements.IndexOf(context.GetSyntaxAt(c.HandlerOffset));
+                    var li = context.RootStatements.IndexOf(context.GetSyntaxAt(c.HandlerOffset + c.HandlerLength));
+
+                    var sts = context.RootStatements.Skip(fi).Take(li - fi).SkipWhile(s => s is PopInstruction).Cast<Statement>().ToArray();
+                    context.RootStatements.RemoveRange(fi, li - fi);
+
+                    var cc = new CatchClause(tb, c.CatchType);
+                    cc.Statements.AddRange(sts);
+
+                    tb.CatchClauses.Add(cc);
+                }
+            }
+        }
+
         private static GoToStatement ReplaceGoToStatement(DecompilationContext ctx, TemporalGoToStatement g)
         {
             var tg = ctx.GetSyntaxAt(g.Target);
+
             var lb = tg as LabelTarget;
             if (lb == null)
             {
                 lb = new LabelTarget($"L_{g.Target:x4}");
-                ctx.RootStatements.Insert(ctx.RootStatements.IndexOf(tg), lb);
+
+                var i = tg == null ? -1 : ctx.RootStatements.IndexOf(tg);
+                if (i < 0)
+                {
+                    ctx.RootStatements.Add(lb);
+                }
+                else
+                {
+                    ctx.RootStatements.Insert(i, lb);
+                }
+
                 ctx.SetOffset(lb, g.Target);
             }
 
@@ -181,7 +235,7 @@ namespace Shipwreck.Decompiler
                     return new LoadInt32Instruction(b - 0x16);
 
                 case 0x1f: //ldc.i4.s {num}
-                    return new LoadInt32Instruction(bp[++i]);
+                    return new LoadInt32Instruction((sbyte)bp[++i]);
 
                 case 0x20: //ldc.i4 {num}
                     i += 4;
@@ -201,6 +255,9 @@ namespace Shipwreck.Decompiler
 
                 case 0x25: // dup
                     return new DuplicateInstruction();
+
+                case 0x26: // pop
+                    return new PopInstruction();
 
                 case 0x28: // call
                 case 0x29: // calli
@@ -435,6 +492,13 @@ namespace Shipwreck.Decompiler
                 case 0xd5: // conv.ovf.u
                     return new ConvertInstruction(b == 0xd5 ? typeof(UIntPtr) : typeof(IntPtr), b != 0xd3);
 
+                case 0xdd: // leave {num}
+                    i += 4;
+                    return new LeaveInstruction(i + 1 + *(int*)(bp + i - 3));
+
+                case 0xde: // leave.s {num}
+                    return new LeaveInstruction(i + 2 + (sbyte)bp[++i]);
+
                 case 0xe0: // conv.u
                     return new ConvertInstruction(typeof(ulong), false);
 
@@ -507,8 +571,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Ldsflda
                 // TODO: OpCodes.Ldtoken
                 // TODO: OpCodes.Ldvirtftn
-                // TODO: OpCodes.Leave
-                // TODO: OpCodes.Leave_S
                 // TODO: OpCodes.Localloc
                 // TODO: OpCodes.Mkrefany
                 // TODO: OpCodes.Newarr

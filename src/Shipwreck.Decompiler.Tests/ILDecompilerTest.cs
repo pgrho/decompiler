@@ -522,7 +522,7 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(LeftShift), BinaryOperator.LeftShift)]
         [InlineData(nameof(RightShift), BinaryOperator.RightShift)]
         [InlineData(nameof(RightShiftUnsigned), BinaryOperator.RightShift)]
-         public void TestShift(string methodName, BinaryOperator op)
+        public void TestShift(string methodName, BinaryOperator op)
         {
             var m = GetMethod(methodName);
             var t = m.ReturnType;
@@ -804,6 +804,43 @@ namespace Shipwreck.Decompiler
         }
 
         #endregion Branch
+
+        #region Try-Catch
+
+        private static int TryCatch(int a, int b)
+        {
+            try
+            {
+                return checked(a + b);
+            }
+            catch (InvalidOperationException)
+            {
+                return -3;
+            }
+            catch
+            {
+                try
+                {
+                    return checked(a - b);
+                }
+                catch (InvalidOperationException)
+                {
+                    return -2;
+                }
+                catch
+                {
+                    return -1;
+                }
+            }
+        }
+
+        [Fact]
+        public void TryCatchTest()
+        {
+            AssertMethod(GetMethod(nameof(TryCatch)));
+        }
+
+        #endregion Try-Catch
 
         #region Loop
 

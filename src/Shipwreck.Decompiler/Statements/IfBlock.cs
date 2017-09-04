@@ -217,7 +217,7 @@ namespace Shipwreck.Decompiler.Statements
                             }
                             else if (block == _FalsePart && !ShouldSerializeTruePart())
                             {
-                                c = Condition.OnesComplement().Reduce();
+                                c = Condition.LogicalNot().Reduce();
                             }
                             else
                             {
