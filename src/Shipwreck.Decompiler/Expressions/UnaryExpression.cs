@@ -74,6 +74,10 @@ namespace Shipwreck.Decompiler.Expressions
                     writer.Write("--");
                     break;
 
+                case UnaryOperator.AddressOf:
+                    writer.Write('&');
+                    break;
+
                 case UnaryOperator.PostIncrement:
                 case UnaryOperator.PostDecrement:
                     break;

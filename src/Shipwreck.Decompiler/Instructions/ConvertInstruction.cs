@@ -39,8 +39,7 @@ namespace Shipwreck.Decompiler.Instructions
             if (context.GetFromCount(this) <= 1 && index > 0)
             {
                 var j = index - 1;
-                var prev = context.RootStatements[j] as Instruction;
-                if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
+                if (context.TryCreateExpression(ref j, out var e))
                 {
                     index = j;
                     // TODO: make unsigned

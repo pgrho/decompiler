@@ -12,6 +12,7 @@ namespace Shipwreck.Decompiler.Expressions
         PostIncrement,
         PostDecrement,
 
+        AddressOf,
 
         Convert,
         ConvertChecked

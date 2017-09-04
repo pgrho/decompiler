@@ -46,6 +46,11 @@ namespace Shipwreck.Decompiler.Expressions
                 Object.WriteTo(writer);
                 writer.Write(')');
             }
+            else
+            {
+                writer.Write(Method.DeclaringType.FullName);
+            }
+            writer.Write('.');
             writer.Write(Method.Name);
             writer.Write('(');
             WriteParametersTo(writer);

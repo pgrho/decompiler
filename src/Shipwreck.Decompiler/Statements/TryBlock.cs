@@ -71,7 +71,7 @@ namespace Shipwreck.Decompiler.Statements
 
                     if (c.CatchType != null && c.CatchType != typeof(object))
                     {
-                        writer.Write('(');
+                        writer.Write(" (");
                         writer.Write(c.CatchType.FullName);
                         writer.Write(')');
                     }

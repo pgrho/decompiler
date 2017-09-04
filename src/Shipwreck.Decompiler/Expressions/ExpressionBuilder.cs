@@ -58,6 +58,9 @@ namespace Shipwreck.Decompiler.Expressions
         public static UnaryExpression PreDecrement(this Expression operand)
             => operand.MakeUnary(UnaryOperator.PreDecrement);
 
+        public static UnaryExpression AddressOf(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.AddressOf);
+
         public static UnaryExpression Convert(this Expression operand, Type type)
             => new UnaryExpression(operand, UnaryOperator.Convert, type);
 

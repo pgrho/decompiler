@@ -32,8 +32,7 @@ namespace Shipwreck.Decompiler.Instructions
                 {
                     var j = index - 2;
 
-                    var prev = context.RootStatements[j] as Instruction;
-                    if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
+                    if (context.TryCreateExpression(ref j, out var e))
                     {
                         index = j;
                         expression = CreateStoreExpression(context, e);
@@ -53,8 +52,7 @@ namespace Shipwreck.Decompiler.Instructions
             {
                 var j = startIndex - 1;
 
-                var prev = context.RootStatements[j] as Instruction;
-                if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
+                if (context.TryCreateExpression(ref j, out var e))
                 {
                     startIndex = j;
                     statement = CreateStoreExpression(context, e).ToStatement();

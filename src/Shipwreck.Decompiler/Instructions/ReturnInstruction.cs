@@ -28,8 +28,7 @@ namespace Shipwreck.Decompiler.Instructions
             if (context.GetFromCount(this) <= 1 && startIndex > 0)
             {
                 var j = startIndex - 1;
-                var prev = context.RootStatements[j] as Instruction;
-                if (prev != null && prev.TryCreateExpression(context, ref j, out var e))
+                if (context.TryCreateExpression(ref j, out var e))
                 {
                     startIndex = j;
                     statement = e.ToReturnStatement();

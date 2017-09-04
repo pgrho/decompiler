@@ -18,9 +18,15 @@ namespace Shipwreck.Decompiler.Instructions
             || (other is CallInstruction ci && Method == ci.Method && IsVirtual == ci.IsVirtual);
 
         public override string ToString()
-            => "newobj " + Method;
+            => (IsVirtual ? "callvirt " : "call ") + Method;
 
         internal override Expression CreateExpressionCore(Expression obj, Expression[] parameters)
-            => new MethodCallExpression(IsVirtual && obj is ThisExpression ? new BaseExpression() : obj, (MethodInfo)Method, parameters);
+        {
+            if (obj is UnaryExpression ue && ue.Operator == UnaryOperator.AddressOf)
+            {
+                obj = ue.Operand;
+            }
+            return new MethodCallExpression(IsVirtual && obj is ThisExpression ? new BaseExpression() : obj, (MethodInfo)Method, parameters);
+        }
     }
 }

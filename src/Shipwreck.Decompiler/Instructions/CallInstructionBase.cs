@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Reflection.Emit;
+using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Instructions
 {
@@ -34,10 +35,8 @@ namespace Shipwreck.Decompiler.Instructions
 
                 for (var j = pc - 1; j >= 0; j--)
                 {
-                    if (--i >= 0
-                        && context.RootStatements[i] is Instruction prev
-                        && prev != null
-                        && prev.TryCreateExpression(context, ref i, out var e))
+                    i--;
+                    if (context.TryCreateExpression(ref i, out var e))
                     {
                         (ps ?? (ps = new Expression[pc]))[j] = e;
                     }
@@ -51,10 +50,9 @@ namespace Shipwreck.Decompiler.Instructions
                 Expression obj;
                 if ((Method as MethodInfo)?.IsStatic == false)
                 {
-                    if (--i >= 0
-                        && context.RootStatements[i] is Instruction prev
-                        && prev != null
-                        && prev.TryCreateExpression(context, ref i, out var e))
+                    i--;
+
+                    if (context.TryCreateExpression(ref i, out var e))
                     {
                         obj = e;
                     }
@@ -77,12 +75,17 @@ namespace Shipwreck.Decompiler.Instructions
             return false;
         }
 
-        internal abstract Expression CreateExpressionCore(Expression obj, Expression[] parameters);
-
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
+            if (TryCreateExpression(context, ref startIndex, out var e))
+            {
+                statement = e.ToStatement();
+                return true;
+            }
             statement = null;
             return false;
         }
+
+        internal abstract Expression CreateExpressionCore(Expression obj, Expression[] parameters);
     }
 }

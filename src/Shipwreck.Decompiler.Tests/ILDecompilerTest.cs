@@ -832,6 +832,10 @@ namespace Shipwreck.Decompiler
                     return -1;
                 }
             }
+            finally
+            {
+                Console.WriteLine("{0} {1}", a.ToString(), b.ToString());
+            }
         }
 
         [Fact]

@@ -96,7 +96,6 @@ namespace Shipwreck.Decompiler
                 throw new InvalidOperationException("Cannot translate il instructions to statements");
             }
 
-
             var dm = new DecompiledMethod();
             dm.RootStatements.AddRange(ctx.RootStatements.Cast<Statement>());
 
@@ -151,10 +150,17 @@ namespace Shipwreck.Decompiler
                     var sts = context.RootStatements.Skip(fi).Take(li - fi).SkipWhile(s => s is PopInstruction).Cast<Statement>().ToArray();
                     context.RootStatements.RemoveRange(fi, li - fi);
 
-                    var cc = new CatchClause(tb, c.CatchType);
-                    cc.Statements.AddRange(sts);
+                    if (c.Flags == ExceptionHandlingClauseOptions.Finally)
+                    {
+                        tb.FinallyStatements.AddRange(sts);
+                    }
+                    else
+                    {
+                        var cc = new CatchClause(tb, c.CatchType);
+                        cc.Statements.AddRange(sts);
 
-                    tb.CatchClauses.Add(cc);
+                        tb.CatchClauses.Add(cc);
+                    }
                 }
             }
         }
@@ -190,6 +196,7 @@ namespace Shipwreck.Decompiler
             switch (b)
             {
                 case 0x00: // nop
+                case 0xdc: // endfinally
                     return null;
 
                 case 0x02: // ldarg.0
@@ -212,6 +219,9 @@ namespace Shipwreck.Decompiler
 
                 case 0x0e: // ldarg.s {index}
                     return new LoadArgumentInstruction(bp[++i]);
+
+                case 0x0f: // ldarga.s {index}
+                    return new LoadArgumentAddressInstruction(bp[++i]);
 
                 case 0x11: // ldloc.s {index}
                     return new LoadLocalInstruction(bp[++i]);
@@ -521,6 +531,10 @@ namespace Shipwreck.Decompiler
                             i += 2;
                             return new LoadArgumentInstruction(*(ushort*)(bp + i - 1));
 
+                        case 0x0a: //ldarga {index}
+                            i += 2;
+                            return new LoadArgumentAddressInstruction(*(ushort*)(bp + i - 1));
+
                         case 0x0c: //ldloc {index}
                             i += 2;
                             return new LoadLocalInstruction(*(ushort*)(bp + i - 1));
@@ -541,13 +555,10 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Cpblk
                 // TODO: OpCodes.Cpobj
                 // TODO: OpCodes.Endfilter
-                // TODO: OpCodes.Endfinally
                 // TODO: OpCodes.Initblk
                 // TODO: OpCodes.Initobj
                 // TODO: OpCodes.Isinst
                 // TODO: OpCodes.Jmp
-                // TODO: OpCodes.Ldarga
-                // TODO: OpCodes.Ldarga_S
                 // TODO: OpCodes.Ldelema
                 // TODO: OpCodes.Ldfld
                 // TODO: OpCodes.Ldflda

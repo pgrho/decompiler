@@ -1,8 +1,10 @@
+using Shipwreck.Decompiler.Expressions;
+
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class LoadArgumentInstruction : LoadIndexInstruction
+    public sealed class LoadArgumentAddressInstruction : LoadIndexInstruction
     {
-        public LoadArgumentInstruction(int index)
+        public LoadArgumentAddressInstruction(int index)
             : base(index)
         {
         }
@@ -21,14 +23,15 @@ namespace Shipwreck.Decompiler.Instructions
             {
                 expression = context.GetParameter(Index - 1);
             }
+            expression = expression.AddressOf();
 
             return true;
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is LoadArgumentInstruction li && Index == li.Index;
+            => other is LoadArgumentAddressInstruction li && Index == li.Index;
 
         public override string ToString()
-            => $"ldarg {Index}";
+            => $"ldarga {Index}";
     }
 }
