@@ -29,10 +29,22 @@ namespace Shipwreck.Decompiler.Statements
 
         public override bool Reduce()
         {
-            if (Value != null && Value.TryReduce(out var e))
+            var reduced = false;
+            if (Value != null)
             {
-                Value = e;
-                return true;
+                if (Value.TryReduce(out var e))
+                {
+                    Value = e;
+                    reduced = true;
+                }
+
+                // TODO: check ref parameter
+                if (Value is AssignmentExpression ae
+                    && (ae.Left is VariableExpression || ae.Left is ParameterExpression))
+                {
+                    Value = ae.Right;
+                    reduced = true;
+                }
             }
             if (Collection != null)
             {
@@ -49,7 +61,7 @@ namespace Shipwreck.Decompiler.Statements
                 }
                 // TODO: split Expression statement and return statement in void method
             }
-            return base.Reduce();
+            return reduced;
         }
     }
 }
