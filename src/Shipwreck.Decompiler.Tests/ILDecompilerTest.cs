@@ -384,6 +384,8 @@ namespace Shipwreck.Decompiler
 
         #region Binary
 
+        #region IL Instruction
+
         private static int Add(int l, byte r)
             => l + r;
 
@@ -441,6 +443,42 @@ namespace Shipwreck.Decompiler
         private static uint RightShiftUnsigned(uint l, byte r)
             => l >> r;
 
+        #endregion IL Instruction
+
+        #region Custom Operator Overloading
+
+        private static Zero AddCustom(Zero l, Zero r)
+            => l + r;
+
+        private static Zero SubtractCustom(Zero l, Zero r)
+            => l - r;
+
+        private static Zero MultiplyCustom(Zero l, Zero r)
+            => l * r;
+
+        private static Zero DivideCustom(Zero l, Zero r)
+            => l / r;
+
+        private static Zero ModuloCustom(Zero l, Zero r)
+            => l % r;
+
+        private static Zero BitwiseAndCustom(Zero l, Zero r)
+            => l & r;
+
+        private static Zero BitwiseOrCustom(Zero l, Zero r)
+            => l | r;
+
+        private static Zero ExclusiveOrCustom(Zero l, Zero r)
+            => l ^ r;
+
+        private static Zero LeftShiftCustom(Zero l, byte r)
+            => l << r;
+
+        private static Zero RightShiftCustom(Zero l, byte r)
+            => l >> r;
+
+        #endregion Custom Operator Overloading
+
         [Theory]
         [InlineData(nameof(Add), BinaryOperator.Add)]
         [InlineData(nameof(AddChecked), BinaryOperator.AddChecked)]
@@ -458,6 +496,16 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(BitwiseAnd), BinaryOperator.And)]
         [InlineData(nameof(BitwiseOr), BinaryOperator.Or)]
         [InlineData(nameof(ExclusiveOr), BinaryOperator.ExclusiveOr)]
+        [InlineData(nameof(AddCustom), BinaryOperator.Add)]
+        [InlineData(nameof(SubtractCustom), BinaryOperator.Subtract)]
+        [InlineData(nameof(MultiplyCustom), BinaryOperator.Multiply)]
+        [InlineData(nameof(DivideCustom), BinaryOperator.Divide)]
+        [InlineData(nameof(ModuloCustom), BinaryOperator.Modulo)]
+        [InlineData(nameof(BitwiseAndCustom), BinaryOperator.And)]
+        [InlineData(nameof(BitwiseOrCustom), BinaryOperator.Or)]
+        [InlineData(nameof(ExclusiveOrCustom), BinaryOperator.ExclusiveOr)]
+        [InlineData(nameof(LeftShiftCustom), BinaryOperator.LeftShift)]
+        [InlineData(nameof(RightShiftCustom), BinaryOperator.RightShift)]
         public void TestBinary(string methodName, BinaryOperator op)
         {
             var m = GetMethod(methodName);
@@ -466,7 +514,7 @@ namespace Shipwreck.Decompiler
             AssertMethod(
                 m,
                 new ParameterExpression("l", t)
-                    .MakeBinary(new ParameterExpression("r", typeof(byte)), op)
+                    .MakeBinary(new ParameterExpression("r", m.GetParameters()[1].ParameterType), op)
                     .ToReturnStatement());
         }
 
@@ -474,7 +522,7 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(LeftShift), BinaryOperator.LeftShift)]
         [InlineData(nameof(RightShift), BinaryOperator.RightShift)]
         [InlineData(nameof(RightShiftUnsigned), BinaryOperator.RightShift)]
-        public void TestShift(string methodName, BinaryOperator op)
+         public void TestShift(string methodName, BinaryOperator op)
         {
             var m = GetMethod(methodName);
             var t = m.ReturnType;
