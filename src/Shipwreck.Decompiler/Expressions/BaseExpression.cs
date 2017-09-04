@@ -9,5 +9,8 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override void WriteTo(TextWriter writer)
             => writer.Write("base");
+
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }

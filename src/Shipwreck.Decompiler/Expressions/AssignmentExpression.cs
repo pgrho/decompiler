@@ -40,7 +40,7 @@ namespace Shipwreck.Decompiler.Expressions
                 writer.Write("checked(");
             }
 
-            Left.WriteTo(writer);
+            writer.WriteSecondChild(Left, this);
 
             writer.Write(' ');
             if (Operator != BinaryOperator.Default)
@@ -49,9 +49,7 @@ namespace Shipwreck.Decompiler.Expressions
             }
             writer.Write("= ");
 
-            writer.Write('(');
-            Right.WriteTo(writer);
-            writer.Write(')');
+            writer.WriteFirstChild(Right, this);
 
             if (isChecked)
             {
@@ -75,6 +73,7 @@ namespace Shipwreck.Decompiler.Expressions
 
             return this;
         }
+
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
             if (IsEquivalentTo(currentExpression))
@@ -82,10 +81,13 @@ namespace Shipwreck.Decompiler.Expressions
                 return newExpression;
             }
 
-            var l = Left.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
-            var r = replaceAll || l == Left ? Right.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional) : Right;
+            var r = Right.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
+            var l = replaceAll || r == Right ? Left.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional) : Left;
 
             return l == Left && r == Right ? this : new AssignmentExpression(l, r, Operator);
         }
+
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Assignment;
     }
 }

@@ -93,9 +93,7 @@ namespace Shipwreck.Decompiler.Expressions
                     throw new NotImplementedException();
             }
 
-            writer.Write('(');
-            Operand.WriteTo(writer);
-            writer.Write(')');
+            writer.WriteFirstChild(Operand, this);
 
             if (Operator == UnaryOperator.PostIncrement)
             {
@@ -146,5 +144,19 @@ namespace Shipwreck.Decompiler.Expressions
 
         private static UnaryExpression Create(Expression operand, UnaryOperator @operator, Type type)
             => @operator.IsConvert() ? new UnaryExpression(operand, @operator, type) : new UnaryExpression(operand, @operator);
+
+        public override ExpressionPrecedence Precedence
+        {
+            get
+            {
+                switch (Operator)
+                {
+                    case UnaryOperator.PostIncrement:
+                    case UnaryOperator.PostDecrement:
+                        return ExpressionPrecedence.Primary;
+                }
+                return ExpressionPrecedence.Unary;
+            }
+        }
     }
 }

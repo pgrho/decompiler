@@ -1,5 +1,6 @@
 using System;
 using System.Reflection.Emit;
+using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Instructions
 {

@@ -39,9 +39,8 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override void WriteTo(TextWriter writer)
         {
-            writer.Write('(');
-            Object.WriteTo(writer);
-            writer.Write(")[");
+            writer.WriteFirstChild(Object, this);
+            writer.Write('[');
             WriteParametersTo(writer);
             writer.Write(']');
         }
@@ -73,5 +72,7 @@ namespace Shipwreck.Decompiler.Expressions
 
             return a == Object && ps == null ? this : new IndexExpression(a, (IEnumerable<Expression>)ps ?? Parameters, false);
         }
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }

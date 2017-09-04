@@ -67,9 +67,7 @@ namespace Shipwreck.Decompiler.Expressions
             }
             else
             {
-                writer.Write('(');
-                Object.WriteTo(writer);
-                writer.Write(')');
+                writer.WriteFirstChild(Object, this);
             }
             writer.Write('.');
             writer.Write(Member.Name);
@@ -86,5 +84,7 @@ namespace Shipwreck.Decompiler.Expressions
             var o = Object?.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
             return o != Object ? o?.MakeMemberAccess(Member) : this;
         }
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }

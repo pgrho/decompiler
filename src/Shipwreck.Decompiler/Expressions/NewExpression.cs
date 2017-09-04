@@ -42,5 +42,7 @@ namespace Shipwreck.Decompiler.Expressions
             WriteParametersTo(writer);
             writer.Write(')');
         }
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }

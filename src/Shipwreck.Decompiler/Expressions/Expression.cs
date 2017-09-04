@@ -1,9 +1,11 @@
 ﻿using System.IO;
 
-namespace Shipwreck.Decompiler
+namespace Shipwreck.Decompiler.Expressions
 {
     public abstract class Expression : Syntax
     {
+        public abstract ExpressionPrecedence Precedence { get; }
+
         public abstract void WriteTo(TextWriter writer);
 
         public override string ToString()

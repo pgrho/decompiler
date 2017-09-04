@@ -40,17 +40,13 @@ namespace Shipwreck.Decompiler.Expressions
                 writer.Write("checked(");
             }
 
-            writer.Write('(');
-            Left.WriteTo(writer);
-            writer.Write(')');
+            writer.WriteFirstChild(Left, this);
 
             writer.Write(' ');
             writer.Write(Operator.GetToken());
             writer.Write(' ');
 
-            writer.Write('(');
-            Right.WriteTo(writer);
-            writer.Write(')');
+            writer.WriteSecondChild(Right, this);
 
             if (isChecked)
             {
@@ -85,6 +81,62 @@ namespace Shipwreck.Decompiler.Expressions
             var r = replaceAll || l == Left ? Right.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional) : Right;
 
             return l == Left && r == Right ? this : new BinaryExpression(l, r, Operator);
+        }
+
+        public override ExpressionPrecedence Precedence
+        {
+            get
+            {
+                switch (Operator)
+                {
+                    case BinaryOperator.AddChecked:
+                    case BinaryOperator.SubtractChecked:
+                    case BinaryOperator.MultiplyChecked:
+                        return ExpressionPrecedence.Primary;
+
+                    case BinaryOperator.Multiply:
+                    case BinaryOperator.Divide:
+                    case BinaryOperator.Modulo:
+                        return ExpressionPrecedence.Multiplicative;
+
+                    case BinaryOperator.Add:
+                    case BinaryOperator.Subtract:
+                        return ExpressionPrecedence.Additive;
+
+                    case BinaryOperator.LeftShift:
+                    case BinaryOperator.RightShift:
+                        return ExpressionPrecedence.Shift;
+
+                    case BinaryOperator.GreaterThan:
+                    case BinaryOperator.GreaterThanOrEqual:
+                    case BinaryOperator.LessThan:
+                    case BinaryOperator.LessThanOrEqual:
+                        // TODO:is
+                        return ExpressionPrecedence.Relational;
+
+                    case BinaryOperator.Equal:
+                    case BinaryOperator.NotEqual:
+                        return ExpressionPrecedence.Equality;
+
+                    case BinaryOperator.And:
+                        return ExpressionPrecedence.And;
+
+                    case BinaryOperator.ExclusiveOr:
+                        return ExpressionPrecedence.ExclusiveOr;
+
+                    case BinaryOperator.Or:
+                        return ExpressionPrecedence.Or;
+
+
+                    case BinaryOperator.AndAlso:
+                        return ExpressionPrecedence.AndAlso;
+
+                    case BinaryOperator.OrElse:
+                        return ExpressionPrecedence.OrElse;
+                }
+
+                return ExpressionPrecedence.Primary;
+            }
         }
     }
 }

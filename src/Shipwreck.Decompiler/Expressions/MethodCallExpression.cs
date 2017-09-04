@@ -42,9 +42,7 @@ namespace Shipwreck.Decompiler.Expressions
         {
             if (Object != null)
             {
-                writer.Write('(');
-                Object.WriteTo(writer);
-                writer.Write(')');
+                writer.WriteFirstChild(Object, this);
             }
             else
             {
@@ -182,5 +180,7 @@ namespace Shipwreck.Decompiler.Expressions
 
             return base.ReduceCore();
         }
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }

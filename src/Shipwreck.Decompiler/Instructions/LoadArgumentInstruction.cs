@@ -1,3 +1,5 @@
+using Shipwreck.Decompiler.Expressions;
+
 namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LoadArgumentInstruction : LoadIndexInstruction

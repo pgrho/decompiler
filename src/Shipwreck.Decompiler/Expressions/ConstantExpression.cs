@@ -80,5 +80,8 @@ namespace Shipwreck.Decompiler.Expressions
                 throw new NotImplementedException();
             }
         }
+
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }

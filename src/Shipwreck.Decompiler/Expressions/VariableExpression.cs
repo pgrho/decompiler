@@ -20,5 +20,7 @@ namespace Shipwreck.Decompiler.Expressions
             writer.Write("$local");
             writer.Write(Index);
         }
+        public override ExpressionPrecedence Precedence
+            => ExpressionPrecedence.Primary;
     }
 }
