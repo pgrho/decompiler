@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -105,8 +107,20 @@ namespace Shipwreck.Decompiler.Expressions
 
         #endregion AssignmentExpression
 
-        public static ArrayIndexExpression ArrayIndex(this Expression array, Expression index)
-            => new ArrayIndexExpression(array, index);
+        #region Property
+
+        public static PropertyExpression Property(this Expression @object, PropertyInfo property)
+            => new PropertyExpression(@object, property);
+
+        // TODO:   public static PropertyExpression Property(this Expression @object, string propertyName)=>@object.Property(@object.Type.GetProperty(propertyName));
+
+        public static IndexExpression MakeIndex(this Expression @object, params Expression[] parameters)
+            => new IndexExpression(@object, parameters);
+
+        public static IndexExpression MakeIndex(this Expression @object, IEnumerable<Expression> parameters)
+            => new IndexExpression(@object, parameters);
+
+        #endregion Property
 
         public static ReturnStatement ToReturnStatement(this Expression value)
             => new ReturnStatement(value);

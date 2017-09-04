@@ -47,6 +47,7 @@ namespace Shipwreck.Decompiler.Statements
 
                     return true;
                 }
+                // TODO: split Expression statement and return statement in void method
             }
             return base.Reduce();
         }

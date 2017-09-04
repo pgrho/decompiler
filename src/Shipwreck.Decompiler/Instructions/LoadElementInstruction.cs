@@ -30,7 +30,7 @@ namespace Shipwreck.Decompiler.Instructions
                         if (prev != null && prev.TryCreateExpression(context, ref j, out var left))
                         {
                             index = j;
-                            expression = left.ArrayIndex(right);
+                            expression = left.MakeIndex(right);
                             return true;
                         }
                     }

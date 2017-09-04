@@ -1,40 +1,43 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class MethodCallExpression : Expression
+    public sealed class MethodCallExpression : CallExpression
     {
         public MethodCallExpression(MethodInfo method, IEnumerable<Expression> parameters)
+            : base(parameters)
         {
             Method = method;
-            Parameters = Array.AsReadOnly(parameters?.ToArray() ?? new Expression[0]);
         }
 
         public MethodCallExpression(Expression obj, MethodInfo method, IEnumerable<Expression> parameters)
+            : base(parameters)
         {
             Object = obj;
             Method = method;
-            Parameters = Array.AsReadOnly(parameters?.ToArray() ?? new Expression[0]);
+        }
+
+        internal MethodCallExpression(Expression obj, MethodInfo method, IEnumerable<Expression> parameters, bool shouldCopy)
+            : base(parameters)
+        {
+            Object = obj;
+            Method = method;
         }
 
         public Expression Object { get; }
 
         public MethodInfo Method { get; }
 
-        public ReadOnlyCollection<Expression> Parameters { get; }
-
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is MethodCallExpression ne
                 && (Object?.IsEquivalentTo(ne.Object) ?? ne.Object == null)
                 && Method == ne.Method
-                && Parameters.Count == ne.Parameters.Count
-                && Enumerable.Range(0, Parameters.Count).All(i => Parameters[i].IsEquivalentTo(ne.Parameters[i])));
+                && base.IsEquivalentTo(other));
 
         public override void WriteTo(TextWriter writer)
         {
@@ -46,15 +49,53 @@ namespace Shipwreck.Decompiler.Expressions
             }
             writer.Write(Method.Name);
             writer.Write('(');
-            for (int i = 0; i < Parameters.Count; i++)
-            {
-                if (i > 0)
-                {
-                    writer.Write(", ");
-                }
-                Parameters[i].WriteTo(writer);
-            }
+            WriteParametersTo(writer);
             writer.Write(')');
+        }
+
+        internal override Expression ReduceCore()
+        {
+            var bf = (Method.IsStatic ? BindingFlags.Static : BindingFlags.Instance)
+                        | BindingFlags.Public | BindingFlags.NonPublic;
+
+            if (Method.Name.StartsWith("get_")
+                || Method.Name.StartsWith("set_"))
+            {
+                var p = Method.DeclaringType.GetProperty(Method.Name.Substring(4), bf);
+
+                if (p != null)
+                {
+                    if (Method == p.GetMethod
+                        || Method == p.SetMethod)
+                    {
+                        var ipc = p.GetIndexParameters().Length;
+                        Expression e;
+                        if (ipc == 0)
+                        {
+                            e = Object.Property(p);
+                        }
+                        else
+                        {
+                            e = Object.MakeIndex(Parameters.Take(ipc));
+                        }
+
+                        if (Method.Name[0] == 's')
+                        {
+                            e = e.Assign(Parameters.Last());
+                        }
+                        return e;
+                    }
+                }
+            }
+            else if (Method.Name.StartsWith("add_")
+                        || Method.Name.StartsWith("remove_"))
+            {
+            }
+            else if (Method.IsStatic && Method.IsPublic && Method.Name.StartsWith("op_"))
+            {
+            }
+
+            return base.ReduceCore();
         }
     }
 }

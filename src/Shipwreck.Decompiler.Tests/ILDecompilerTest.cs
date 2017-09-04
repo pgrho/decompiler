@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
 using Xunit;
@@ -188,7 +189,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(methodName));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression("a", type.MakeArrayType()).ArrayIndex(1.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ParameterExpression("a", type.MakeArrayType()).MakeIndex(1.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Array Element
@@ -508,6 +509,56 @@ namespace Shipwreck.Decompiler
         }
 
         #endregion Call
+
+        #region Property
+
+        private static int GetProperty(StringBuilder a)
+            => a.Length;
+
+        private static void SetProperty(StringBuilder a, int v)
+            => a.Length = v;
+
+        private static char GetIndexedProperty(StringBuilder a)
+            => a[0];
+
+        private static void SetIndexedProperty(StringBuilder a, char v)
+            => a[0] = v;
+
+        [Fact]
+        public void GetPropertyTest()
+            => AssertMethod(
+                GetMethod(nameof(GetProperty)),
+                new ParameterExpression("a", typeof(StringBuilder))
+                    .Property(typeof(StringBuilder).GetProperty(nameof(StringBuilder.Length)))
+                    .ToReturnStatement());
+
+        [Fact]
+        public void SetPropertyTest()
+            => AssertMethod(
+                GetMethod(nameof(SetProperty)),
+                new ParameterExpression("a", typeof(StringBuilder))
+                    .Property(typeof(StringBuilder).GetProperty(nameof(StringBuilder.Length)))
+                    .Assign(new ParameterExpression("v", typeof(int)))
+                    .ToReturnStatement());
+
+        [Fact]
+        public void GetIndexedPropertyTest()
+            => AssertMethod(
+                GetMethod(nameof(GetIndexedProperty)),
+                new ParameterExpression("a", typeof(StringBuilder))
+                    .MakeIndex(0.ToExpression())
+                    .ToReturnStatement());
+
+        [Fact]
+        public void SetIndexedPropertyTest()
+            => AssertMethod(
+                GetMethod(nameof(SetIndexedProperty)),
+                new ParameterExpression("a", typeof(StringBuilder))
+                    .MakeIndex(0.ToExpression())
+                    .Assign(new ParameterExpression("v", typeof(char)))
+                    .ToReturnStatement());
+
+        #endregion Property
 
         #region Branch
 
