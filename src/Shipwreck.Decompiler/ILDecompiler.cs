@@ -289,6 +289,26 @@ namespace Shipwreck.Decompiler
                 case 0x5c: // div.un
                     return new BinaryInstruction(BinaryOperator.Divide, b == 0x5c);
 
+                case 0x5d: // rem
+                case 0x5e: // rem.un
+                    return new BinaryInstruction(BinaryOperator.Modulo, b == 0x5e);
+
+                case 0x5f: // and
+                    return new BinaryInstruction(BinaryOperator.And, false);
+
+                case 0x60: // or
+                    return new BinaryInstruction(BinaryOperator.Or, false);
+
+                case 0x61: // xor
+                    return new BinaryInstruction(BinaryOperator.ExclusiveOr, false);
+
+                case 0x62: // shl
+                    return new BinaryInstruction(BinaryOperator.LeftShift, false);
+
+                case 0x63: // shr
+                case 0x64: // shr.un
+                    return new BinaryInstruction(BinaryOperator.RightShift, b == 0x64);
+
                 case 0x65: // neg
                 case 0x66: // not
                     return new UnaryInstruction(b == 0x65 ? UnaryOperator.UnaryNegation : UnaryOperator.OnesComplement);
@@ -449,7 +469,6 @@ namespace Shipwreck.Decompiler
                             throw new NotImplementedException($"Invalid IL '{b:x2} {b2:x2}'");
                     }
 
-                // TODO: OpCodes.And
                 // TODO: OpCodes.Arglist
                 // TODO: OpCodes.Box
                 // TODO: OpCodes.Break
@@ -493,7 +512,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Localloc
                 // TODO: OpCodes.Mkrefany
                 // TODO: OpCodes.Newarr
-                // TODO: OpCodes.Or
                 // TODO: OpCodes.Pop
                 // TODO: OpCodes.Prefix1
                 // TODO: OpCodes.Prefix2
@@ -506,12 +524,7 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Readonly
                 // TODO: OpCodes.Refanytype
                 // TODO: OpCodes.Refanyval
-                // TODO: OpCodes.Rem
-                // TODO: OpCodes.Rem_Un
                 // TODO: OpCodes.Rethrow
-                // TODO: OpCodes.Shl
-                // TODO: OpCodes.Shr
-                // TODO: OpCodes.Shr_Un
                 // TODO: OpCodes.Sizeof
                 // TODO: OpCodes.Starg
                 // TODO: OpCodes.Starg_S
@@ -542,7 +555,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Unbox
                 // TODO: OpCodes.Unbox_Any
                 // TODO: OpCodes.Volatile
-                // TODO: OpCodes.Xor
 
                 default:
                     throw new NotImplementedException($"Invalid IL '{b:x2}'");

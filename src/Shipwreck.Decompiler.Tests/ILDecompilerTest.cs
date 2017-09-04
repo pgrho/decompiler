@@ -362,7 +362,7 @@ namespace Shipwreck.Decompiler
             Assert.True(new ParameterExpression("a", typeof(int)).OnesComplement().ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
-        #endregion NotTest
+        #endregion OnesComplementTest
 
         #region NegateTest
 
@@ -468,6 +468,65 @@ namespace Shipwreck.Decompiler
         }
 
         #endregion Divide
+
+        private static int Modulo(int l, byte r)
+            => l % r;
+
+        private static uint ModuloUnsigned(uint l, byte r)
+            => l % r;
+
+        private static int BitwiseAnd(int l, byte r)
+            => l & r;
+
+        private static int BitwiseOr(int l, byte r)
+            => l | r;
+
+        private static int ExclusiveOr(int l, byte r)
+            => l ^ r;
+
+        private static int LeftShift(int l, byte r)
+            => l << r;
+
+        private static int RightShift(int l, byte r)
+            => l >> r;
+
+        private static uint RightShiftUnsigned(uint l, byte r)
+            => l >> r;
+
+        [Theory]
+        [InlineData(nameof(Modulo), BinaryOperator.Modulo)]
+        [InlineData(nameof(ModuloUnsigned), BinaryOperator.Modulo)]
+        [InlineData(nameof(BitwiseAnd), BinaryOperator.And)]
+        [InlineData(nameof(BitwiseOr), BinaryOperator.Or)]
+        [InlineData(nameof(ExclusiveOr), BinaryOperator.ExclusiveOr)]
+        public void TestBinary(string methodName, BinaryOperator op)
+        {
+            var m = GetMethod(methodName);
+            var t = m.ReturnType;
+
+            AssertMethod(
+                m,
+                new ParameterExpression("l", t)
+                    .MakeBinary(new ParameterExpression("r", typeof(byte)), op)
+                    .ToReturnStatement());
+        }
+
+        [Theory]
+        [InlineData(nameof(LeftShift), BinaryOperator.LeftShift)]
+        [InlineData(nameof(RightShift), BinaryOperator.RightShift)]
+        [InlineData(nameof(RightShiftUnsigned), BinaryOperator.RightShift)]
+        public void TestShift(string methodName, BinaryOperator op)
+        {
+            var m = GetMethod(methodName);
+            var t = m.ReturnType;
+
+            // TODO: reduce (right & 31) to right
+            AssertMethod(
+                m,
+                new ParameterExpression("l", t)
+                    .MakeBinary(new ParameterExpression("r", typeof(byte)).And(31.ToExpression()), op)
+                    .ToReturnStatement());
+        }
 
         #endregion Binary
 

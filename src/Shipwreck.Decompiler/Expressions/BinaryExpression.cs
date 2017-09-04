@@ -10,25 +10,9 @@ namespace Shipwreck.Decompiler.Expressions
             left.ArgumentIsNotNull(nameof(left));
             right.ArgumentIsNotNull(nameof(right));
 
-            switch (@operator)
+            if (@operator == BinaryOperator.Default)
             {
-                case BinaryOperator.Add:
-                case BinaryOperator.AddChecked:
-                case BinaryOperator.Subtract:
-                case BinaryOperator.SubtractChecked:
-                case BinaryOperator.Multiply:
-                case BinaryOperator.MultiplyChecked:
-                case BinaryOperator.Divide:
-                case BinaryOperator.Equal:
-                case BinaryOperator.NotEqual:
-                case BinaryOperator.LessThan:
-                case BinaryOperator.LessThanOrEqual:
-                case BinaryOperator.GreaterThan:
-                case BinaryOperator.GreaterThanOrEqual:
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported {nameof(@operator)}");
+                throw new ArgumentException($"Unsupported {nameof(@operator)}");
             }
 
             Left = left;
