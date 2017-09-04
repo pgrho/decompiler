@@ -384,90 +384,38 @@ namespace Shipwreck.Decompiler
 
         #region Binary
 
-        #region Add
+        private static int Add(int l, byte r)
+            => l + r;
 
-        private static int Add(int a) => unchecked(a + 1);
+        private static int AddChecked(int l, byte r)
+            => checked(l + r);
 
-        private static int AddChecked(int a) => checked(a + 1);
+        private static uint AddCheckedUnsigned(uint l, byte r)
+            => checked(l + r);
 
-        private static uint AddCheckedUnsigned(uint a) => checked(a + 1);
+        private static int Subtract(int l, byte r)
+            => l - r;
 
-        [Theory]
-        [InlineData(nameof(Add), BinaryOperator.Add, false)]
-        [InlineData(nameof(AddChecked), BinaryOperator.AddChecked, false)]
-        [InlineData(nameof(AddCheckedUnsigned), BinaryOperator.AddChecked, true)]
-        public void AddTest(string methodName, BinaryOperator @operator, bool unsigned)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
+        private static int SubtractChecked(int l, byte r)
+            => checked(l - r);
 
-            Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).MakeBinary(1.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
+        private static uint SubtractCheckedUnsigned(uint l, byte r)
+            => checked(l - r);
 
-        #endregion Add
+        private static int Multiply(int l, byte r)
+            => l * r;
 
-        #region Subtract
+        private static int MultiplyChecked(int l, byte r)
+            => checked(l * r);
 
-        private static int Subtract(int a) => unchecked(a - 1);
+        private static uint MultiplyCheckedUnsigned(uint l, byte r)
+            => checked(l * r);
 
-        private static int SubtractChecked(int a) => checked(a - 1);
+        private static int Divide(int l, byte r)
+            => l / r;
 
-        private static uint SubtractCheckedUnsigned(uint a) => checked(a - 1);
-
-        [Theory]
-        [InlineData(nameof(Subtract), BinaryOperator.Subtract, false)]
-        [InlineData(nameof(SubtractChecked), BinaryOperator.SubtractChecked, false)]
-        [InlineData(nameof(SubtractCheckedUnsigned), BinaryOperator.SubtractChecked, true)]
-        public void SubtractTest(string methodName, BinaryOperator @operator, bool unsigned)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).MakeBinary(1.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
-        #endregion Subtract
-
-        #region Multiply
-
-        private static int Multiply(int a) => unchecked(a * 3);
-
-        private static int MultiplyChecked(int a) => checked(a * 3);
-
-        private static uint MultiplyCheckedUnsigned(uint a) => checked(a * 3);
-
-        [Theory]
-        [InlineData(nameof(Multiply), BinaryOperator.Multiply, false)]
-        [InlineData(nameof(MultiplyChecked), BinaryOperator.MultiplyChecked, false)]
-        [InlineData(nameof(MultiplyCheckedUnsigned), BinaryOperator.MultiplyChecked, true)]
-        public void MultiplyTest(string methodName, BinaryOperator @operator, bool unsigned)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).MakeBinary(3.ToExpression(), @operator).ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
-        #endregion Multiply
-
-        #region Divide
-
-        private static int Divide(int a) => unchecked(a / 5);
-
-        private static uint DivideCheckedUnsigned(uint a) => checked(a / 5);
-
-        [Theory]
-        [InlineData(nameof(Divide), false)]
-        [InlineData(nameof(DivideCheckedUnsigned), true)]
-        public void DivideTest(string methodName, bool unsigned)
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(methodName));
-
-            Assert.Equal(1, ret.Count);
-            Assert.True(new ParameterExpression("a", unsigned ? typeof(uint) : typeof(int)).Divide(5.ToExpression()).ToReturnStatement().IsEquivalentTo(ret[0]));
-        }
-
-        #endregion Divide
+        private static uint DivideUnsigned(uint l, byte r)
+            => l / r;
 
         private static int Modulo(int l, byte r)
             => l % r;
@@ -494,6 +442,17 @@ namespace Shipwreck.Decompiler
             => l >> r;
 
         [Theory]
+        [InlineData(nameof(Add), BinaryOperator.Add)]
+        [InlineData(nameof(AddChecked), BinaryOperator.AddChecked)]
+        [InlineData(nameof(AddCheckedUnsigned), BinaryOperator.AddChecked)]
+        [InlineData(nameof(Subtract), BinaryOperator.Subtract)]
+        [InlineData(nameof(SubtractChecked), BinaryOperator.SubtractChecked)]
+        [InlineData(nameof(SubtractCheckedUnsigned), BinaryOperator.SubtractChecked)]
+        [InlineData(nameof(Multiply), BinaryOperator.Multiply)]
+        [InlineData(nameof(MultiplyChecked), BinaryOperator.MultiplyChecked)]
+        [InlineData(nameof(MultiplyCheckedUnsigned), BinaryOperator.MultiplyChecked)]
+        [InlineData(nameof(Divide), BinaryOperator.Divide)]
+        [InlineData(nameof(DivideUnsigned), BinaryOperator.Divide)]
         [InlineData(nameof(Modulo), BinaryOperator.Modulo)]
         [InlineData(nameof(ModuloUnsigned), BinaryOperator.Modulo)]
         [InlineData(nameof(BitwiseAnd), BinaryOperator.And)]
