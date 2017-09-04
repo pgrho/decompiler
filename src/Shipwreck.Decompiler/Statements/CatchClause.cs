@@ -4,7 +4,7 @@ namespace Shipwreck.Decompiler.Statements
 {
     public sealed class CatchClause
     {
-        public CatchClause(TryBlock block, Type type)
+        public CatchClause(TryStatement block, Type type)
         {
             Block = block;
             CatchType = type;
@@ -12,7 +12,7 @@ namespace Shipwreck.Decompiler.Statements
 
         public Type CatchType { get; }
 
-        public TryBlock Block { get; internal set; }
+        public TryStatement Block { get; internal set; }
 
         #region Statements
 

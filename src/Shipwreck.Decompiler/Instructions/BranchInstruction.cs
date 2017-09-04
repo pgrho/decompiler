@@ -37,7 +37,7 @@ namespace Shipwreck.Decompiler.Instructions
                             e = e.OnesComplement();
                         }
 
-                        var ib = new IfBlock(e);
+                        var ib = new IfStatement(e);
                         ib.TruePart.Add(new TemporalGoToStatement(Target));
                         statement = ib;
 

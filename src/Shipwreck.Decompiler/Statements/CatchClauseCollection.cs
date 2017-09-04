@@ -2,13 +2,13 @@ using System;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class CatchClauseCollection : OwnedCollection<TryBlock, CatchClause>
+    public sealed class CatchClauseCollection : OwnedCollection<TryStatement, CatchClause>
     {
         public CatchClauseCollection()
         {
         }
 
-        internal CatchClauseCollection(TryBlock owner)
+        internal CatchClauseCollection(TryStatement owner)
             : base(owner)
         {
         }

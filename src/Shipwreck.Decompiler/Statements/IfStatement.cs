@@ -6,14 +6,14 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class IfBlock : Statement
+    public sealed class IfStatement : Statement
     {
-        public IfBlock()
+        public IfStatement()
         {
             Condition = ExpressionBuilder.False;
         }
 
-        public IfBlock(Expression condition)
+        public IfStatement(Expression condition)
         {
             Condition = condition ?? ExpressionBuilder.False;
         }
@@ -46,7 +46,7 @@ namespace Shipwreck.Decompiler.Statements
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is IfBlock gt
+            || (other is IfStatement gt
                 && Condition.IsEquivalentTo(gt.Condition)
                 && _TruePart.IsEquivalentTo(gt._TruePart)
                 && _FalsePart.IsEquivalentTo(gt._FalsePart));
@@ -71,7 +71,7 @@ namespace Shipwreck.Decompiler.Statements
 
             if (ShouldSerializeFalsePart())
             {
-                if (_FalsePart.Count == 1 && _FalsePart[0] is IfBlock cib)
+                if (_FalsePart.Count == 1 && _FalsePart[0] is IfStatement cib)
                 {
                     writer.Write("else ");
                     cib.WriteTo(writer);
@@ -254,7 +254,7 @@ namespace Shipwreck.Decompiler.Statements
 
         public override Statement Clone()
         {
-            var r = new IfBlock(Condition);
+            var r = new IfStatement(Condition);
             if (ShouldSerializeTruePart())
             {
                 r.TruePart.AddRange(_TruePart.Select(s => s.Clone()));

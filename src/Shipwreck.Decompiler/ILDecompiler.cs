@@ -76,7 +76,7 @@ namespace Shipwreck.Decompiler
                     var gg = ReplaceGoToStatement(ctx, g);
                     ctx.RootStatements[ctx.RootStatements.IndexOf(g)] = gg;
                 }
-                else if (s is IfBlock ib)
+                else if (s is IfStatement ib)
                 {
                     for (int i = 0; i < ib.TruePart.Count; i++)
                     {
@@ -129,14 +129,14 @@ namespace Shipwreck.Decompiler
                 var first = context.GetSyntaxAt(c.TryOffset);
                 var tryIndex = context.RootStatements.IndexOf(first);
                 var nextIndex = context.RootStatements.IndexOf(context.GetSyntaxAt(c.TryOffset + c.TryLength));
-                var tb = first as TryBlock;
+                var tb = first as TryStatement;
                 if (tb == null || tryIndex + 1 < nextIndex)
                 {
                     //var sts = ctx.RootStatements.Skip(fi).Take(li - fi).SkipWhile(s => s is PopInstruction).ToArray();
                     var sts = context.RootStatements.Skip(tryIndex).Take(nextIndex - tryIndex).ToArray();
 
-                    tb = new TryBlock();
-                    tb.TryStatements.AddRange(sts.Cast<Statement>());
+                    tb = new TryStatement();
+                    tb.Block.AddRange(sts.Cast<Statement>());
 
                     context.RootStatements.RemoveRange(tryIndex, nextIndex - tryIndex);
                     context.RootStatements[tryIndex] = tb;
@@ -152,7 +152,7 @@ namespace Shipwreck.Decompiler
 
                     if (c.Flags == ExceptionHandlingClauseOptions.Finally)
                     {
-                        tb.FinallyStatements.AddRange(sts);
+                        tb.Finally.AddRange(sts);
                     }
                     else
                     {

@@ -4,19 +4,19 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class TryBlock : Statement
+    public sealed class TryStatement : Statement
     {
-        #region TryStatements
+        #region Block
 
-        private StatementCollection _TryStatements;
+        private StatementCollection _Block;
 
-        public StatementCollection TryStatements
-            => _TryStatements ?? (_TryStatements = new StatementCollection(this));
+        public StatementCollection Block
+            => _Block ?? (_Block = new StatementCollection(this));
 
-        public bool ShouldSerializeTryStatements()
-            => _TryStatements.ShouldSerialize();
+        public bool ShouldSerializeBlock()
+            => _Block.ShouldSerialize();
 
-        #endregion TryStatements
+        #endregion Block
 
         #region CatchClauses
 
@@ -30,32 +30,32 @@ namespace Shipwreck.Decompiler.Statements
 
         #endregion CatchClauses
 
-        #region FinallyStatements
+        #region Finally
 
-        private StatementCollection _FinallyStatements;
+        private StatementCollection _Finally;
 
-        public StatementCollection FinallyStatements
-            => _FinallyStatements ?? (_FinallyStatements = new StatementCollection(this));
+        public StatementCollection Finally
+            => _Finally ?? (_Finally = new StatementCollection(this));
 
         public bool ShouldSerializeFinallyStatements()
-            => _FinallyStatements.ShouldSerialize();
+            => _Finally.ShouldSerialize();
 
-        #endregion FinallyStatements
+        #endregion Finally
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is TryBlock gt
-                && _TryStatements.IsEquivalentTo(gt._TryStatements)
-                && _FinallyStatements.IsEquivalentTo(gt._FinallyStatements));
+            || (other is TryStatement gt
+                && _Block.IsEquivalentTo(gt._Block)
+                && _Finally.IsEquivalentTo(gt._Finally));
 
         public override void WriteTo(IndentedTextWriter writer)
         {
             writer.WriteLine("try");
             writer.WriteLine('{');
-            if (ShouldSerializeTryStatements())
+            if (ShouldSerializeBlock())
             {
                 writer.Indent++;
-                foreach (var s in _TryStatements)
+                foreach (var s in _Block)
                 {
                     s.WriteTo(writer);
                 }
@@ -96,7 +96,7 @@ namespace Shipwreck.Decompiler.Statements
                 writer.WriteLine("finally");
                 writer.WriteLine('{');
                 writer.Indent++;
-                foreach (var s in _FinallyStatements)
+                foreach (var s in _Finally)
                 {
                     s.WriteTo(writer);
                 }
@@ -120,8 +120,8 @@ namespace Shipwreck.Decompiler.Statements
                     }
 
                     iterReduced = false;
-                    var r = _TryStatements.ReduceBlock()
-                            | _FinallyStatements.ReduceBlock();
+                    var r = _Block.ReduceBlock()
+                            | _Finally.ReduceBlock();
                     thisReduced |= r;
                     iterReduced |= r;
 
@@ -145,9 +145,9 @@ namespace Shipwreck.Decompiler.Statements
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {
-            if (ShouldSerializeTryStatements())
+            if (ShouldSerializeBlock())
             {
-                yield return _TryStatements;
+                yield return _Block;
             }
 
             if (ShouldSerializeCatchClauses())
@@ -163,16 +163,16 @@ namespace Shipwreck.Decompiler.Statements
 
             if (ShouldSerializeFinallyStatements())
             {
-                yield return _FinallyStatements;
+                yield return _Finally;
             }
         }
 
         public override Statement Clone()
         {
-            var r = new TryBlock();
-            if (ShouldSerializeTryStatements())
+            var r = new TryStatement();
+            if (ShouldSerializeBlock())
             {
-                r.TryStatements.AddRange(_TryStatements.Select(s => s.Clone()));
+                r.Block.AddRange(_Block.Select(s => s.Clone()));
             }
 
             if (ShouldSerializeCatchClauses())
@@ -192,7 +192,7 @@ namespace Shipwreck.Decompiler.Statements
 
             if (ShouldSerializeFinallyStatements())
             {
-                r.FinallyStatements.AddRange(_FinallyStatements.Select(s => s.Clone()));
+                r.Finally.AddRange(_Finally.Select(s => s.Clone()));
             }
             return r;
         }
