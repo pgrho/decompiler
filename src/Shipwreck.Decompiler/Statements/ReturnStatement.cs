@@ -63,5 +63,8 @@ namespace Shipwreck.Decompiler.Statements
             }
             return reduced;
         }
+
+        public override Statement Clone()
+            => new ReturnStatement(Value);
     }
 }

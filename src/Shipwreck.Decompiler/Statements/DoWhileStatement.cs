@@ -122,5 +122,14 @@ namespace Shipwreck.Decompiler.Statements
 
             return thisReduced;
         }
+        public override Statement Clone()
+        {
+            var r = new DoWhileStatement(Condition);
+            if (ShouldSerializeStatements())
+            {
+                r.Statements.AddRange(_Statements.Select(s => s.Clone()));
+            }
+            return r;
+        }
     }
 }

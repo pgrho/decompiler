@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
@@ -110,10 +111,43 @@ namespace Shipwreck.Decompiler.Statements
                 }
                 while (iterReduced);
 
+                if (Collection.GetPreviousOf(this, out var i) is GoToStatement gt)
+                {
+                    var j = Statements.IndexOf(gt.Target);
+                    if (j == 0)
+                    {
+                        Collection.Remove(gt);
+                        return true;
+                    }
+                    else if (j > 0 && !Statements.Skip(j + 1).OfType<LabelTarget>().Any())
+                    {
+                        var sts = Statements.Skip(j + 1).Select(s => s.Clone()).ToArray();
+                        Collection.RemoveAt(i - 1);
+                        Collection.InsertRange(i - 1, sts);
+                        return true;
+                    }
+                }
+
                 // TODO: Determine the Statements is empty
             }
 
             return thisReduced;
+        }
+
+        public override Statement Clone()
+        {
+            var r = new ForStatement()
+            {
+                Initializer = Initializer,
+                Condition = Condition,
+                Iterator = Iterator
+            };
+
+            if (ShouldSerializeStatements())
+            {
+                r.Statements.AddRange(_Statements.Select(s => s.Clone()));
+            }
+            return r;
         }
     }
 }

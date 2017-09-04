@@ -47,5 +47,8 @@ namespace Shipwreck.Decompiler.Statements
 
             return base.Reduce();
         }
+
+        public override Statement Clone()
+            => new ExpressionStatement(Expression);
     }
 }

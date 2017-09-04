@@ -166,5 +166,35 @@ namespace Shipwreck.Decompiler.Statements
                 yield return _FinallyStatements;
             }
         }
+
+        public override Statement Clone()
+        {
+            var r = new TryBlock();
+            if (ShouldSerializeTryStatements())
+            {
+                r.TryStatements.AddRange(_TryStatements.Select(s => s.Clone()));
+            }
+
+            if (ShouldSerializeCatchClauses())
+            {
+                foreach (var cc in CatchClauses)
+                {
+                    var nc = new CatchClause(r, cc.CatchType);
+
+                    if (cc.ShouldSerializeStatements())
+                    {
+                        nc.Statements.AddRange(cc.Statements.Select(s => s.Clone()));
+                    }
+
+                    r.CatchClauses.Add(nc);
+                }
+            }
+
+            if (ShouldSerializeFinallyStatements())
+            {
+                r.FinallyStatements.AddRange(_FinallyStatements.Select(s => s.Clone()));
+            }
+            return r;
+        }
     }
 }

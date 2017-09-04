@@ -9,5 +9,9 @@ namespace Shipwreck.Decompiler.Statements
 
         public override void WriteTo(IndentedTextWriter writer)
             => writer.WriteLine("break;");
+
+
+        public override Statement Clone()
+            => new BreakStatement();
     }
 }

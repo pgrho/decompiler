@@ -21,5 +21,8 @@ namespace Shipwreck.Decompiler.Statements
             writer.Write(Target.ToString("x4"));
             writer.WriteLine(';');
         }
+
+        public override Statement Clone()
+            => new TemporalGoToStatement(Target);
     }
 }

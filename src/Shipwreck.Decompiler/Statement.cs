@@ -30,5 +30,7 @@ namespace Shipwreck.Decompiler
 
         public virtual IEnumerable<StatementCollection> GetChildCollections()
             => Enumerable.Empty<StatementCollection>();
+
+        public abstract Statement Clone();
     }
 }

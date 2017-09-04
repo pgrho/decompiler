@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,5 +41,8 @@ namespace Shipwreck.Decompiler.Statements
 
         internal IEnumerable<GoToStatement> ReferencedFrom()
             => this.TreeStatements().OfType<GoToStatement>().Where(g => g.Target == this);
+
+        public override Statement Clone()
+            => throw new NotSupportedException();
     }
 }

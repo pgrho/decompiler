@@ -251,5 +251,19 @@ namespace Shipwreck.Decompiler.Statements
                 yield return _FalsePart;
             }
         }
+
+        public override Statement Clone()
+        {
+            var r = new IfBlock(Condition);
+            if (ShouldSerializeTruePart())
+            {
+                r.TruePart.AddRange(_TruePart.Select(s => s.Clone()));
+            }
+            if (ShouldSerializeFalsePart())
+            {
+                r.FalsePart.AddRange(_FalsePart.Select(s => s.Clone()));
+            }
+            return r;
+        }
     }
 }
