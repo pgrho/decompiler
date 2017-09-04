@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using Shipwreck.Decompiler.Expressions;
-using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
@@ -59,11 +56,11 @@ namespace Shipwreck.Decompiler.Instructions
 
             switch (Operator)
             {
-                case UnaryOperator.Negate:
+                case UnaryOperator.UnaryNegation:
                     sb.Append("neg");
                     break;
 
-                case UnaryOperator.Not:
+                case UnaryOperator.OnesComplement:
                     sb.Append("not");
                     break;
 

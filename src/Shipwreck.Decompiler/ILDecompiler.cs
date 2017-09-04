@@ -291,7 +291,7 @@ namespace Shipwreck.Decompiler
 
                 case 0x65: // neg
                 case 0x66: // not
-                    return new UnaryInstruction(b == 0x65 ? UnaryOperator.Negate : UnaryOperator.Not);
+                    return new UnaryInstruction(b == 0x65 ? UnaryOperator.UnaryNegation : UnaryOperator.OnesComplement);
 
                 case 0x67: // conv.i1
                     return new ConvertInstruction(typeof(sbyte), false);

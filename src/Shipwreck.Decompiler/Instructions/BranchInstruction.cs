@@ -69,7 +69,7 @@ namespace Shipwreck.Decompiler.Instructions
 
                         if (BranchWhen == false)
                         {
-                            e = e.Negate();
+                            e = e.OnesComplement();
                         }
 
                         var ib = new IfBlock(e);

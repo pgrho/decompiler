@@ -21,6 +21,12 @@ namespace Shipwreck.Decompiler.Expressions
                 case BinaryOperator.Multiply:
                 case BinaryOperator.MultiplyChecked:
                 case BinaryOperator.Divide:
+                case BinaryOperator.Modulo:
+                case BinaryOperator.And:
+                case BinaryOperator.Or:
+                case BinaryOperator.ExclusiveOr:
+                case BinaryOperator.LeftShift:
+                case BinaryOperator.RightShift:
                     return true;
             }
             return false;
@@ -44,6 +50,30 @@ namespace Shipwreck.Decompiler.Expressions
 
                 case BinaryOperator.Divide:
                     return "/";
+
+                case BinaryOperator.Modulo:
+                    return "%";
+
+                case BinaryOperator.And:
+                    return "&";
+
+                case BinaryOperator.Or:
+                    return "|";
+
+                case BinaryOperator.ExclusiveOr:
+                    return "^";
+
+                case BinaryOperator.LeftShift:
+                    return "<<";
+
+                case BinaryOperator.RightShift:
+                    return ">>";
+
+                case BinaryOperator.AndAlso:
+                    return "&&";
+
+                case BinaryOperator.OrElse:
+                    return "||";
 
                 case BinaryOperator.Equal:
                     return "==";

@@ -11,6 +11,16 @@ namespace Shipwreck.Decompiler.Expressions
         Multiply,
         MultiplyChecked,
         Divide,
+        Modulo,
+
+        And,
+        Or,
+        ExclusiveOr,
+        LeftShift,
+        RightShift,
+
+        AndAlso,
+        OrElse,
 
         Equal,
         NotEqual,

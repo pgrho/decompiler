@@ -177,7 +177,7 @@ namespace Shipwreck.Decompiler.Statements
                         var items = FalsePart.ToArray();
                         FalsePart.Clear();
                         TruePart.AddRange(items);
-                        Condition = Condition.Negate();
+                        Condition = Condition.OnesComplement();
                     }
                     else
                     {
@@ -217,7 +217,7 @@ namespace Shipwreck.Decompiler.Statements
                             }
                             else if (block == _FalsePart && !ShouldSerializeTruePart())
                             {
-                                c = Condition.Negate().Reduce();
+                                c = Condition.OnesComplement().Reduce();
                             }
                             else
                             {

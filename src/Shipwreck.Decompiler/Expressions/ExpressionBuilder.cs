@@ -37,11 +37,26 @@ namespace Shipwreck.Decompiler.Expressions
         public static UnaryExpression MakeUnary(this Expression operand, UnaryOperator @operator)
             => new UnaryExpression(operand, @operator);
 
-        public static UnaryExpression Not(this Expression operand)
-            => operand.MakeUnary(UnaryOperator.Not);
-
         public static UnaryExpression Negate(this Expression operand)
-            => operand.MakeUnary(UnaryOperator.Negate);
+            => operand.MakeUnary(UnaryOperator.UnaryNegation);
+
+        public static UnaryExpression LogicalNot(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.LogicalNot);
+
+        public static UnaryExpression OnesComplement(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.OnesComplement);
+
+        public static UnaryExpression PostIncrement(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.PostIncrement);
+
+        public static UnaryExpression PostDecrement(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.PostDecrement);
+
+        public static UnaryExpression PreIncrement(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.PreIncrement);
+
+        public static UnaryExpression PreDecrement(this Expression operand)
+            => operand.MakeUnary(UnaryOperator.PreDecrement);
 
         public static UnaryExpression Convert(this Expression operand, Type type)
             => new UnaryExpression(operand, UnaryOperator.Convert, type);
@@ -76,6 +91,48 @@ namespace Shipwreck.Decompiler.Expressions
 
         public static BinaryExpression Divide(this Expression left, Expression right)
             => left.MakeBinary(right, BinaryOperator.Divide);
+
+        public static BinaryExpression Modulo(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Modulo);
+
+        public static BinaryExpression And(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.And);
+
+        public static BinaryExpression Or(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Or);
+
+        public static BinaryExpression ExclusiveOr(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.ExclusiveOr);
+
+        public static BinaryExpression LeftShift(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.LeftShift);
+
+        public static BinaryExpression RightShift(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.RightShift);
+
+        public static BinaryExpression AndAlso(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.AndAlso);
+
+        public static BinaryExpression OrElse(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.OrElse);
+
+        public static BinaryExpression Equal(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.Equal);
+
+        public static BinaryExpression NotEqual(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.NotEqual);
+
+        public static BinaryExpression GreaterThan(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.GreaterThan);
+
+        public static BinaryExpression GreaterThanOrEqual(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.GreaterThanOrEqual);
+
+        public static BinaryExpression LessThan(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.LessThan);
+
+        public static BinaryExpression LessThanOrEqual(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.LessThanOrEqual);
 
         #endregion BinaryExpression
 

@@ -7,14 +7,9 @@ namespace Shipwreck.Decompiler.Expressions
     {
         public UnaryExpression(Expression operand, UnaryOperator @operator)
         {
-            switch (@operator)
+            if (@operator.IsConvert())
             {
-                case UnaryOperator.Negate:
-                case UnaryOperator.Not:
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported {nameof(@operator)}");
+                throw new ArgumentException($"Unsupported {nameof(@operator)}");
             }
 
             operand.ArgumentIsNotNull(nameof(operand));
@@ -25,14 +20,9 @@ namespace Shipwreck.Decompiler.Expressions
 
         public UnaryExpression(Expression operand, UnaryOperator @operator, Type type)
         {
-            switch (@operator)
+            if (!@operator.IsConvert())
             {
-                case UnaryOperator.Convert:
-                case UnaryOperator.ConvertChecked:
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported {nameof(@operator)}");
+                throw new ArgumentException($"Unsupported {nameof(@operator)}");
             }
 
             operand.ArgumentIsNotNull(nameof(operand));
@@ -60,12 +50,32 @@ namespace Shipwreck.Decompiler.Expressions
         {
             switch (Operator)
             {
-                case UnaryOperator.Not:
+                case UnaryOperator.UnaryPlus:
+                    writer.Write('+');
+                    break;
+
+                case UnaryOperator.UnaryNegation:
+                    writer.Write('-');
+                    break;
+
+                case UnaryOperator.LogicalNot:
+                    writer.Write('!');
+                    break;
+
+                case UnaryOperator.OnesComplement:
                     writer.Write('~');
                     break;
 
-                case UnaryOperator.Negate:
-                    writer.Write('!'); // TODO: minus sign for non-bool operand
+                case UnaryOperator.PreIncrement:
+                    writer.Write("++");
+                    break;
+
+                case UnaryOperator.PreDecrement:
+                    writer.Write("--");
+                    break;
+
+                case UnaryOperator.PostIncrement:
+                case UnaryOperator.PostDecrement:
                     break;
 
                 case UnaryOperator.Convert:
@@ -82,14 +92,27 @@ namespace Shipwreck.Decompiler.Expressions
             writer.Write('(');
             Operand.WriteTo(writer);
             writer.Write(')');
+
+            if (Operator == UnaryOperator.PostIncrement)
+            {
+                writer.Write("++");
+            }
+            else if (Operator == UnaryOperator.PostDecrement)
+            {
+                writer.Write("--");
+            }
         }
 
         internal override Expression ReduceCore()
         {
             switch (Operator)
             {
-                case UnaryOperator.Negate:
-                case UnaryOperator.Not:
+                case UnaryOperator.UnaryPlus:
+                    return Operand;
+
+                case UnaryOperator.UnaryNegation:
+                case UnaryOperator.LogicalNot:
+                case UnaryOperator.OnesComplement:
                     if (Operand is UnaryExpression u && u.Operator == Operator)
                     {
                         return u.Operand;
@@ -118,14 +141,6 @@ namespace Shipwreck.Decompiler.Expressions
         }
 
         private static UnaryExpression Create(Expression operand, UnaryOperator @operator, Type type)
-        {
-            switch (@operator)
-            {
-                case UnaryOperator.Negate:
-                case UnaryOperator.Not:
-                    return new UnaryExpression(operand, @operator);
-            }
-            return new UnaryExpression(operand, @operator, type);
-        }
+            => @operator.IsConvert() ? new UnaryExpression(operand, @operator, type) : new UnaryExpression(operand, @operator);
     }
 }
