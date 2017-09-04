@@ -61,15 +61,51 @@ namespace Shipwreck.Decompiler.Statements
                 }
                 else
                 {
-                    var cs = this.Ancestors().OfType<IContinuableStatement>().FirstOrDefault();
+                    var isLast = i == Collection.Count - 1;
+                    var continuable = true;
+                    var breakable = true;
+                    var ans = Collection.Owner as Statement;
 
-                    if (cs != null && cs.ShouldSerializeStatements())
+                    // TODO: consider finally block
+                    while ((isLast || continuable || breakable)
+                        && ans?.Collection != null)
                     {
-                        if (cs.Statements.LastOrDefault() == Target)
+                        var inBreakable = ans.Collection.Owner is IBreakableStatement;
+                        var inLoop = ans.Collection.Owner is IContinuableStatement;
+
+                        var ai = ans.Collection.IndexOf(ans);
+                        var k = ans.Collection.IndexOf(Target);
+
+                        if (k >= 0)
                         {
-                            Collection[i] = new ContinueStatement();
-                            return true;
+                            if (k == ai + 1)
+                            {
+                                if (isLast && !inLoop)
+                                {
+                                    Collection.RemoveAt(i);
+                                    return true;
+                                }
+                                if (breakable && inBreakable)
+                                {
+                                    Collection[i] = new BreakStatement();
+                                    return true;
+                                }
+                            }
+                            else if (k == ans.Collection.Count - 1)
+                            {
+                                if (continuable && inLoop)
+                                {
+                                    Collection[i] = new ContinueStatement();
+                                    return true;
+                                }
+                            }
                         }
+
+                        isLast &= ai == ans.Collection.Count - 1;
+                        continuable &= !inLoop;
+                        breakable &= !inBreakable;
+
+                        ans = ans.Collection.Owner as Statement;
                     }
                 }
             }

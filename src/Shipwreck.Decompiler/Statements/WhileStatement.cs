@@ -102,19 +102,10 @@ namespace Shipwreck.Decompiler.Statements
                 bool iterReduced;
                 do
                 {
-                    iterReduced = false;
-                    if (_Statements != null)
-                    {
-                        foreach (var s in _Statements)
-                        {
-                            if (s.Reduce())
-                            {
-                                thisReduced = iterReduced = true;
-                                break;
-                            }
-                        }
-                    }
-                } while (iterReduced);
+                    iterReduced = _Statements.ReduceBlock();
+                    thisReduced |= iterReduced;
+                }
+                while (iterReduced);
 
                 // TODO: Determine the Statements is empty
             }

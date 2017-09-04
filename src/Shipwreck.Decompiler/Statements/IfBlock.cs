@@ -141,30 +141,13 @@ namespace Shipwreck.Decompiler.Statements
                     iterReduced = false;
                     if (_TruePart != null)
                     {
-                        foreach (var s in _TruePart)
-                        {
-                            if (s.Reduce())
-                            {
-                                thisReduced = iterReduced = true;
-                                break;
-                            }
-                        }
-
-                        var r = ReduceLastGoto(_TruePart);
+                        var r = _TruePart.ReduceBlock() | ReduceLastGoto(_TruePart);
                         thisReduced |= r;
                         iterReduced |= r;
                     }
                     if (_FalsePart != null)
                     {
-                        foreach (var s in _FalsePart)
-                        {
-                            if (s.Reduce())
-                            {
-                                thisReduced = iterReduced = true;
-                                break;
-                            }
-                        }
-                        var r = ReduceLastGoto(_FalsePart);
+                        var r = _FalsePart.ReduceBlock() | ReduceLastGoto(_FalsePart);
                         thisReduced |= r;
                         iterReduced |= r;
                     }

@@ -80,6 +80,11 @@ namespace Shipwreck.Decompiler.Statements
                     Condition = e;
                     thisReduced = true;
                 }
+                else if (Condition is ConstantExpression ce && true.Equals(ce.Value))
+                {
+                    Condition = null;
+                    thisReduced = true;
+                }
             }
             if (Iterator != null)
             {
@@ -100,16 +105,8 @@ namespace Shipwreck.Decompiler.Statements
                 bool iterReduced;
                 do
                 {
-                    iterReduced = false; if (_Statements != null)
-                    {
-                        foreach (var s in _Statements)
-                        {
-                            if (s.Reduce())
-                            {
-                                thisReduced = iterReduced = true; break;
-                            }
-                        }
-                    }
+                    iterReduced = _Statements.ReduceBlock();
+                    thisReduced |= iterReduced;
                 }
                 while (iterReduced);
 
