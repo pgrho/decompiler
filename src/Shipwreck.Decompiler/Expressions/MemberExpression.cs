@@ -4,23 +4,40 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class PropertyExpression : Expression
+    public sealed class MemberExpression : Expression
     {
-        public PropertyExpression(PropertyInfo property)
-            : this(null, property)
+        public MemberExpression(MemberInfo member)
+            : this(null, member)
         {
         }
 
-        public PropertyExpression(Expression @object, PropertyInfo property)
+        public MemberExpression(Expression @object, MemberInfo member)
         {
-            property.ArgumentIsNotNull(nameof(property));
+            member.ArgumentIsNotNull(nameof(member));
 
-            var isStatic = (property.GetMethod ?? property.SetMethod).IsStatic;
+            bool isStatic;
+            if (member is PropertyInfo p)
+            {
+                isStatic = (p.GetMethod ?? p.SetMethod).IsStatic;
+            }
+            else if (member is FieldInfo f)
+            {
+                isStatic = f.IsStatic;
+            }
+            else if (member is EventInfo e)
+            {
+                isStatic = (e.AddMethod ?? e.RemoveMethod).IsStatic;
+            }
+            else
+            {
+                throw new ArgumentException($"{nameof(member)} must be a {nameof(PropertyInfo)}, {nameof(FieldInfo)} or {nameof(EventInfo)}");
+            }
+
             if (@object == null)
             {
                 if (!isStatic)
                 {
-                    throw new ArgumentException($"{nameof(@object)} must be specified if the {nameof(property)} is not static.");
+                    throw new ArgumentException($"{nameof(@object)} must be specified if the {nameof(member)} is not static.");
                 }
             }
             else
@@ -29,24 +46,24 @@ namespace Shipwreck.Decompiler.Expressions
             }
 
             Object = @object;
-            Property = property;
+            Member = member;
         }
 
         public Expression Object { get; }
 
-        public PropertyInfo Property { get; }
+        public MemberInfo Member { get; }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is PropertyExpression ne
+            || (other is MemberExpression ne
                 && (Object?.IsEquivalentTo(ne.Object) ?? ne.Object == null)
-                && Property == ne.Property);
+                && Member == ne.Member);
 
         public override void WriteTo(TextWriter writer)
         {
             if (Object == null)
             {
-                writer.Write(Property.DeclaringType.FullName);
+                writer.Write(Member.DeclaringType.FullName);
             }
             else
             {
@@ -55,19 +72,19 @@ namespace Shipwreck.Decompiler.Expressions
                 writer.Write(')');
             }
             writer.Write('.');
-            writer.Write(Property.Name);
+            writer.Write(Member.Name);
         }
 
         internal override Expression ReduceCore()
         {
             var o = Object?.ReduceCore();
-            return o != Object ? o?.Property(Property) : this;
+            return o != Object ? o?.MakeMemberAccess(Member) : this;
         }
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
             var o = Object?.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
-            return o != Object ? o?.Property(Property) : this;
+            return o != Object ? o?.MakeMemberAccess(Member) : this;
         }
     }
 }

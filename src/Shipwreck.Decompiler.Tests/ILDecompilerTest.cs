@@ -560,6 +560,27 @@ namespace Shipwreck.Decompiler
 
         #endregion Property
 
+        #region Event
+
+        private static void AddEvent(Process p, EventHandler h)
+            => p.Exited += h;
+
+        private static void RemoveEvent(Process p, EventHandler h)
+            => p.Exited -= h;
+
+        [Theory]
+        [InlineData(nameof(AddEvent), true)]
+        [InlineData(nameof(RemoveEvent), false)]
+        public void EventTest(string methodName, bool isAdd)
+            => AssertMethod(
+                GetMethod(methodName),
+                new ParameterExpression("p", typeof(Process))
+                    .MakeMemberAccess(typeof(Process).GetEvent(nameof(Process.Exited)))
+                    .Assign(new ParameterExpression("h", typeof(EventHandler)), isAdd ? BinaryOperator.Add : BinaryOperator.Subtract)
+                    .ToReturnStatement());
+
+        #endregion Event
+
         #region Branch
 
         private static int BranchTrue(bool c, int a)

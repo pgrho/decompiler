@@ -109,10 +109,18 @@ namespace Shipwreck.Decompiler.Expressions
 
         #region Property
 
-        public static PropertyExpression Property(this Expression @object, PropertyInfo property)
-            => new PropertyExpression(@object, property);
+        public static MemberExpression MakeMemberAccess(this Expression @object, MemberInfo member)
+            => new MemberExpression(@object, member);
 
-        // TODO:   public static PropertyExpression Property(this Expression @object, string propertyName)=>@object.Property(@object.Type.GetProperty(propertyName));
+        public static MemberExpression Property(this Expression @object, PropertyInfo property)
+            => new MemberExpression(@object, property);
+
+        // TODO:   public static MemberExpression Property(this Expression @object, string propertyName)=>@object.Property(@object.Type.GetProperty(propertyName));
+
+        public static MemberExpression Event(this Expression @object, EventInfo property)
+            => new MemberExpression(@object, property);
+
+        // TODO:   public static MemberExpression Event(this Expression @object, string propertyName)=>@object.Property(@object.Type.GetEvent(propertyName));
 
         public static IndexExpression MakeIndex(this Expression @object, params Expression[] parameters)
             => new IndexExpression(@object, parameters);
