@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -44,6 +45,29 @@ namespace Shipwreck.Decompiler.Statements
                             }
                         }
                     }
+
+                    if (!(block.Owner is TryStatement ts && block == ts.Finally)
+                        && !(block.Owner is IContinuableStatement))
+                    {
+                        var ls = block.LastOrDefault();
+
+                        if (!ls.IsBreaking()
+                            || (block.Owner is SwitchStatement && ls is BreakStatement))
+                        {
+                            var ns = block.NextStatement();
+
+                            // TODO: support throw
+                            if (ns is ReturnStatement)
+                            {
+                                if (ls is BreakStatement)
+                                {
+                                    block.RemoveAt(block.Count - 1);
+                                }
+                                block.Add(ns.Clone());
+                                reduced = iter = true;
+                            }
+                        }
+                    }
                 } while (iter);
 
                 return reduced;
@@ -52,12 +76,33 @@ namespace Shipwreck.Decompiler.Statements
             return false;
         }
 
+        internal static Statement NextStatement(this StatementCollection block)
+        {
+            if (block.Owner?.Collection == null || block.Owner is IContinuableStatement)
+            {
+                return null;
+            }
+
+            return block.Owner.Collection.GetNextOf(block.Owner as Statement, out _)
+                    ?? block.Owner.Collection.NextStatement();
+        }
+
         public static Statement GetPreviousOf(this StatementCollection collection, Statement statement, out int i)
         {
             i = collection?.IndexOf(statement) ?? -1;
             if (i > 0)
             {
                 return collection[i - 1];
+            }
+            return null;
+        }
+
+        public static Statement GetNextOf(this StatementCollection collection, Statement statement, out int i)
+        {
+            i = collection?.IndexOf(statement) ?? -1;
+            if (0 <= i && i + 1 < collection.Count)
+            {
+                return collection[i + 1];
             }
             return null;
         }
