@@ -59,5 +59,47 @@ namespace Shipwreck.Decompiler.Statements
             rc.RemoveAt(ri);
             rc.InsertRange(ri, newStatements);
         }
+
+        internal static bool IsBreaking(this Statement s, bool allowBreak = true)
+        {
+            if (s == null)
+            {
+                return false;
+            }
+            if (s is IBreakingStatement)
+            {
+                return true;
+            }
+
+            if (!(s is IContinuableStatement))
+            {
+                if (s is TryStatement ts)
+                {
+                    var l = ts.Block.LastOrDefault();
+                    if (!l.IsBreaking(allowBreak) || (!allowBreak && l is BreakStatement))
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    allowBreak &= !(s is IBreakableStatement);
+                    var hasCollection = false;
+                    foreach (var sc in s.GetChildCollections())
+                    {
+                        var l = sc.LastOrDefault();
+                        if (!l.IsBreaking(allowBreak) || (!allowBreak && l is BreakStatement))
+                        {
+                            return false;
+                        }
+                        hasCollection = true;
+                    }
+                    return hasCollection;
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -160,7 +160,7 @@ namespace Shipwreck.Decompiler.Statements
                         var items = FalsePart.ToArray();
                         FalsePart.Clear();
                         TruePart.AddRange(items);
-                        Condition = Condition.OnesComplement();
+                        Condition = Condition.LogicalNot();
                     }
                     else
                     {

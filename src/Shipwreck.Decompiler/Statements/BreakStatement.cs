@@ -2,7 +2,7 @@ using System.CodeDom.Compiler;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class BreakStatement : Statement
+    public sealed class BreakStatement : Statement, IBreakingStatement
     {
         public override bool IsEquivalentTo(Syntax other)
             => other is BreakStatement;

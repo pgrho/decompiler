@@ -115,16 +115,7 @@ namespace Shipwreck.Decompiler
 
             do
             {
-                transformed = false;
-                for (int i = 0; i < dm.RootStatements.Count; i++)
-                {
-                    // TODO: replace goto to block
-                    if (dm.RootStatements[i].Reduce())
-                    {
-                        transformed = true;
-                        break;
-                    }
-                }
+                transformed = dm.RootStatements.ReduceBlock();
             } while (transformed);
 
             // TODO: reduce variable scope

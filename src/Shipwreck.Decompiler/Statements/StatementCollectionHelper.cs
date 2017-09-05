@@ -11,13 +11,42 @@ namespace Shipwreck.Decompiler.Statements
         {
             if (block != null)
             {
-                foreach (var s in block)
+                var reduced = false;
+                bool iter;
+                do
                 {
-                    if (s.Reduce())
+                    iter = false;
+                    for (var i = 0; i < block.Count; i++)
                     {
-                        return true;
+                        var s = block[i];
+
+                        if (s.Reduce())
+                        {
+                            reduced = iter = true;
+                            break;
+                        }
+                        else if (s.IsBreaking())
+                        {
+                            while (i + 1 < block.Count)
+                            {
+                                var ns = block[i + 1];
+                                if (ns.HasLabel())
+                                {
+                                    break;
+                                }
+
+                                block.RemoveAt(i + 1);
+                                reduced = iter = true;
+                            }
+                            if (iter)
+                            {
+                                break;
+                            }
+                        }
                     }
-                }
+                } while (iter);
+
+                return reduced;
             }
 
             return false;
