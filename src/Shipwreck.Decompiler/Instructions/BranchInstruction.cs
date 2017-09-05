@@ -1,3 +1,4 @@
+using System.Reflection.Emit;
 using Shipwreck.Decompiler.Expressions;
 using Shipwreck.Decompiler.Statements;
 
@@ -12,6 +13,9 @@ namespace Shipwreck.Decompiler.Instructions
         }
 
         public bool? BranchWhen { get; }
+
+        public override FlowControl FlowControl 
+            => BranchWhen == null ? FlowControl.Branch : FlowControl.Cond_Branch;
 
         public override int PopCount
             => BranchWhen != null ? 1 : 0;

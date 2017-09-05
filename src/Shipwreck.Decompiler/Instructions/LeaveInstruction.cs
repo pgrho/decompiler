@@ -1,3 +1,5 @@
+using System.Reflection.Emit;
+
 namespace Shipwreck.Decompiler.Instructions
 {
     public sealed class LeaveInstruction : BranchInstructionBase
@@ -6,6 +8,9 @@ namespace Shipwreck.Decompiler.Instructions
             : base(target)
         {
         }
+
+        public override FlowControl FlowControl
+            => FlowControl.Branch;
 
         public override int PopCount
             => 0;

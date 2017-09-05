@@ -805,6 +805,35 @@ namespace Shipwreck.Decompiler
 
         #endregion Branch
 
+        #region Switch
+
+        private static int Switch(int a)
+        {
+            switch (a)
+            {
+                case 1:
+                    return 1;
+
+                case 3:
+                    return 333;
+
+                case 5:
+                    return 55555;
+
+                case 7:
+                    return 7777777;
+            }
+            return -1;
+        }
+
+        [Fact]
+        public void SwitchTest()
+        {
+            AssertMethod(GetMethod(nameof(Switch)));
+        }
+
+        #endregion Switch
+
         #region Try-Catch
 
         private static int TryCatch(int a, int b)

@@ -12,9 +12,6 @@ namespace Shipwreck.Decompiler.Instructions
             Target = target;
         }
 
-        public override FlowControl FlowControl
-            => FlowControl.Branch;
-
         public override int PushCount
             => 0;
 

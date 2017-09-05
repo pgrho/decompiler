@@ -87,6 +87,20 @@ namespace Shipwreck.Decompiler
                         }
                     }
                 }
+                else if (s is SwitchStatement ss)
+                {
+                    foreach (var sec in ss.Sections)
+                    {
+                        for (int i = 0; i < sec.Statements.Count; i++)
+                        {
+                            if (sec.Statements[i] is TemporalGoToStatement cg)
+                            {
+                                var gg = ReplaceGoToStatement(ctx, cg);
+                                sec.Statements[i] = gg;
+                            }
+                        }
+                    }
+                }
             }
 
             InsertTryBlocks(ctx);
@@ -335,6 +349,24 @@ namespace Shipwreck.Decompiler
                         var u = b >= 0x40;
 
                         return new BranchBinaryInstruction(t, op, u);
+                    }
+                case 0x45: // switch {N} {t1} {t2}...{tN}
+                    {
+                        i++;
+                        var n = *(int*)(bp + i);
+
+                        var ba = i + (n + 1) * 4;
+
+                        var targets = new int[n];
+
+                        for (var j = 0; j < n; j++)
+                        {
+                            i += 4;
+                            targets[j] = ba + *(int*)(bp + i);
+                        }
+                        i += 3;
+
+                        return new SwitchInstruction(targets);
                     }
 
                 case 0x58: // add
@@ -621,7 +653,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Stind_Ref
                 // TODO: OpCodes.Stobj
                 // TODO: OpCodes.Stsfld
-                // TODO: OpCodes.Switch
                 // TODO: OpCodes.Tailcall
                 // TODO: OpCodes.Throw
                 // TODO: OpCodes.Unaligned

@@ -22,7 +22,7 @@ namespace Shipwreck.Decompiler.Instructions
         public bool IsUnsigned { get; }
 
         public override FlowControl FlowControl
-            => FlowControl.Branch;
+            => FlowControl.Cond_Branch;
 
         public override int PushCount
             => 0;
