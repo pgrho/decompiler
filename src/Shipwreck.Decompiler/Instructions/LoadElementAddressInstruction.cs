@@ -2,15 +2,15 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class LoadElementInstruction : BinaryExpressionInstruction
+    public sealed class LoadElementAddressInstruction : BinaryExpressionInstruction
     {
         internal override Expression CreateExpression(Expression arg1, Expression arg2)
-            => arg1.MakeIndex(arg2);
+            => arg1.MakeIndex(arg2).AddressOf();
 
         public override bool IsEquivalentTo(Syntax other)
-            => this == other || other is LoadElementInstruction;
+            => this == other || other is LoadElementAddressInstruction;
 
         public override string ToString()
-            => "ldelem";
+            => "ldelema";
     }
 }

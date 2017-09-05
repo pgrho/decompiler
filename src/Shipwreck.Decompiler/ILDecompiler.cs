@@ -228,8 +228,14 @@ namespace Shipwreck.Decompiler
                 case 0x0f: // ldarga.s {index}
                     return new LoadArgumentAddressInstruction(bp[++i]);
 
+                case 0x10: // starg.s {index}
+                    return new StoreArgumentInstruction(bp[++i]);
+
                 case 0x11: // ldloc.s {index}
                     return new LoadLocalInstruction(bp[++i]);
+
+                case 0x12: // ldloca.s {index}
+                    return new LoadLocalAddressInstruction(bp[++i]);
 
                 case 0x13: // stloc.s {index}
                     return new StoreLocalInstruction(bp[++i]);
@@ -435,12 +441,28 @@ namespace Shipwreck.Decompiler
                     i += 4;
                     return new LoadStringInstruction(context.Method.Module.ResolveString(*(int*)(bp + i - 3)));
 
-                case 0x73: // newobj
+                case 0x73: // newobj {.ctor}
                     i += 4;
                     return new NewObjectInstruction((ConstructorInfo)context.Method.Module.ResolveMethod(*(int*)(bp + i - 3)));
 
                 case 0x76: // conv.r.un
                     return new ConvertInstruction(typeof(double), false, true);
+
+                case 0x7b: // ldfld
+                    i += 4;
+                    return new LoadFieldInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
+
+                case 0x7c: // ldflda
+                    i += 4;
+                    return new LoadFieldAddressInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
+
+                case 0x7e: // ldsfld
+                    i += 4;
+                    return new LoadStaticFieldInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
+
+                case 0x7f: // ldsflda
+                    i += 4;
+                    return new LoadStaticFieldAddressInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
 
                 case 0x82: // conv.ovf.i1.un
                     return new ConvertInstruction(typeof(sbyte), true, true);
@@ -472,6 +494,17 @@ namespace Shipwreck.Decompiler
                 case 0x8b: // conv.ovf.u.un
                     return new ConvertInstruction(typeof(UIntPtr), true, true);
 
+                case 0x8d: // newarr {type}
+                    i += 4;
+                    return new NewArrayInstruction(context.Method.Module.ResolveType(*(int*)(bp + i - 3)));
+
+                case 0x8e: // ldlen
+                    return new LoadLengthInstruction();
+
+                case 0x8f:// ldelema {type}
+                    i += 4;
+                    return new LoadElementAddressInstruction();
+
                 case 0x90: // ldelem.i1
                 case 0x91: // ldelem.u1
                 case 0x92: // ldelem.i2
@@ -485,10 +518,25 @@ namespace Shipwreck.Decompiler
                 case 0x9a: // ldelem.ref
                     return new LoadElementInstruction();
 
+                case 0x9b: // stelem.i
+                case 0x9c: // stelem.i1
+                case 0x9d: // stelem.i2
+                case 0x9e: // stelem.i4
+                case 0x9f: // stelem.i8
+                case 0xa0: // stelem.r4
+                case 0xa1: // stelem.r8
+                case 0xa2: // stelem.ref
+                    return new StoreElementInstruction();
+
                 case 0xa3: // ldelem {type}
                     // method.Module.ResolveType( *(int*)(bp + i + 1))
                     i += 4;
                     return new LoadElementInstruction();
+
+                case 0xa4: // stelem {type}
+                    // method.Module.ResolveType( *(int*)(bp + i + 1))
+                    i += 4;
+                    return new StoreElementInstruction();
 
                 case 0xb3: // conv.ovf.i1
                     return new ConvertInstruction(typeof(sbyte), true);
@@ -558,9 +606,25 @@ namespace Shipwreck.Decompiler
                             i += 2;
                             return new LoadArgumentAddressInstruction(*(ushort*)(bp + i - 1));
 
+                        case 0x0b: //starg {index}
+                            i += 2;
+                            return new StoreArgumentInstruction(*(ushort*)(bp + i - 1));
+
                         case 0x0c: //ldloc {index}
                             i += 2;
                             return new LoadLocalInstruction(*(ushort*)(bp + i - 1));
+
+                        case 0x0d: //ldloca {index}
+                            i += 2;
+                            return new LoadLocalAddressInstruction(*(ushort*)(bp + i - 1));
+
+                        case 0x0e: // stloc {index}
+                            i += 2;
+                            return new StoreLocalInstruction(*(ushort*)(bp + i - 1));
+
+                        case 0x15: // initobj {type}
+                            i += 4;
+                            return new InitObjectInstruction(context.Method.Module.ResolveType(*(int*)(bp + i - 3)));
 
                         case 0x16: // constrained {type}
                             i += 4;
@@ -579,12 +643,8 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Cpobj
                 // TODO: OpCodes.Endfilter
                 // TODO: OpCodes.Initblk
-                // TODO: OpCodes.Initobj
                 // TODO: OpCodes.Isinst
                 // TODO: OpCodes.Jmp
-                // TODO: OpCodes.Ldelema
-                // TODO: OpCodes.Ldfld
-                // TODO: OpCodes.Ldflda
                 // TODO: OpCodes.Ldftn
                 // TODO: OpCodes.Ldind_I
                 // TODO: OpCodes.Ldind_I1
@@ -597,18 +657,11 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Ldind_U1
                 // TODO: OpCodes.Ldind_U2
                 // TODO: OpCodes.Ldind_U4
-                // TODO: OpCodes.Ldlen
-                // TODO: OpCodes.Ldloca
-                // TODO: OpCodes.Ldloca_S
                 // TODO: OpCodes.Ldobj
-                // TODO: OpCodes.Ldsfld
-                // TODO: OpCodes.Ldsflda
                 // TODO: OpCodes.Ldtoken
                 // TODO: OpCodes.Ldvirtftn
                 // TODO: OpCodes.Localloc
                 // TODO: OpCodes.Mkrefany
-                // TODO: OpCodes.Newarr
-                // TODO: OpCodes.Pop
                 // TODO: OpCodes.Prefix1
                 // TODO: OpCodes.Prefix2
                 // TODO: OpCodes.Prefix3
@@ -622,17 +675,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Refanyval
                 // TODO: OpCodes.Rethrow
                 // TODO: OpCodes.Sizeof
-                // TODO: OpCodes.Starg
-                // TODO: OpCodes.Starg_S
-                // TODO: OpCodes.Stelem
-                // TODO: OpCodes.Stelem_I
-                // TODO: OpCodes.Stelem_I1
-                // TODO: OpCodes.Stelem_I2
-                // TODO: OpCodes.Stelem_I4
-                // TODO: OpCodes.Stelem_I8
-                // TODO: OpCodes.Stelem_R4
-                // TODO: OpCodes.Stelem_R8
-                // TODO: OpCodes.Stelem_Ref
                 // TODO: OpCodes.Stfld
                 // TODO: OpCodes.Stind_I
                 // TODO: OpCodes.Stind_I1

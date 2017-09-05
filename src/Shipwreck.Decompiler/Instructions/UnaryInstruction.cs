@@ -1,12 +1,11 @@
 using System;
-using System.Reflection.Emit;
+using System.Reflection;
 using System.Text;
 using Shipwreck.Decompiler.Expressions;
-using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class UnaryInstruction : Instruction
+    public sealed class UnaryInstruction : UnaryExpressionInstruction
     {
         public UnaryInstruction(UnaryOperator @operator)
         {
@@ -15,40 +14,12 @@ namespace Shipwreck.Decompiler.Instructions
 
         public UnaryOperator Operator { get; }
 
-        public override FlowControl FlowControl
-            => FlowControl.Next;
-
-        public override int PopCount
-            => 1;
-
-        public override int PushCount
-            => 1;
-
-        internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
-        {
-            if (context.GetFromCount(this) <= 1 && index > 0)
-            {
-                var j = index - 1;
-                if (context.TryCreateExpression(ref j, out var e))
-                {
-                    index = j;
-                    expression = e.MakeUnary(Operator);
-                    return true;
-                }
-            }
-            expression = null;
-            return false;
-        }
-
-        internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
-        {
-            statement = null;
-            return false;
-        }
+        internal override Expression CreateExpression(DecompilationContext context, Expression value)
+            => value.MakeUnary(Operator);
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is UnaryInstruction ui
-                && Operator == ui.Operator;
+            => this == other
+            || (other is UnaryInstruction ui && Operator == ui.Operator);
 
         public override string ToString()
         {

@@ -2,9 +2,9 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class StoreLocalInstruction : UnaryAssignmentInstruction
+    public sealed class StoreArgumentInstruction : UnaryAssignmentInstruction
     {
-        public StoreLocalInstruction(int index)
+        public StoreArgumentInstruction(int index)
         {
             Index = index;
         }
@@ -12,13 +12,13 @@ namespace Shipwreck.Decompiler.Instructions
         public int Index { get; }
 
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
-                => new VariableExpression(Index, context.Method.GetMethodBody().LocalVariables[Index].LocalType).Assign(value);
+            => context.GetParameter(context.Method.IsStatic ? Index : (Index - 1)).Assign(value);
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
-            || (other is StoreLocalInstruction sl && Index == sl.Index);
+            || (other is StoreArgumentInstruction sl && Index == sl.Index);
 
         public override string ToString()
-            => $"stloc {Index}";
+            => $"starg {Index}";
     }
 }

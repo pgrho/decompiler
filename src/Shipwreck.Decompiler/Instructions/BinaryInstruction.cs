@@ -1,12 +1,10 @@
 using System;
-using System.Reflection.Emit;
 using System.Text;
 using Shipwreck.Decompiler.Expressions;
-using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public sealed class BinaryInstruction : BinaryInstructionBase
+    public sealed class BinaryInstruction : BinaryExpressionInstruction
     {
         public BinaryInstruction(BinaryOperator @operator, bool unsigned = false)
         {
@@ -18,45 +16,11 @@ namespace Shipwreck.Decompiler.Instructions
 
         public bool IsUnsigned { get; }
 
-        public override FlowControl FlowControl
-            => FlowControl.Next;
-
-        public override int PushCount
-            => 1;
-
-        internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
-        {
-            if (TryCreateOperands(context, ref index, out var l, out var r))
-            {
-                if (IsUnsigned)
-                {
-                    switch (Operator)
-                    {
-                        case BinaryOperator.LeftShift:
-                        case BinaryOperator.RightShift:
-                            expression = l.AsUnsigned().MakeBinary(r, Operator);
-                            break;
-
-                        default:
-                            expression = l.AsUnsigned().MakeBinary(r.AsUnsigned(), Operator);
-                            break;
-                    }
-                }
-                else
-                {
-                    expression = l.MakeBinary(r, Operator);
-                }
-                return true;
-            }
-            expression = null;
-            return false;
-        }
-
-        internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
-        {
-            statement = null;
-            return false;
-        }
+        internal override Expression CreateExpression(Expression arg1, Expression arg2)
+            => (IsUnsigned ? arg1.AsUnsigned() : arg1)
+                .MakeBinary(
+                    (IsUnsigned && !Operator.IsShift()) ? arg2.AsUnsigned() : arg2,
+                    Operator);
 
         public override bool IsEquivalentTo(Syntax other)
             => other is BinaryInstruction bi

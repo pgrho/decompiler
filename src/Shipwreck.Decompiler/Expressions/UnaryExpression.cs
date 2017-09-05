@@ -175,7 +175,9 @@ namespace Shipwreck.Decompiler.Expressions
                     case UnaryOperator.Convert:
                     case UnaryOperator.ConvertChecked:
                         if (ce.Type.IsPrimitive
-                            && _Type.IsPrimitive)
+                            && ce.Type != typeof(IntPtr)
+                            && _Type.IsPrimitive
+                            && _Type != typeof(IntPtr))
                         {
                             return new ConstantExpression(((IConvertible)ce.Value).ToType(_Type, null), _Type);
                         }

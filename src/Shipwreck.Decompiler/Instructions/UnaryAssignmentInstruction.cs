@@ -4,17 +4,10 @@ using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public abstract class StoreIndexInstruction : Instruction
+    public abstract class UnaryAssignmentInstruction : Instruction
     {
-        public StoreIndexInstruction(int index)
-        {
-            Index = index;
-        }
-
-        public int Index { get; }
-
         public override FlowControl FlowControl
-            => FlowControl.Next;
+       => FlowControl.Next;
 
         public override int PopCount
             => 1;
@@ -34,9 +27,12 @@ namespace Shipwreck.Decompiler.Instructions
 
                     if (context.TryCreateExpression(ref j, out var e))
                     {
-                        index = j;
-                        expression = CreateStoreExpression(context, e);
-                        return true;
+                        expression = CreateExpression(context, e);
+                        if (expression != null)
+                        {
+                            index = j;
+                            return true;
+                        }
                     }
                 }
             }
@@ -54,9 +50,13 @@ namespace Shipwreck.Decompiler.Instructions
 
                 if (context.TryCreateExpression(ref j, out var e))
                 {
-                    startIndex = j;
-                    statement = CreateStoreExpression(context, e).ToStatement();
-                    return true;
+                    var assign = CreateExpression(context, e);
+                    if (assign != null)
+                    {
+                        startIndex = j;
+                        statement = assign.ToStatement();
+                        return true;
+                    }
                 }
             }
 
@@ -64,6 +64,6 @@ namespace Shipwreck.Decompiler.Instructions
             return false;
         }
 
-        internal abstract Expression CreateStoreExpression(DecompilationContext context, Expression value);
+        internal abstract Expression CreateExpression(DecompilationContext context, Expression value);
     }
 }

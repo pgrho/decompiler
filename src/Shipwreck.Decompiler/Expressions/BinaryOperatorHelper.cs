@@ -9,6 +9,10 @@ namespace Shipwreck.Decompiler.Expressions
             || @operator == BinaryOperator.SubtractChecked
             || @operator == BinaryOperator.MultiplyChecked;
 
+        public static bool IsShift(this BinaryOperator @operator)
+            => @operator == BinaryOperator.LeftShift
+            || @operator == BinaryOperator.RightShift;
+
         public static bool CanAssign(this BinaryOperator @operator)
         {
             switch (@operator)
