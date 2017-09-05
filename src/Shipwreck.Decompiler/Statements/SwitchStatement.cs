@@ -1,5 +1,6 @@
 ﻿using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
@@ -41,29 +42,7 @@ namespace Shipwreck.Decompiler.Statements
                 writer.Indent++;
                 foreach (var s in _Sections)
                 {
-                    if (s.ShouldSerializeLabels() && s.ShouldSerializeStatements())
-                    {
-                        foreach (var v in s.Labels)
-                        {
-                            if (v == null)
-                            {
-                                writer.WriteLine("default:");
-                            }
-                            else
-                            {
-                                writer.Write("case ");
-                                v.WriteTo(writer);
-                                writer.WriteLine(';');
-                            }
-                        }
-
-                        writer.Indent++;
-                        foreach (var ss in s.Statements)
-                        {
-                            ss.WriteTo(writer);
-                        }
-                        writer.Indent--;
-                    }
+                    s.WriteTo(writer);
                 }
                 writer.Indent--;
             }
@@ -149,6 +128,154 @@ namespace Shipwreck.Decompiler.Statements
                     }
                 }
             }
+        }
+
+        public override bool Reduce()
+        {
+            var thisReduced = Expression.TryReduce(out var e);
+            Expression = e;
+
+            if (ShouldSerializeSections())
+            {
+                for (var i = 0; i < Sections.Count; i++)
+                {
+                    var s = Sections[i];
+
+                    if (s.ShouldSerializeLabels() && s.ShouldSerializeStatements())
+                    {
+                        var r = s.Statements.ReduceBlock();
+                        thisReduced |= r;
+                    }
+                    else
+                    {
+                        Sections.RemoveAt(i--);
+                        thisReduced = true;
+                    }
+                }
+
+                if (Expression is BinaryExpression be
+                    && (be.Operator == BinaryOperator.Add || be.Operator == BinaryOperator.Subtract)
+                    && be.Right is ConstantExpression ce)
+                {
+                    Expression = be.Left;
+                    var op = be.Operator == BinaryOperator.Add ? BinaryOperator.Subtract : BinaryOperator.Add;
+
+                    foreach (var s in Sections)
+                    {
+                        for (var i = 0; i < s.Labels.Count; i++)
+                        {
+                            s.Labels[i] = s.Labels[i]?.MakeBinary(be.Right, op).Reduce();
+                        }
+                    }
+
+                    thisReduced = true;
+                }
+            }
+            else
+            {
+                // TODO: to ExpressionStatement
+            }
+
+            if (Collection != null)
+            {
+                var i = Collection.IndexOf(this);
+
+                thisReduced |= IncludeSectionBody(i)
+                                | IntroduceDefaultSection(i);
+
+                // TODO: remove unreachable cases
+            }
+
+            return thisReduced;
+        }
+
+        private bool IncludeSectionBody(int myIndex)
+        {
+            for (var labelIndex = myIndex + 1; labelIndex < Collection.Count; labelIndex++)
+            {
+                if (Collection[labelIndex] is LabelTarget lb
+                    && Collection[labelIndex - 1] is GoToStatement gt)
+                {
+                    if (gt.Target == lb)
+                    {
+                        Collection.RemoveAt(labelIndex - 1);
+                        return true;
+                    }
+                    else
+                    {
+                        var refs = lb.ReferencedFrom().ToArray();
+
+                        if (refs.Length == 0)
+                        {
+                            Collection.RemoveAt(labelIndex);
+                            return true;
+                        }
+                        else if (refs.Length == 1 && refs[0].Collection?.Owner == this)
+                        {
+                            for (var i = labelIndex + 1; i < Collection.Count; i++)
+                            {
+                                var s = Collection[i];
+
+                                if (s is GoToStatement
+                                    || s is ReturnStatement) // TODO: add throw
+                                {
+                                    // TODO: consider break statement
+                                    // TODO: if and switch
+
+                                    var sts = Collection.Skip(labelIndex + 1).Take(i - labelIndex).ToArray();
+                                    Collection.RemoveRange(labelIndex, sts.Length + 1);
+
+                                    refs[0].ReplaceBy(sts);
+
+                                    return true;
+                                }
+                                else if (s.HasLabel())
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool IntroduceDefaultSection(int i)
+        {
+            var tgs = Sections.Select(s => (s.Statements.LastOrDefault() as GoToStatement)?.Target).Distinct().ToArray();
+
+            if (tgs.Length == 1)
+            {
+                var j = Collection.IndexOf(tgs[0]);
+
+                if (j > i)
+                {
+                    var body = Collection.Skip(i + 1).Take(j - i - 1);
+                    if (!body.HaveLabel())
+                    {
+                        var sts = body.ToArray();
+                        Collection.RemoveRange(i + 1, sts.Length);
+
+                        foreach (var s in Sections)
+                        {
+                            s.Statements.RemoveAt(s.Statements.Count - 1);
+                            s.Statements.Add(new BreakStatement());
+                        }
+
+                        var def = new SwitchSection();
+                        def.Labels.Add(null);
+                        def.Statements.AddRange(sts);
+                        def.Statements.Add(new BreakStatement());
+
+                        Sections.Add(def);
+
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

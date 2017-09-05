@@ -5,26 +5,7 @@ namespace Shipwreck.Decompiler.Statements
 {
     public static class StatementHelper
     {
-        public static bool IsEquivalentTo(this StatementCollection collection, StatementCollection other)
-        {
-            if (collection == null)
-            {
-                return !(other?.Count > 0);
-            }
-            else if (other?.Count != collection.Count)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < collection.Count; i++)
-            {
-                if (!collection[i].IsEquivalentTo(other[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+        #region Traversing
 
         public static IEnumerable<Statement> TreeStatements(this IStatementNode statement)
             => statement.Collection?.Owner?.TreeStatements()
@@ -64,6 +45,19 @@ namespace Shipwreck.Decompiler.Statements
 
                 c = s.Collection;
             }
+        }
+
+        #endregion Traversing
+
+        internal static bool HasLabel(this Statement s)
+            => s.SelfAndDescendants().OfType<LabelTarget>().Any();
+
+        public static void ReplaceBy(this Statement s, IEnumerable<Statement> newStatements)
+        {
+            var rc = s.Collection;
+            var ri = rc.IndexOf(s);
+            rc.RemoveAt(ri);
+            rc.InsertRange(ri, newStatements);
         }
     }
 }

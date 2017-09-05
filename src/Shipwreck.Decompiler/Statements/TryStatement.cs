@@ -67,31 +67,11 @@ namespace Shipwreck.Decompiler.Statements
             {
                 foreach (var c in _CatchClauses)
                 {
-                    writer.Write("catch");
-
-                    if (c.CatchType != null && c.CatchType != typeof(object))
-                    {
-                        writer.Write(" (");
-                        writer.Write(c.CatchType.FullName);
-                        writer.Write(')');
-                    }
-
-                    writer.WriteLine();
-                    writer.WriteLine('{');
-                    if (c.ShouldSerializeStatements())
-                    {
-                        writer.Indent++;
-                        foreach (var s in c.Statements)
-                        {
-                            s.WriteTo(writer);
-                        }
-                        writer.Indent--;
-                    }
-                    writer.WriteLine('}');
+                    c.WriteTo(writer);
                 }
             }
 
-            if (ShouldSerializeFinallyStatements())
+            if (ShouldSerializeFinallyStatements() || !ShouldSerializeCatchClauses())
             {
                 writer.WriteLine("finally");
                 writer.WriteLine('{');

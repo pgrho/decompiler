@@ -1,4 +1,6 @@
+using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
+using System.IO;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
@@ -50,5 +52,45 @@ namespace Shipwreck.Decompiler.Statements
             => _Statements.ShouldSerialize();
 
         #endregion Statements
+
+        internal void WriteTo(IndentedTextWriter writer)
+        {
+            if (ShouldSerializeLabels() && ShouldSerializeStatements())
+            {
+                foreach (var v in Labels)
+                {
+                    if (v == null)
+                    {
+                        writer.WriteLine("default:");
+                    }
+                    else
+                    {
+                        writer.Write("case ");
+                        v.WriteTo(writer);
+                        writer.WriteLine(';');
+                    }
+                }
+
+                writer.Indent++;
+                foreach (var ss in Statements)
+                {
+                    ss.WriteTo(writer);
+                }
+                writer.Indent--;
+            }
+        }
+
+        public override string ToString()
+        {
+            using (var sw = new StringWriter())
+            using (var tw = new IndentedTextWriter(sw))
+            {
+                WriteTo(tw);
+
+                tw.Flush();
+
+                return sw.ToString();
+            }
+        }
     }
 }
