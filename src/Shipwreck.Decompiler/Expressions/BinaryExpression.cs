@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -182,6 +183,22 @@ namespace Shipwreck.Decompiler.Expressions
                     case BinaryOperator.Modulo:
                         return ModuloEvaluator.Evaluate(lce.Value, rce.Value).ToExpression();
                 }
+            }
+
+            switch (Operator)
+            {
+                case BinaryOperator.LeftShift:
+                case BinaryOperator.RightShift:
+                    if (Left.Type.IsPrimitive
+                        && Right is BinaryExpression be
+                        && be.Operator == BinaryOperator.And
+                        && be.Right is ConstantExpression ace
+                        && ace.Value is int mask
+                        && Math.Min(4, Marshal.SizeOf(Left.Type)) * 8 == mask + 1)
+                    {
+                        return Left.MakeBinary(be.Left, Operator);
+                    }
+                    break;
             }
 
             return base.ReduceCore();

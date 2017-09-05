@@ -496,6 +496,9 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(BitwiseAnd), BinaryOperator.And)]
         [InlineData(nameof(BitwiseOr), BinaryOperator.Or)]
         [InlineData(nameof(ExclusiveOr), BinaryOperator.ExclusiveOr)]
+        [InlineData(nameof(LeftShift), BinaryOperator.LeftShift)]
+        [InlineData(nameof(RightShift), BinaryOperator.RightShift)]
+        [InlineData(nameof(RightShiftUnsigned), BinaryOperator.RightShift)]
         [InlineData(nameof(AddCustom), BinaryOperator.Add)]
         [InlineData(nameof(SubtractCustom), BinaryOperator.Subtract)]
         [InlineData(nameof(MultiplyCustom), BinaryOperator.Multiply)]
@@ -506,7 +509,7 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(ExclusiveOrCustom), BinaryOperator.ExclusiveOr)]
         [InlineData(nameof(LeftShiftCustom), BinaryOperator.LeftShift)]
         [InlineData(nameof(RightShiftCustom), BinaryOperator.RightShift)]
-        public void TestBinary(string methodName, BinaryOperator op)
+        public void BinaryTest(string methodName, BinaryOperator op)
         {
             var m = GetMethod(methodName);
             var t = m.ReturnType;
@@ -515,23 +518,6 @@ namespace Shipwreck.Decompiler
                 m,
                 new ParameterExpression("l", t)
                     .MakeBinary(new ParameterExpression("r", m.GetParameters()[1].ParameterType), op)
-                    .ToReturnStatement());
-        }
-
-        [Theory]
-        [InlineData(nameof(LeftShift), BinaryOperator.LeftShift)]
-        [InlineData(nameof(RightShift), BinaryOperator.RightShift)]
-        [InlineData(nameof(RightShiftUnsigned), BinaryOperator.RightShift)]
-        public void TestShift(string methodName, BinaryOperator op)
-        {
-            var m = GetMethod(methodName);
-            var t = m.ReturnType;
-
-            // TODO: reduce (right & 31) to right
-            AssertMethod(
-                m,
-                new ParameterExpression("l", t)
-                    .MakeBinary(new ParameterExpression("r", typeof(byte)).And(31.ToExpression()), op)
                     .ToReturnStatement());
         }
 
