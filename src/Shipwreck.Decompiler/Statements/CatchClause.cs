@@ -4,22 +4,42 @@ namespace Shipwreck.Decompiler.Statements
 {
     public sealed class CatchClause
     {
-        public CatchClause(TryStatement block, Type type)
+        public CatchClause()
         {
-            Block = block;
+        }
+
+        public CatchClause(TryStatement tryStatement, Type type)
+        {
+            TryStatement = tryStatement;
             CatchType = type;
         }
 
-        public Type CatchType { get; }
+        public Type CatchType { get; set; }
 
-        public TryStatement Block { get; internal set; }
+        private TryStatement _TryStatement;
+
+        public TryStatement TryStatement
+        {
+            get => _TryStatement;
+            internal set
+            {
+                if (value != _TryStatement)
+                {
+                    _TryStatement = value;
+                    if (_Statements != null)
+                    {
+                        _Statements.Owner = value;
+                    }
+                }
+            }
+        }
 
         #region Statements
 
         private StatementCollection _Statements;
 
         public StatementCollection Statements
-            => _Statements ?? (_Statements = new StatementCollection(Block));
+            => _Statements ?? (_Statements = new StatementCollection(TryStatement));
 
         public bool ShouldSerializeStatements()
             => _Statements.ShouldSerialize();

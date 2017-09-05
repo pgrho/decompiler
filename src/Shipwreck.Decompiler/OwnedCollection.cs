@@ -18,7 +18,27 @@ namespace Shipwreck.Decompiler
             Owner = owner;
         }
 
-        public TOwner Owner { get; }
+        private TOwner _Owner;
+
+        public TOwner Owner
+        {
+            get => _Owner;
+            internal set
+            {
+                if (value != _Owner)
+                {
+                    foreach (var item in this)
+                    {
+                        ClearState(item);
+                    }
+                    _Owner = value;
+                    foreach (var item in this)
+                    {
+                        SetState(item);
+                    }
+                }
+            }
+        }
 
         protected List<TItem> ItemList
             => ((List<TItem>)Items);
