@@ -591,7 +591,7 @@ namespace Shipwreck.Decompiler
                 new ParameterExpression("a", typeof(StringBuilder))
                     .Property(typeof(StringBuilder).GetProperty(nameof(StringBuilder.Length)))
                     .Assign(new ParameterExpression("v", typeof(int)))
-                    .ToReturnStatement());
+                    .ToStatement());
 
         [Fact]
         public void GetIndexedPropertyTest()
@@ -608,7 +608,7 @@ namespace Shipwreck.Decompiler
                 new ParameterExpression("a", typeof(StringBuilder))
                     .MakeIndex(0.ToExpression())
                     .Assign(new ParameterExpression("v", typeof(char)))
-                    .ToReturnStatement());
+                    .ToStatement());
 
         #endregion Property
 
@@ -629,7 +629,7 @@ namespace Shipwreck.Decompiler
                 new ParameterExpression("p", typeof(Process))
                     .MakeMemberAccess(typeof(Process).GetEvent(nameof(Process.Exited)))
                     .Assign(new ParameterExpression("h", typeof(EventHandler)), isAdd ? BinaryOperator.Add : BinaryOperator.Subtract)
-                    .ToReturnStatement());
+                    .ToStatement());
 
         #endregion Event
 
@@ -935,9 +935,27 @@ namespace Shipwreck.Decompiler
             return r;
         }
 
+        private static void Lock(IDisposable d)
+        {
+            lock (d)
+            {
+                d.Dispose();
+            }
+        }
+
+        private static void Using()
+        {
+            using (var ms = new MemoryStream())
+            {
+                ms.Flush();
+            }
+        }
+
         [Theory]
         [InlineData(nameof(Continue))]
-        public void ContinueTest(string methodName)
+        // TODO: [InlineData(nameof(Lock))]
+        [InlineData(nameof(Using))]
+        public void MiscTest(string methodName)
             => AssertMethod(GetMethod(methodName));
 
         private void AssertMethod(MethodInfo method, params Statement[] expectedStatement)

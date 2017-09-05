@@ -5,6 +5,10 @@ namespace Shipwreck.Decompiler.Statements
 {
     public sealed class ReturnStatement : Statement, IBreakingStatement
     {
+        public ReturnStatement()
+        {
+        }
+
         public ReturnStatement(Expression value)
         {
             Value = value;
@@ -50,6 +54,7 @@ namespace Shipwreck.Decompiler.Statements
             {
                 var i = Collection.IndexOf(this);
                 if (i > 0
+                    && Value != null
                     && Collection[i - 1] is ExpressionStatement es
                     && es.Expression is AssignmentExpression ae
                     && Value.TryReplace(ae.Left, ae, out var replaced))

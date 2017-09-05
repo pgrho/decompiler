@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Shipwreck.Decompiler.Expressions;
@@ -25,6 +24,12 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateStatement(DecompilationContext context, ref int startIndex, ref int lastIndex, out Statement statement)
         {
+            if (context.Method is ConstructorInfo || (context.Method as MethodInfo)?.ReturnType == typeof(void))
+            {
+                statement = new ReturnStatement();
+                return true;
+            }
+
             if (context.GetFromCount(this) <= 1 && startIndex > 0)
             {
                 var j = startIndex - 1;
