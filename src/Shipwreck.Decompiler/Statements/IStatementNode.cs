@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Shipwreck.Decompiler
+namespace Shipwreck.Decompiler.Statements
 {
     public interface IStatementNode
     {

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
-namespace Shipwreck.Decompiler
+namespace Shipwreck.Decompiler.Statements
 {
     public sealed class StatementCollection : OwnedCollection<IStatementNode, Statement>
     {
