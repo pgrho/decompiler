@@ -156,7 +156,7 @@ namespace Shipwreck.Decompiler
         private ThisExpression _This;
 
         public ThisExpression This
-            => _This ?? (_This = new ThisExpression());
+            => _This ?? (_This = new ThisExpression(Method.DeclaringType));
 
         private ParameterExpression[] _Parameters;
 

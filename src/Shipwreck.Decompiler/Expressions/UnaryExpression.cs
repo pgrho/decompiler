@@ -5,6 +5,8 @@ namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class UnaryExpression : Expression
     {
+        private Type _Type;
+
         public UnaryExpression(Expression operand, UnaryOperator @operator)
         {
             if (@operator.IsConvert())
@@ -30,21 +32,39 @@ namespace Shipwreck.Decompiler.Expressions
 
             Operand = operand;
             Operator = @operator;
-            Type = type;
+            _Type = type;
         }
 
         public Expression Operand { get; }
 
         public UnaryOperator Operator { get; }
 
-        // TODO: Add Expression.Type
-        internal Type Type { get; }
+        // TODO: Add Method
+        public override Type Type
+        {
+            get
+            {
+                switch (Operator)
+                {
+                    case UnaryOperator.Convert:
+                    case UnaryOperator.ConvertChecked:
+                        return _Type;
+
+                    case UnaryOperator.LogicalNot:
+                        return typeof(bool);
+
+                    case UnaryOperator.AddressOf:
+                        return Operand.Type.MakePointerType();
+                }
+                return Operand.Type;
+            }
+        }
 
         public override bool IsEquivalentTo(Syntax other)
             => other is UnaryExpression ue
                 && Operand.IsEquivalentTo(ue.Operand)
                 && Operator == ue.Operator
-                && Type == ue.Type;
+                && _Type == ue._Type;
 
         public override void WriteTo(TextWriter writer)
         {
@@ -85,7 +105,7 @@ namespace Shipwreck.Decompiler.Expressions
                 case UnaryOperator.Convert:
                 case UnaryOperator.ConvertChecked:
                     writer.Write('(');
-                    writer.Write(Type.FullName);
+                    writer.Write(_Type.FullName);
                     writer.Write(')');
                     break;
 
@@ -124,7 +144,7 @@ namespace Shipwreck.Decompiler.Expressions
 
             if (Operand.TryReduce(out var l))
             {
-                return Create(l, Operator, Type);
+                return Create(l, Operator, _Type);
             }
 
             return base.ReduceCore();
@@ -139,7 +159,7 @@ namespace Shipwreck.Decompiler.Expressions
 
             var op = Operand.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
 
-            return op == Operand ? this : Create(op, Operator, Type);
+            return op == Operand ? this : Create(op, Operator, _Type);
         }
 
         private static UnaryExpression Create(Expression operand, UnaryOperator @operator, Type type)

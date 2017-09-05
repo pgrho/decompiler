@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class IndexExpression : CallExpression
     {
-        public IndexExpression(Expression @object, params Expression[] parameters)
+        internal IndexExpression(Expression @object, params Expression[] parameters)
             : base(parameters)
         {
             @object.ArgumentIsNotNull(nameof(@object));
@@ -13,7 +15,17 @@ namespace Shipwreck.Decompiler.Expressions
             Object = @object;
         }
 
-        public IndexExpression(Expression @object, IEnumerable<Expression> parameters)
+        internal IndexExpression(Expression @object, PropertyInfo indexer, params Expression[] parameters)
+            : base(parameters)
+        {
+            @object.ArgumentIsNotNull(nameof(@object));
+            indexer.ArgumentIsNotNull(nameof(indexer));
+
+            Object = @object;
+            Indexer = indexer;
+        }
+
+        internal IndexExpression(Expression @object, IEnumerable<Expression> parameters)
             : base(parameters)
         {
             @object.ArgumentIsNotNull(nameof(@object));
@@ -21,15 +33,31 @@ namespace Shipwreck.Decompiler.Expressions
             Object = @object;
         }
 
-        internal IndexExpression(Expression @object, IEnumerable<Expression> parameters, bool shouldCopy)
+        internal IndexExpression(Expression @object, PropertyInfo indexer, IEnumerable<Expression> parameters)
+            : base(parameters)
+        {
+            @object.ArgumentIsNotNull(nameof(@object));
+            indexer.ArgumentIsNotNull(nameof(indexer));
+
+            Object = @object;
+            Indexer = indexer;
+        }
+
+        internal IndexExpression(Expression @object, PropertyInfo indexer, IEnumerable<Expression> parameters, bool shouldCopy)
             : base(parameters, shouldCopy)
         {
             @object.ArgumentIsNotNull(nameof(@object));
 
             Object = @object;
+            Indexer = indexer;
         }
 
         public Expression Object { get; }
+
+        public PropertyInfo Indexer { get; }
+
+        public override Type Type
+            => Indexer?.PropertyType ?? Object.Type.GetElementType();
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
@@ -49,7 +77,7 @@ namespace Shipwreck.Decompiler.Expressions
         {
             if (Object.TryReduce(out var a) | TryReduceParameters(out var parameters))
             {
-                return new IndexExpression(a, parameters, false);
+                return new IndexExpression(a, Indexer, parameters, false);
             }
 
             return base.ReduceCore();
@@ -70,8 +98,9 @@ namespace Shipwreck.Decompiler.Expressions
                 TryReplaceParameters(currentExpression, newExpression, replaceAll, allowConditional, out ps);
             }
 
-            return a == Object && ps == null ? this : new IndexExpression(a, (IEnumerable<Expression>)ps ?? Parameters, false);
+            return a == Object && ps == null ? this : new IndexExpression(a, Indexer, (IEnumerable<Expression>)ps ?? Parameters, false);
         }
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
     }

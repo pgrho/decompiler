@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,9 @@ namespace Shipwreck.Decompiler.Expressions
         public Expression Object { get; }
 
         public MethodInfo Method { get; }
+
+        public override Type Type
+            => Method.ReturnType;
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
@@ -75,7 +79,7 @@ namespace Shipwreck.Decompiler.Expressions
                     }
                     else
                     {
-                        e = Object.MakeIndex(Parameters.Take(ipc));
+                        e = Object.MakeIndex(p, Parameters.Take(ipc));
                     }
 
                     if (Method.Name[0] == 's')
@@ -124,62 +128,22 @@ namespace Shipwreck.Decompiler.Expressions
                     case "op_Decrement":
                         return Parameters[0].PreDecrement();
 
-                    case "op_Addition":
-                        return Parameters[0].Add(Parameters[1]);
-
-                    case "op_Subtraction":
-                        return Parameters[0].Subtract(Parameters[1]);
-
-                    case "op_Multiply":
-                        return Parameters[0].Multiply(Parameters[1]);
-
-                    case "op_Division":
-                        return Parameters[0].Divide(Parameters[1]);
-
-                    case "op_Modulus":
-                        return Parameters[0].Modulo(Parameters[1]);
-
-                    case "op_Equality":
-                        return Parameters[0].Equal(Parameters[1]);
-
-                    case "op_Inequality":
-                        return Parameters[0].NotEqual(Parameters[1]);
-
-                    case "op_GreaterThan":
-                        return Parameters[0].GreaterThan(Parameters[1]);
-
-                    case "op_GreaterThanOrEqual":
-                        return Parameters[0].GreaterThanOrEqual(Parameters[1]);
-
-                    case "op_LessThan":
-                        return Parameters[0].LessThan(Parameters[1]);
-
-                    case "op_LessThanOrEqual":
-                        return Parameters[0].LessThanOrEqual(Parameters[1]);
-
-                    case "op_BitwiseAnd":
-                        return Parameters[0].And(Parameters[1]);
-
-                    case "op_BitwiseOr":
-                        return Parameters[0].Or(Parameters[1]);
-
-                    case "op_ExclusiveOr":
-                        return Parameters[0].ExclusiveOr(Parameters[1]);
-
-                    case "op_LeftShift":
-                        return Parameters[0].LeftShift(Parameters[1]);
-
-                    case "op_RightShift":
-                        return Parameters[0].RightShift(Parameters[1]);
-
                     case "op_Implicit":
                     case "op_Explicit":
                         return Parameters[0].Convert(Method.ReturnType);
+
+                    default:
+                        if (BinaryOperatorHelper.FromMethodName(Method.Name, out var bop))
+                        {
+                            return Parameters[0].MakeBinary(Parameters[1], bop, Method);
+                        }
+                        break;
                 }
             }
 
             return base.ReduceCore();
         }
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
     }

@@ -11,12 +11,12 @@ namespace Shipwreck.Decompiler.Instructions
 
         internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
-            expression = new VariableExpression(Index);
+            expression = new VariableExpression(Index, context.Method.GetMethodBody().LocalVariables[Index].LocalType);
             return true;
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => this == (object)other 
+            => this == (object)other
             || (other is LoadLocalInstruction li && Index == li.Index);
 
         public override string ToString()

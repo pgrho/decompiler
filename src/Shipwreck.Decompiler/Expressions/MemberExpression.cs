@@ -53,6 +53,11 @@ namespace Shipwreck.Decompiler.Expressions
 
         public MemberInfo Member { get; }
 
+        public override Type Type
+            => Member is PropertyInfo p ? p.PropertyType 
+                : Member is FieldInfo f ? f.FieldType 
+                : ((EventInfo)Member).EventHandlerType;
+
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is MemberExpression ne

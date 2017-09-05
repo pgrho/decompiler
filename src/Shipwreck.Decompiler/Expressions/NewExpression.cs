@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -13,18 +11,31 @@ namespace Shipwreck.Decompiler.Expressions
             : base(null)
         {
             Constructor = type.GetConstructor(Type.EmptyTypes);
+
+            if (Constructor == null)
+            {
+                throw new ArgumentException();
+            }
         }
 
         public NewExpression(ConstructorInfo constructor, IEnumerable<Expression> parameters)
             : base(parameters)
         {
+            constructor.ArgumentIsNotNull(nameof(constructor));
+
             Constructor = constructor;
         }
+
         internal NewExpression(ConstructorInfo constructor, IEnumerable<Expression> parameters, bool shouldCopy)
             : base(parameters, shouldCopy)
         {
+            constructor.ArgumentIsNotNull(nameof(constructor));
+
             Constructor = constructor;
         }
+
+        public override Type Type
+            => Constructor.DeclaringType;
 
         public ConstructorInfo Constructor { get; }
 
@@ -42,6 +53,7 @@ namespace Shipwreck.Decompiler.Expressions
             WriteParametersTo(writer);
             writer.Write(')');
         }
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
     }

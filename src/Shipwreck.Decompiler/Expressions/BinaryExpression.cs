@@ -1,11 +1,12 @@
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class BinaryExpression : Expression
     {
-        public BinaryExpression(Expression left, Expression right, BinaryOperator @operator)
+        internal BinaryExpression(Expression left, Expression right, BinaryOperator @operator, MethodInfo method = null)
         {
             left.ArgumentIsNotNull(nameof(left));
             right.ArgumentIsNotNull(nameof(right));
@@ -18,11 +19,80 @@ namespace Shipwreck.Decompiler.Expressions
             Left = left;
             Right = right;
             Operator = @operator;
+            Method = method;
         }
 
         public Expression Left { get; }
         public Expression Right { get; }
         public BinaryOperator Operator { get; }
+
+        public MethodInfo Method { get; }
+
+        private Type _Type;
+
+        public override Type Type
+            => Method?.ReturnType ?? _Type ?? (_Type = GetResultType());
+
+        private Type GetResultType()
+        {
+            switch (Operator)
+            {
+                case BinaryOperator.Equal:
+                case BinaryOperator.NotEqual:
+                case BinaryOperator.GreaterThan:
+                case BinaryOperator.GreaterThanOrEqual:
+                case BinaryOperator.LessThan:
+                case BinaryOperator.LessThanOrEqual:
+                case BinaryOperator.AndAlso:
+                case BinaryOperator.OrElse:
+                    return typeof(bool);
+
+                case BinaryOperator.LeftShift:
+                case BinaryOperator.RightShift:
+                    return Left.Type;
+            }
+
+            var lt = Left.Type;
+            var rt = Right.Type;
+
+            if (lt == typeof(double) || lt == typeof(double))
+            {
+                return typeof(double);
+            }
+            if (lt == typeof(float) || lt == typeof(float))
+            {
+                return typeof(float);
+            }
+            if (lt == typeof(IntPtr) || lt == typeof(IntPtr))
+            {
+                return typeof(IntPtr);
+            }
+            if (lt == typeof(UIntPtr) || lt == typeof(UIntPtr))
+            {
+                return typeof(UIntPtr);
+            }
+            if (rt.IsPointer)
+            {
+                return lt;
+            }
+            if (rt.IsPointer)
+            {
+                return lt;
+            }
+            if (lt == typeof(ulong) || lt == typeof(ulong))
+            {
+                return typeof(ulong);
+            }
+            if (lt == typeof(long) || lt == typeof(long))
+            {
+                return typeof(long);
+            }
+            if (lt == typeof(uint) || lt == typeof(uint))
+            {
+                return typeof(uint);
+            }
+            return typeof(int);
+        }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
@@ -126,7 +196,6 @@ namespace Shipwreck.Decompiler.Expressions
 
                     case BinaryOperator.Or:
                         return ExpressionPrecedence.Or;
-
 
                     case BinaryOperator.AndAlso:
                         return ExpressionPrecedence.AndAlso;

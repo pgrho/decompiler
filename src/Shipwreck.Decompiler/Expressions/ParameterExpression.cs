@@ -21,7 +21,7 @@ namespace Shipwreck.Decompiler.Expressions
         }
 
         public string Name { get; }
-        public Type Type { get; }
+        public override Type Type { get; }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
@@ -29,6 +29,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override void WriteTo(TextWriter writer)
             => writer.Write(Name);
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
     }

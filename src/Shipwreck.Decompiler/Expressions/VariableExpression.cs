@@ -1,13 +1,19 @@
+using System;
 using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class VariableExpression : Expression
     {
-        public VariableExpression(int index)
+        public VariableExpression(int index, Type type)
         {
+            type.ArgumentIsNotNull(nameof(type));
+
             Index = index;
+            Type = type;
         }
+
+        public override Type Type { get; }
 
         public int Index { get; }
 
@@ -20,6 +26,7 @@ namespace Shipwreck.Decompiler.Expressions
             writer.Write("$local");
             writer.Write(Index);
         }
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
     }

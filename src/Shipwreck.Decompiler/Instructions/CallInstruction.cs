@@ -26,7 +26,7 @@ namespace Shipwreck.Decompiler.Instructions
             {
                 obj = ue.Operand;
             }
-            return new MethodCallExpression(IsVirtual && obj is ThisExpression ? new BaseExpression() : obj, (MethodInfo)Method, parameters);
+            return new MethodCallExpression(IsVirtual && obj is ThisExpression ? new BaseExpression(Method.DeclaringType) : obj, (MethodInfo)Method, parameters);
         }
     }
 }

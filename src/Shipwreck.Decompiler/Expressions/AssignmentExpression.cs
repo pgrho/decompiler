@@ -5,7 +5,7 @@ namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class AssignmentExpression : Expression
     {
-        public AssignmentExpression(Expression left, Expression right, BinaryOperator @operator = BinaryOperator.Default)
+        internal AssignmentExpression(Expression left, Expression right, BinaryOperator @operator = BinaryOperator.Default)
         {
             left.ArgumentIsNotNull(nameof(left));
             right.ArgumentIsNotNull(nameof(right));
@@ -23,6 +23,8 @@ namespace Shipwreck.Decompiler.Expressions
         public Expression Left { get; }
         public Expression Right { get; }
         public BinaryOperator Operator { get; }
+
+        public override Type Type => Left.Type;
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other

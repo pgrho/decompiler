@@ -137,7 +137,7 @@ namespace Shipwreck.Decompiler
             var ret = ILDecompiler.Decompile(GetMethod(nameof(LoadThis)));
 
             Assert.Equal(1, ret.Count);
-            Assert.True(new ThisExpression().ToReturnStatement().IsEquivalentTo(ret[0]));
+            Assert.True(new ThisExpression(GetType()).ToReturnStatement().IsEquivalentTo(ret[0]));
         }
 
         #endregion Argument
