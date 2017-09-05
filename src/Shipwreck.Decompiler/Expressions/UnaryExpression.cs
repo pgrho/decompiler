@@ -35,6 +35,19 @@ namespace Shipwreck.Decompiler.Expressions
             _Type = type;
         }
 
+        #region Evaluators
+
+        private static UnaryEvaluator _OnesComplementEvaluator;
+        private static UnaryEvaluator _NegationEvaluator;
+
+        private static UnaryEvaluator OnesComplementEvaluator
+            => _OnesComplementEvaluator ?? (_OnesComplementEvaluator = new UnaryEvaluator(System.Linq.Expressions.ExpressionType.OnesComplement));
+
+        private static UnaryEvaluator NegationEvaluator
+            => _NegationEvaluator ?? (_NegationEvaluator = new UnaryEvaluator(System.Linq.Expressions.ExpressionType.Negate));
+
+        #endregion Evaluators
+
         public Expression Operand { get; }
 
         public UnaryOperator Operator { get; }
@@ -129,6 +142,14 @@ namespace Shipwreck.Decompiler.Expressions
         {
             switch (Operator)
             {
+                case UnaryOperator.Convert:
+                case UnaryOperator.ConvertChecked:
+                    if (_Type.IsAssignableFrom(Operand.Type))
+                    {
+                        return Operand;
+                    }
+                    break;
+
                 case UnaryOperator.UnaryPlus:
                     return Operand;
 
@@ -147,6 +168,45 @@ namespace Shipwreck.Decompiler.Expressions
                 return Create(l, Operator, _Type);
             }
 
+            if (Operand is ConstantExpression ce)
+            {
+                switch (Operator)
+                {
+                    case UnaryOperator.Convert:
+                    case UnaryOperator.ConvertChecked:
+                        if (ce.Type.IsPrimitive
+                            && _Type.IsPrimitive)
+                        {
+                            return new ConstantExpression(((IConvertible)ce.Value).ToType(_Type, null), _Type);
+                        }
+                        break;
+
+                    case UnaryOperator.LogicalNot:
+                        if (ce.Type.IsPrimitive)
+                        {
+                            var v = ce.Value is bool b ? b
+                                    : ce.Value == null ? false
+                                    : ((IConvertible)ce.Value).ToDouble(null) != 0;
+
+                            return (!v).ToExpression();
+                        }
+                        break;
+
+                    case UnaryOperator.OnesComplement:
+                        if (ce.Type.IsPrimitive)
+                        {
+                            return OnesComplementEvaluator.Evaluate(ce.Value).ToExpression();
+                        }
+                        break;
+
+                    case UnaryOperator.UnaryNegation:
+                        if (ce.Type.IsPrimitive)
+                        {
+                            return NegationEvaluator.Evaluate(ce.Value).ToExpression();
+                        }
+                        break;
+                }
+            }
             return base.ReduceCore();
         }
 

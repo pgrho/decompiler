@@ -22,6 +22,35 @@ namespace Shipwreck.Decompiler.Expressions
             Method = method;
         }
 
+        #region Evaluators
+
+        private static BinaryEvaluator _AddEvaluator;
+
+        private static BinaryEvaluator AddEvaluator
+            => _AddEvaluator ?? (_AddEvaluator = new BinaryEvaluator(System.Linq.Expressions.ExpressionType.Add));
+
+        private static BinaryEvaluator _SubtractEvaluator;
+
+        private static BinaryEvaluator SubtractEvaluator
+            => _SubtractEvaluator ?? (_SubtractEvaluator = new BinaryEvaluator(System.Linq.Expressions.ExpressionType.Subtract));
+
+        private static BinaryEvaluator _MultiplyEvaluator;
+
+        private static BinaryEvaluator MultiplyEvaluator
+            => _MultiplyEvaluator ?? (_MultiplyEvaluator = new BinaryEvaluator(System.Linq.Expressions.ExpressionType.Multiply));
+
+        private static BinaryEvaluator _DivideEvaluator;
+
+        private static BinaryEvaluator DivideEvaluator
+            => _DivideEvaluator ?? (_DivideEvaluator = new BinaryEvaluator(System.Linq.Expressions.ExpressionType.Divide));
+
+        private static BinaryEvaluator _ModuloEvaluator;
+
+        private static BinaryEvaluator ModuloEvaluator
+            => _ModuloEvaluator ?? (_ModuloEvaluator = new BinaryEvaluator(System.Linq.Expressions.ExpressionType.Modulo));
+
+        #endregion Evaluators
+
         public Expression Left { get; }
         public Expression Right { get; }
         public BinaryOperator Operator { get; }
@@ -129,6 +158,30 @@ namespace Shipwreck.Decompiler.Expressions
             if (Left.TryReduce(out var l) | Right.TryReduce(out var r))
             {
                 return new BinaryExpression(l, r, Operator);
+            }
+
+            if (Left is ConstantExpression lce
+                && Right is ConstantExpression rce
+                && lce.Type.IsPrimitive
+                && rce.Type.IsPrimitive)
+            {
+                switch (Operator)
+                {
+                    case BinaryOperator.Add:
+                        return AddEvaluator.Evaluate(lce.Value, rce.Value).ToExpression();
+
+                    case BinaryOperator.Subtract:
+                        return SubtractEvaluator.Evaluate(lce.Value, rce.Value).ToExpression();
+
+                    case BinaryOperator.Multiply:
+                        return MultiplyEvaluator.Evaluate(lce.Value, rce.Value).ToExpression();
+
+                    case BinaryOperator.Divide:
+                        return DivideEvaluator.Evaluate(lce.Value, rce.Value).ToExpression();
+
+                    case BinaryOperator.Modulo:
+                        return ModuloEvaluator.Evaluate(lce.Value, rce.Value).ToExpression();
+                }
             }
 
             return base.ReduceCore();
