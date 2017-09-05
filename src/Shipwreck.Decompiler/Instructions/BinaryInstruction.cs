@@ -28,7 +28,24 @@ namespace Shipwreck.Decompiler.Instructions
         {
             if (TryCreateOperands(context, ref index, out var l, out var r))
             {
-                expression = l.MakeBinary(r, Operator);
+                if (IsUnsigned)
+                {
+                    switch (Operator)
+                    {
+                        case BinaryOperator.LeftShift:
+                        case BinaryOperator.RightShift:
+                            expression = l.AsUnsigned().MakeBinary(r, Operator);
+                            break;
+
+                        default:
+                            expression = l.AsUnsigned().MakeBinary(r.AsUnsigned(), Operator);
+                            break;
+                    }
+                }
+                else
+                {
+                    expression = l.MakeBinary(r, Operator);
+                }
                 return true;
             }
             expression = null;

@@ -291,5 +291,31 @@ namespace Shipwreck.Decompiler.Expressions
 
         public static ExpressionStatement ToStatement(this Expression value)
             => new ExpressionStatement(value);
+
+        internal static Expression AsUnsigned(this Expression expression)
+        {
+            switch (Type.GetTypeCode(expression.Type))
+            {
+                case TypeCode.Byte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    return expression;
+
+                case TypeCode.SByte:
+                    return expression.Convert(typeof(byte)).Reduce();
+
+                case TypeCode.Int16:
+                    return expression.Convert(typeof(ushort)).Reduce();
+
+                case TypeCode.Int32:
+                    return expression.Convert(typeof(uint)).Reduce();
+
+                case TypeCode.Int64:
+                    return expression.Convert(typeof(ulong)).Reduce();
+            }
+
+            return expression;
+        }
     }
 }

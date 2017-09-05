@@ -37,7 +37,7 @@ namespace Shipwreck.Decompiler.Instructions
         {
             if (TryCreateOperands(context, ref startIndex, out var l, out var r))
             {
-                var ib = new IfStatement(l.MakeBinary(r, Operator));
+                var ib = new IfStatement(IsUnsigned ? l.AsUnsigned().MakeBinary(r.AsUnsigned(), Operator) : l.MakeBinary(r, Operator));
                 ib.TruePart.Add(new TemporalGoToStatement(Target));
                 statement = ib;
                 return true;
