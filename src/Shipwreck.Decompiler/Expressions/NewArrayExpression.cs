@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -26,15 +25,6 @@ namespace Shipwreck.Decompiler.Expressions
                 && Length.IsEquivalentTo(Length));
 
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;
-
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.Write("new ");
-            writer.Write(Type.GetElementType().FullName);
-            writer.Write('[');
-            Length.WriteTo(writer);
-            writer.Write(']');
-        }
 
         internal override Expression ReduceCore()
         {

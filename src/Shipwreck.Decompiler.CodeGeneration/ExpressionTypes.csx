@@ -27,6 +27,8 @@ using (var sw = new StreamWriter(Path.Combine(dir, "../Shipwreck.Decompiler/Expr
         "TypeBinaryExpression",
         "UnaryExpression",
         "VariableExpression",
+
+        "MemberAssignment"
     };
 
     sw.WriteLine("namespace Shipwreck.Decompiler.Expressions");

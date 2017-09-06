@@ -15,11 +15,21 @@ namespace Shipwreck.Decompiler.Expressions
         public MemberInfo Member { get; }
 
         public abstract bool IsEquivalentTo(MemberBinding other);
-
-        public abstract void WriteTo(TextWriter writer);
-
+         
         internal abstract MemberBinding ReduceCore();
 
         internal abstract MemberBinding ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional);
+
+        #region AcceptVisitor
+
+        public abstract void AcceptVisitor(IExpressionVisitor visitor);
+
+        public abstract TResult AcceptVisitor<TResult>(IExpressionVisitor<TResult> visitor);
+
+        public abstract void AcceptVisitor<TParameter>(IParameteredExpressionVisitor<TParameter> visitor, TParameter parameter);
+
+        public abstract TResult AcceptVisitor<TParameter, TResult>(IParameteredExpressionVisitor<TParameter, TResult> visitor, TParameter parameter);
+
+        #endregion AcceptVisitor
     }
 }

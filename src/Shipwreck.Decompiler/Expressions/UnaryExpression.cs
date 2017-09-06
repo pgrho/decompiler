@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -80,73 +79,6 @@ namespace Shipwreck.Decompiler.Expressions
                 && Operand.IsEquivalentTo(ue.Operand)
                 && Operator == ue.Operator
                 && _Type == ue._Type;
-
-        public override void WriteTo(TextWriter writer)
-        {
-            switch (Operator)
-            {
-                case UnaryOperator.UnaryPlus:
-                    writer.Write('+');
-                    break;
-
-                case UnaryOperator.UnaryNegation:
-                    writer.Write('-');
-                    break;
-
-                case UnaryOperator.LogicalNot:
-                    writer.Write('!');
-                    break;
-
-                case UnaryOperator.OnesComplement:
-                    writer.Write('~');
-                    break;
-
-                case UnaryOperator.PreIncrement:
-                    writer.Write("++");
-                    break;
-
-                case UnaryOperator.PreDecrement:
-                    writer.Write("--");
-                    break;
-
-                case UnaryOperator.AddressOf:
-                    writer.Write('&');
-                    break;
-
-                case UnaryOperator.PostIncrement:
-                case UnaryOperator.PostDecrement:
-                case UnaryOperator.TypeAs:
-                    break;
-
-                case UnaryOperator.Convert:
-                case UnaryOperator.ConvertChecked:
-                    writer.Write('(');
-                    writer.Write(_Type.FullName);
-                    writer.Write(')');
-                    break;
-
-                default:
-                    throw new NotImplementedException();
-            }
-
-            writer.WriteFirstChild(Operand, this);
-
-            switch (Operator)
-            {
-                case UnaryOperator.PostIncrement:
-                    writer.Write("++");
-                    break;
-
-                case UnaryOperator.PostDecrement:
-                    writer.Write("--");
-                    break;
-
-                case UnaryOperator.TypeAs:
-                    writer.Write(" as ");
-                    writer.Write(_Type.FullName);
-                    break;
-            }
-        }
 
         internal override Expression ReduceCore()
         {

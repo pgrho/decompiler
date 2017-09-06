@@ -11,7 +11,8 @@ namespace Shipwreck.Decompiler.Expressions
 
         public abstract Type Type { get; }
 
-        public abstract void WriteTo(TextWriter writer);
+        public void WriteTo(TextWriter writer) 
+            => AcceptVisitor(CSharpSyntaxWriter.Default, writer);
 
         public override string ToString()
         {

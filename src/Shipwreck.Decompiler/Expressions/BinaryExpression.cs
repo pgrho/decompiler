@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -134,29 +133,6 @@ namespace Shipwreck.Decompiler.Expressions
                     && Left.IsEquivalentTo(be.Left)
                     && Right.IsEquivalentTo(be.Right)
                     && Operator == be.Operator);
-
-        public override void WriteTo(TextWriter writer)
-        {
-            var isChecked = Operator.IsChecked();
-
-            if (isChecked)
-            {
-                writer.Write("checked(");
-            }
-
-            writer.WriteFirstChild(Left, this);
-
-            writer.Write(' ');
-            writer.Write(Operator.GetToken());
-            writer.Write(' ');
-
-            writer.WriteSecondChild(Right, this);
-
-            if (isChecked)
-            {
-                writer.Write(')');
-            }
-        }
 
         internal override Expression ReduceCore()
         {

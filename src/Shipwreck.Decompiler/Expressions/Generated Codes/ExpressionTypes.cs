@@ -270,6 +270,21 @@ namespace Shipwreck.Decompiler.Expressions
             => visitor.VisitVariableExpression(this, parameter);
     }
 
+    partial class MemberAssignment
+    {
+        public override void AcceptVisitor(IExpressionVisitor visitor)
+            => visitor.VisitMemberAssignment(this);
+
+        public override TResult AcceptVisitor<TResult>(IExpressionVisitor<TResult> visitor)
+            => visitor.VisitMemberAssignment(this);
+
+        public override void AcceptVisitor<TParameter>(IParameteredExpressionVisitor<TParameter> visitor, TParameter parameter)
+            => visitor.VisitMemberAssignment(this, parameter);
+
+        public override TResult AcceptVisitor<TParameter, TResult>(IParameteredExpressionVisitor<TParameter, TResult> visitor, TParameter parameter)
+            => visitor.VisitMemberAssignment(this, parameter);
+    }
+
     partial interface IExpressionVisitor
     {
         void VisitAssignmentExpression(AssignmentExpression assignmentExpression);
@@ -290,6 +305,7 @@ namespace Shipwreck.Decompiler.Expressions
         void VisitTypeBinaryExpression(TypeBinaryExpression typeBinaryExpression);
         void VisitUnaryExpression(UnaryExpression unaryExpression);
         void VisitVariableExpression(VariableExpression variableExpression);
+        void VisitMemberAssignment(MemberAssignment memberAssignment);
     }
 
     partial interface IExpressionVisitor<TResult>
@@ -312,6 +328,7 @@ namespace Shipwreck.Decompiler.Expressions
         TResult VisitTypeBinaryExpression(TypeBinaryExpression typeBinaryExpression);
         TResult VisitUnaryExpression(UnaryExpression unaryExpression);
         TResult VisitVariableExpression(VariableExpression variableExpression);
+        TResult VisitMemberAssignment(MemberAssignment memberAssignment);
     }
 
     partial interface IParameteredExpressionVisitor<TParameter>
@@ -334,6 +351,7 @@ namespace Shipwreck.Decompiler.Expressions
         void VisitTypeBinaryExpression(TypeBinaryExpression typeBinaryExpression, TParameter parameter);
         void VisitUnaryExpression(UnaryExpression unaryExpression, TParameter parameter);
         void VisitVariableExpression(VariableExpression variableExpression, TParameter parameter);
+        void VisitMemberAssignment(MemberAssignment memberAssignment, TParameter parameter);
     }
 
     partial interface IParameteredExpressionVisitor<TParameter, TResult>
@@ -356,5 +374,6 @@ namespace Shipwreck.Decompiler.Expressions
         TResult VisitTypeBinaryExpression(TypeBinaryExpression typeBinaryExpression, TParameter parameter);
         TResult VisitUnaryExpression(UnaryExpression unaryExpression, TParameter parameter);
         TResult VisitVariableExpression(VariableExpression variableExpression, TParameter parameter);
+        TResult VisitMemberAssignment(MemberAssignment memberAssignment, TParameter parameter);
     }
 }

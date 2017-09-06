@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -65,20 +64,6 @@ namespace Shipwreck.Decompiler.Expressions
                 && (Object?.IsEquivalentTo(ne.Object) ?? ne.Object == null)
                 && Member == ne.Member);
 
-        public override void WriteTo(TextWriter writer)
-        {
-            if (Object == null)
-            {
-                writer.Write(Member.DeclaringType.FullName);
-            }
-            else
-            {
-                writer.WriteFirstChild(Object, this);
-            }
-            writer.Write('.');
-            writer.Write(Member.Name);
-        }
-
         internal override Expression ReduceCore()
         {
             var o = Object?.ReduceCore();
@@ -90,6 +75,7 @@ namespace Shipwreck.Decompiler.Expressions
             var o = Object?.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
             return o != Object ? o?.MakeMemberAccess(Member) : this;
         }
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
 

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -26,9 +25,6 @@ namespace Shipwreck.Decompiler.Expressions
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
                 || (other is ParameterExpression pe && Name == pe.Name && Type == pe.Type);
-
-        public override void WriteTo(TextWriter writer)
-            => writer.Write(Name);
 
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;

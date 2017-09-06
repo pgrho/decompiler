@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class MemberAssignment : MemberBinding
+    public sealed partial class MemberAssignment : MemberBinding
     {
         internal MemberAssignment(MemberInfo member, Expression expression)
             : base(member)
@@ -18,13 +18,6 @@ namespace Shipwreck.Decompiler.Expressions
         public override bool IsEquivalentTo(MemberBinding other)
             => this == other
             || (other is MemberAssignment ma && ma.Member == Member && ma.Expression.IsEquivalentTo(Expression));
-
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.Write(Member.Name);
-            writer.Write(" = ");
-            Expression.WriteTo(writer);
-        }
 
         internal override MemberBinding ReduceCore()
         {

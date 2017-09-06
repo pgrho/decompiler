@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -33,32 +32,6 @@ namespace Shipwreck.Decompiler.Expressions
                     && Left.IsEquivalentTo(ae.Left)
                     && Right.IsEquivalentTo(ae.Right)
                     && Operator == ae.Operator);
-
-        public override void WriteTo(TextWriter writer)
-        {
-            var isChecked = Operator.IsChecked();
-
-            if (isChecked)
-            {
-                writer.Write("checked(");
-            }
-
-            writer.WriteSecondChild(Left, this);
-
-            writer.Write(' ');
-            if (Operator != BinaryOperator.Default)
-            {
-                writer.Write(Operator.GetToken());
-            }
-            writer.Write("= ");
-
-            writer.WriteFirstChild(Right, this);
-
-            if (isChecked)
-            {
-                writer.Write(")");
-            }
-        }
 
         internal override Expression ReduceCore()
         {

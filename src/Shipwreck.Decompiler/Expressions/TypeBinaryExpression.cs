@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -26,15 +25,6 @@ namespace Shipwreck.Decompiler.Expressions
                 || (other is TypeBinaryExpression be
                     && Expression.IsEquivalentTo(be.Expression)
                     && TypeOperand == TypeOperand);
-
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.WriteFirstChild(Expression, this);
-
-            writer.Write(" is ");
-
-            writer.Write(TypeOperand.FullName);
-        }
 
         internal override Expression ReduceCore()
         {

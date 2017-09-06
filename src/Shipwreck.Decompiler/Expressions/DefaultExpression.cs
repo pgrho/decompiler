@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -18,12 +17,5 @@ namespace Shipwreck.Decompiler.Expressions
             || (other is DefaultExpression de && Type == de.Type);
 
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;
-
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.Write("default(");
-            writer.Write(Type.FullName);
-            writer.Write(')');
-        }
     }
 }

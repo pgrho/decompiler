@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -46,12 +45,6 @@ namespace Shipwreck.Decompiler.Expressions
         public override bool IsEquivalentTo(Syntax other)
             => other is AwaitExpression ae
                 && Expression.IsEquivalentTo(ae.Expression);
-
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.Write("await ");
-            writer.WriteFirstChild(Expression, this);
-        }
 
         internal override Expression ReduceCore()
             => Expression.TryReduce(out var v) ? new AwaitExpression(v) : this;

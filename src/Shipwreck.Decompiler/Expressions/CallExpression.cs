@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -17,18 +16,6 @@ namespace Shipwreck.Decompiler.Expressions
         }
 
         public ReadOnlyCollection<Expression> Parameters { get; }
-
-        protected void WriteParametersTo(TextWriter writer)
-        {
-            for (int i = 0; i < Parameters.Count; i++)
-            {
-                if (i > 0)
-                {
-                    writer.Write(", ");
-                }
-                Parameters[i].WriteTo(writer);
-            }
-        }
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other

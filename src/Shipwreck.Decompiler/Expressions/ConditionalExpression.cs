@@ -31,15 +31,6 @@ namespace Shipwreck.Decompiler.Expressions
                     && TruePart.IsEquivalentTo(be.TruePart)
                     && FalsePart.IsEquivalentTo(be.FalsePart));
 
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.WriteSecondChild(Condition, this);
-            writer.Write(" ? ");
-            writer.WriteSecondChild(TruePart, this);
-            writer.Write(" : ");
-            writer.WriteFirstChild(FalsePart, this);
-        }
-
         internal override Expression ReduceCore()
         {
             if (Condition.TryReduce(out var l) | TruePart.TryReduce(out var r) | FalsePart.TryReduce(out var f))

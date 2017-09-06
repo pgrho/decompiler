@@ -45,15 +45,6 @@ namespace Shipwreck.Decompiler.Expressions
                 && Constructor == ne.Constructor
                 && base.IsEquivalentTo(other));
 
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.Write("new ");
-            writer.Write(Constructor.DeclaringType.FullName);
-            writer.Write('(');
-            WriteParametersTo(writer);
-            writer.Write(')');
-        }
-
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
 

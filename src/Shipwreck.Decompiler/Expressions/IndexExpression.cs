@@ -65,14 +65,6 @@ namespace Shipwreck.Decompiler.Expressions
                     && Object.IsEquivalentTo(ie.Object)
                     && base.IsEquivalentTo(other));
 
-        public override void WriteTo(TextWriter writer)
-        {
-            writer.WriteFirstChild(Object, this);
-            writer.Write('[');
-            WriteParametersTo(writer);
-            writer.Write(']');
-        }
-
         internal override Expression ReduceCore()
         {
             if (Object.TryReduce(out var a) | TryReduceParameters(out var parameters))

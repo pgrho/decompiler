@@ -55,23 +55,6 @@ namespace Shipwreck.Decompiler.Expressions
                 && Method == ne.Method
                 && base.IsEquivalentTo(other));
 
-        public override void WriteTo(TextWriter writer)
-        {
-            if (Object != null)
-            {
-                writer.WriteFirstChild(Object, this);
-            }
-            else
-            {
-                writer.Write(Method.DeclaringType.FullName);
-            }
-            writer.Write('.');
-            writer.Write(Method.Name);
-            writer.Write('(');
-            WriteParametersTo(writer);
-            writer.Write(')');
-        }
-
         internal override Expression ReduceCore()
         {
             var bf = (Method.IsStatic ? BindingFlags.Static : BindingFlags.Instance)

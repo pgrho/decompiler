@@ -25,56 +25,6 @@ namespace Shipwreck.Decompiler.Expressions
         public override Type Type => NewExpression.Type;
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;
 
-        public override void WriteTo(TextWriter writer)
-        {
-            NewExpression.WriteTo(writer);
-
-            var itw = writer as IndentedTextWriter;
-
-            if (itw != null)
-            {
-                itw.WriteLine();
-                itw.WriteLine('{');
-                itw.Indent++;
-            }
-            else
-            {
-                writer.Write(" { ");
-            }
-
-            var f = true;
-            foreach (var b in Bindings)
-            {
-                if (f)
-                {
-                    f = false;
-                }
-                else
-                {
-                    if (itw != null)
-                    {
-                        itw.WriteLine(',');
-                    }
-                    else
-                    {
-                        writer.Write(", ");
-                    }
-                }
-                b.WriteTo(writer);
-            }
-
-            if (itw != null)
-            {
-                itw.WriteLine();
-                itw.Indent--;
-                itw.Write('}');
-            }
-            else
-            {
-                writer.Write(" }");
-            }
-        }
-
         public override bool IsEquivalentTo(Syntax other)
         {
             if (this == other)
