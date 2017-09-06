@@ -56,5 +56,8 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
+
+        internal override Expression ReduceCore()
+            => TryReduceParameters(out var ps) ? new NewExpression(Constructor, ps, false) : this;
     }
 }

@@ -141,6 +141,14 @@ namespace Shipwreck.Decompiler.Expressions
                 }
             }
 
+            {
+                var obj = Object?.Reduce();
+
+                if (obj != Object | TryReduceParameters(out var ps))
+                {
+                    return new MethodCallExpression(obj, Method, ps, false);
+                }
+            }
             return base.ReduceCore();
         }
 

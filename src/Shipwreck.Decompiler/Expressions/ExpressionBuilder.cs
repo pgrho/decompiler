@@ -263,6 +263,16 @@ namespace Shipwreck.Decompiler.Expressions
 
         #endregion AssignmentExpression
 
+        #region Call
+
+        public static MethodCallExpression Call(this Expression @object, MethodInfo method, params Expression[] parameters)
+            => new MethodCallExpression(@object, method, parameters);
+
+        public static MethodCallExpression Call(this Expression @object, MethodInfo method, IEnumerable<Expression> parameters)
+            => new MethodCallExpression(@object, method, parameters);
+
+        #endregion Call
+
         #region Property
 
         public static MemberExpression MakeMemberAccess(this Expression @object, MemberInfo member)
