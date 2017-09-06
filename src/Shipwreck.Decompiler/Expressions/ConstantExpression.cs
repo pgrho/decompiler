@@ -78,6 +78,12 @@ namespace Shipwreck.Decompiler.Expressions
             {
                 writer.Write(c.ToString("D", null));
             }
+            else if (Value is Type t)
+            {
+                writer.Write("typeof(");
+                writer.Write(t.FullName);
+                writer.Write(')');
+            }
             else
             {
                 throw new NotImplementedException();
