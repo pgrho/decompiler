@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class UsingStatement : Statement
+    public sealed partial class UsingStatement : Statement
     {
         public UsingStatement()
         {

@@ -1,5 +1,4 @@
 ﻿using System.CodeDom.Compiler;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,5 +31,17 @@ namespace Shipwreck.Decompiler.Statements
             => Enumerable.Empty<StatementCollection>();
 
         public abstract Statement Clone();
+
+        #region AcceptVisitor
+
+        public abstract void AcceptVisitor(IStatementVisitor visitor);
+
+        public abstract TResult AcceptVisitor<TResult>(IStatementVisitor<TResult> visitor);
+
+        public abstract void AcceptVisitor<TParameter>(IParameteredStatementVisitor<TParameter> visitor, TParameter parameter);
+
+        public abstract TResult AcceptVisitor<TParameter, TResult>(IParameteredStatementVisitor<TParameter, TResult> visitor, TParameter parameter);
+
+        #endregion AcceptVisitor
     }
 }

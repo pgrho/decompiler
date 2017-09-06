@@ -6,7 +6,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class LockStatement : Statement
+    public sealed partial class LockStatement : Statement
     {
         public LockStatement()
         {

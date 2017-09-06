@@ -10,6 +10,7 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="dotnet script ExpressionTypes.csx" />
+    <Exec Command="dotnet script StatementTypes.csx" />
   </Target>
 
 </Project>

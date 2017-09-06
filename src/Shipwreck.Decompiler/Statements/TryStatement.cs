@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class TryStatement : Statement
+    public sealed partial class TryStatement : Statement
     {
         #region Block
 

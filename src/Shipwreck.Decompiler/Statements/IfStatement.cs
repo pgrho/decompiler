@@ -6,7 +6,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class IfStatement : Statement
+    public sealed partial class IfStatement : Statement
     {
         public IfStatement()
         {

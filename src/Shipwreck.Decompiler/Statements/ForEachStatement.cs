@@ -6,7 +6,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class ForEachStatement : Statement
+    public sealed partial class ForEachStatement : Statement
     {
         public Type Type { get; set; }
 

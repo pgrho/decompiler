@@ -3,7 +3,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class ThrowStatement : Statement, IBreakingStatement
+    public sealed partial class ThrowStatement : Statement, IBreakingStatement
     {
         public ThrowStatement()
         {

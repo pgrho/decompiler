@@ -5,7 +5,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class WhileStatement : Statement, IBreakableStatement, IContinuableStatement
+    public sealed partial class WhileStatement : Statement, IBreakableStatement, IContinuableStatement
     {
         public WhileStatement()
         {

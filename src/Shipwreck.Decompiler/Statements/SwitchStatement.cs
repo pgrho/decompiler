@@ -5,7 +5,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class SwitchStatement : Statement, IBreakableStatement
+    public sealed partial class SwitchStatement : Statement, IBreakableStatement
     {
         public SwitchStatement()
         {

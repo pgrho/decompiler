@@ -5,7 +5,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class ForStatement : Statement, IBreakableStatement, IContinuableStatement
+    public sealed partial class ForStatement : Statement, IBreakableStatement, IContinuableStatement
     {
         // TODO: allow variable declaration
         public Expression Initializer { get; set; }

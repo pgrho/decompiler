@@ -3,7 +3,7 @@ using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class ExpressionStatement : Statement
+    public sealed partial class ExpressionStatement : Statement
     {
         public ExpressionStatement(Expression expression)
         {

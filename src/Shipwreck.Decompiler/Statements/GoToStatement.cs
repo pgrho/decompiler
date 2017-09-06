@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class GoToStatement : Statement, IBreakingStatement
+    public sealed partial class GoToStatement : Statement, IBreakingStatement
     {
         public GoToStatement(LabelTarget target)
         {

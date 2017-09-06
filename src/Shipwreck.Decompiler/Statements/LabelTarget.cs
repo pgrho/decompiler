@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
-    public sealed class LabelTarget : Statement
+    public sealed partial class LabelTarget : Statement
     {
         public LabelTarget(string name)
         {
