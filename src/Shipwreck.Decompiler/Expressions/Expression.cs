@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Shipwreck.Decompiler.Expressions
 {
@@ -48,5 +50,32 @@ namespace Shipwreck.Decompiler.Expressions
             => IsEquivalentTo(currentExpression) ? newExpression : this;
 
         #endregion Replace
+
+        public virtual IEnumerable<Expression> GetChildren()
+            => Enumerable.Empty<Expression>();
+
+        public IEnumerable<Expression> EnumeratePostOrder()
+        {
+            var iters = new Stack<IEnumerator<Expression>>();
+            var nodes = new Stack<Expression>();
+            iters.Push(GetChildren().GetEnumerator());
+            nodes.Push(this);
+
+            while (iters.Any())
+            {
+                var iter = iters.Peek();
+
+                if (iter.MoveNext())
+                {
+                    iters.Push(iter.Current.GetChildren().GetEnumerator());
+                    nodes.Push(iter.Current);
+                }
+                else
+                {
+                    yield return nodes.Pop();
+                    iters.Pop();
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -54,8 +55,8 @@ namespace Shipwreck.Decompiler.Expressions
         public MemberInfo Member { get; }
 
         public override Type Type
-            => Member is PropertyInfo p ? p.PropertyType 
-                : Member is FieldInfo f ? f.FieldType 
+            => Member is PropertyInfo p ? p.PropertyType
+                : Member is FieldInfo f ? f.FieldType
                 : ((EventInfo)Member).EventHandlerType;
 
         public override bool IsEquivalentTo(Syntax other)
@@ -91,5 +92,13 @@ namespace Shipwreck.Decompiler.Expressions
         }
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            if (Object != null)
+            {
+                yield return Object;
+            }
+        }
     }
 }

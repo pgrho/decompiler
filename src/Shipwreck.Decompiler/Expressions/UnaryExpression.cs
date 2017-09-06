@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -251,6 +252,11 @@ namespace Shipwreck.Decompiler.Expressions
                 }
                 return ExpressionPrecedence.Unary;
             }
+        }
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            yield return Operand;
         }
     }
 }

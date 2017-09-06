@@ -103,5 +103,14 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            yield return Object;
+            foreach (var p in Parameters)
+            {
+                yield return p;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -69,5 +70,10 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Assignment;
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            yield return Expression;
+        }
     }
 }

@@ -59,5 +59,13 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReduceCore()
             => TryReduceParameters(out var ps) ? new NewExpression(Constructor, ps, false) : this;
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            foreach (var p in Parameters)
+            {
+                yield return p;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -282,6 +283,12 @@ namespace Shipwreck.Decompiler.Expressions
 
                 return ExpressionPrecedence.Primary;
             }
+        }
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            yield return Left;
+            yield return Right;
         }
     }
 }

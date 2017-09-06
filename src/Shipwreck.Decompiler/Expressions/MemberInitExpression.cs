@@ -160,5 +160,18 @@ namespace Shipwreck.Decompiler.Expressions
 
             return new MemberInitExpression((NewExpression)ne, mbs);
         }
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            yield return NewExpression;
+            foreach (var mb in Bindings)
+            {
+                // TODO: consider assignment
+                if (mb is MemberAssignment ma)
+                {
+                    yield return ma.Expression;
+                }
+            }
+        }
     }
 }

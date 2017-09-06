@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
@@ -51,6 +52,14 @@ namespace Shipwreck.Decompiler.Expressions
             var l = Length.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
 
             return l == Length ? this : new NewArrayExpression(Type, l);
+        }
+
+        public override IEnumerable<Expression> GetChildren()
+        {
+            if (Length != null)
+            {
+                yield return Length;
+            }
         }
     }
 }
