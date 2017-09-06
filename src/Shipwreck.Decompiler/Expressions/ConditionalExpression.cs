@@ -47,8 +47,6 @@ namespace Shipwreck.Decompiler.Expressions
             }
 
             return this;
-
-            return base.ReduceCore();
         }
 
         public override ExpressionPrecedence Precedence
