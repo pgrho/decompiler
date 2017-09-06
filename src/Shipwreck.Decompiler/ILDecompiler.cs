@@ -460,9 +460,17 @@ namespace Shipwreck.Decompiler
                     i += 4;
                     return new LoadStaticFieldInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
 
+                case 0x7d: // stfld
+                    i += 4;
+                    return new StoreFieldInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
+
                 case 0x7f: // ldsflda
                     i += 4;
                     return new LoadStaticFieldAddressInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
+
+                case 0x80: // stsfld
+                    i += 4;
+                    return new StoreStaticFieldInstruction(context.Method.Module.ResolveField(*(int*)(bp + i - 3)));
 
                 case 0x82: // conv.ovf.i1.un
                     return new ConvertInstruction(typeof(sbyte), true, true);
@@ -675,7 +683,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Refanyval
                 // TODO: OpCodes.Rethrow
                 // TODO: OpCodes.Sizeof
-                // TODO: OpCodes.Stfld
                 // TODO: OpCodes.Stind_I
                 // TODO: OpCodes.Stind_I1
                 // TODO: OpCodes.Stind_I2
@@ -685,7 +692,6 @@ namespace Shipwreck.Decompiler
                 // TODO: OpCodes.Stind_R8
                 // TODO: OpCodes.Stind_Ref
                 // TODO: OpCodes.Stobj
-                // TODO: OpCodes.Stsfld
                 // TODO: OpCodes.Tailcall
                 // TODO: OpCodes.Throw
                 // TODO: OpCodes.Unaligned

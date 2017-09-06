@@ -80,6 +80,9 @@ namespace Shipwreck.Decompiler.Expressions
                 case BinaryOperator.LeftShift:
                 case BinaryOperator.RightShift:
                     return Left.Type;
+
+                case BinaryOperator.NullCoalesce:
+                    return Left.Type.IsAssignableFrom(Right.Type) ? Left.Type : Right.Type;
             }
 
             var lt = Left.Type;
@@ -272,6 +275,9 @@ namespace Shipwreck.Decompiler.Expressions
 
                     case BinaryOperator.OrElse:
                         return ExpressionPrecedence.OrElse;
+
+                    case BinaryOperator.NullCoalesce:
+                        return ExpressionPrecedence.NullCoalescing;
                 }
 
                 return ExpressionPrecedence.Primary;

@@ -227,6 +227,9 @@ namespace Shipwreck.Decompiler.Expressions
         public static BinaryExpression LessThanOrEqual(this Expression left, Expression right, MethodInfo method)
             => left.MakeBinary(right, BinaryOperator.LessThanOrEqual, method);
 
+        public static BinaryExpression NullCoalesce(this Expression left, Expression right)
+            => left.MakeBinary(right, BinaryOperator.NullCoalesce);
+
         #endregion BinaryExpression
 
         #region AssignmentExpression

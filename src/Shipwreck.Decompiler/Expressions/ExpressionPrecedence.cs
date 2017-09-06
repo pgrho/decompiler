@@ -16,6 +16,7 @@ namespace Shipwreck.Decompiler.Expressions
         Or,
         AndAlso,
         OrElse,
+        NullCoalescing,
         Conditional,
         Assignment
     }

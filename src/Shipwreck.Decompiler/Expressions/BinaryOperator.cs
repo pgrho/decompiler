@@ -28,5 +28,7 @@ namespace Shipwreck.Decompiler.Expressions
         LessThanOrEqual,
         GreaterThan,
         GreaterThanOrEqual,
+
+        NullCoalesce
     }
 }

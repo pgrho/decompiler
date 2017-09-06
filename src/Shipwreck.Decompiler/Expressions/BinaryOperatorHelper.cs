@@ -97,6 +97,9 @@ namespace Shipwreck.Decompiler.Expressions
                 case BinaryOperator.GreaterThanOrEqual:
                     return ">=";
 
+                case BinaryOperator.NullCoalesce:
+                    return "??";
+
                 default:
                     throw new ArgumentException();
             }

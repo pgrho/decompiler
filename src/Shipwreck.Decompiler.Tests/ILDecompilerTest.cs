@@ -443,6 +443,10 @@ namespace Shipwreck.Decompiler
         private static uint RightShiftUnsigned(uint l, byte r)
             => l >> r;
 
+        private static string NullCoalesce(string l, string r) => l ?? r;
+
+        private static int NullCoalesceNullable(int? l, int r) => l ?? r;
+
         #endregion IL Instruction
 
         #region Custom Operator Overloading
@@ -499,6 +503,8 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(LeftShift), BinaryOperator.LeftShift)]
         [InlineData(nameof(RightShift), BinaryOperator.RightShift)]
         [InlineData(nameof(RightShiftUnsigned), BinaryOperator.RightShift)]
+        [InlineData(nameof(NullCoalesce), BinaryOperator.NullCoalesce)]
+        // TODO: [InlineData(nameof(NullCoalesceNullable), BinaryOperator.NullCoalesce)]
         [InlineData(nameof(AddCustom), BinaryOperator.Add)]
         [InlineData(nameof(SubtractCustom), BinaryOperator.Subtract)]
         [InlineData(nameof(MultiplyCustom), BinaryOperator.Multiply)]
@@ -512,12 +518,11 @@ namespace Shipwreck.Decompiler
         public void BinaryTest(string methodName, BinaryOperator op)
         {
             var m = GetMethod(methodName);
-            var t = m.ReturnType;
-
+            var ps = m.GetParameters();
             AssertMethod(
                 m,
-                new ParameterExpression("l", t)
-                    .MakeBinary(new ParameterExpression("r", m.GetParameters()[1].ParameterType), op)
+                new ParameterExpression("l", ps[0].ParameterType)
+                    .MakeBinary(new ParameterExpression("r", ps[1].ParameterType), op)
                     .ToReturnStatement());
         }
 
@@ -962,6 +967,7 @@ namespace Shipwreck.Decompiler
         [InlineData(nameof(LoadStaticFieldAddess))]
         [InlineData(nameof(LoadFieldAddess))]
         [InlineData(nameof(NewArray))]
+        [InlineData(nameof(NullCoalesce))]
         public void MiscTest(string methodName)
             => AssertMethod(GetMethod(methodName));
 
@@ -1012,6 +1018,7 @@ namespace Shipwreck.Decompiler
         }
 
         private static int[] NewArray() => new int[0];
+
 
         #region StoreElement
 
@@ -1105,6 +1112,23 @@ namespace Shipwreck.Decompiler
                     tw.Flush();
 
                     Output.WriteLine(sw.ToString());
+                }
+            }
+        }
+
+
+
+        [Fact]
+        public void DecompileAll()
+        {
+            var bf = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            foreach (var t in typeof(ILDecompiler).Assembly.GetExportedTypes())
+            {
+                Output?.WriteLine(t.ToString());
+                foreach (var mb in t.GetMethods(bf).Cast<MethodBase>().Concat(t.GetConstructors(bf)))
+                {
+                    Output?.WriteLine(mb.ToString());
+                    WriteStatements(ILDecompiler.Decompile(mb));
                 }
             }
         }
