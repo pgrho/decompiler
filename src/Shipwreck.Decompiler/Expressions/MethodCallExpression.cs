@@ -165,6 +165,18 @@ namespace Shipwreck.Decompiler.Expressions
             return base.ReduceCore();
         }
 
+        internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
+        {
+            var obj = Object?.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
+
+            if (obj != Object | TryReplaceParameters(currentExpression, newExpression, replaceAll, allowConditional, out var ps))
+            {
+                return new MethodCallExpression(obj, Method, ps, false);
+            }
+
+            return base.ReplaceCore(currentExpression, newExpression, replaceAll, allowConditional);
+        }
+
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;
 

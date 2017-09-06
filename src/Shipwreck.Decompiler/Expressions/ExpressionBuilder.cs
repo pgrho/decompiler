@@ -333,5 +333,8 @@ namespace Shipwreck.Decompiler.Expressions
 
             return expression;
         }
+
+        internal static bool IsLocalVariable(this Expression expression)
+            => expression is VariableExpression || expression is ParameterExpression;
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -100,6 +101,53 @@ namespace Shipwreck.Decompiler.Statements
             }
 
             return false;
+        }
+
+        internal static bool TruReduceReturnValue(this Statement statement, Expression value, out Expression reducedValue)
+        {
+            // TODO: traverse finally blocks
+            var reduced = false;
+            reducedValue = value;
+
+            if (reducedValue != null)
+            {
+                if (reducedValue.TryReduce(out var e))
+                {
+                    reducedValue = e;
+                    reduced = true;
+                }
+
+                if (reducedValue is AssignmentExpression vae
+                    && vae.Left.IsLocalVariable())
+                {
+                    reducedValue = vae.Right;
+                    reduced = true;
+                }
+            }
+
+            var i = statement?.Collection.IndexOf(statement) ?? -1;
+            if (i > 0
+                && reducedValue != null
+                && statement.Collection[i - 1] is ExpressionStatement pes
+                && pes.Expression is AssignmentExpression pae
+                && pae.Left.IsLocalVariable())
+            {
+                // TODO: consider side effect
+                if (!reducedValue.EnumeratePostOrder().Any(n => n is AssignmentExpression ne && ne.Left.IsEquivalentTo(pae.Left))
+                    && reducedValue.EnumeratePostOrder().Count(n => n.IsEquivalentTo(pae.Left)) == 1)
+                {
+                    if (reducedValue.TryReplace(pae.Left, pae.Right, out var replaced))
+                    {
+                        statement.Collection.RemoveAt(i - 1);
+                        reducedValue = replaced;
+
+                        return true;
+                    }
+                }
+            }
+
+            reducedValue = reduced ? reducedValue : null;
+            return reduced;
         }
     }
 }
