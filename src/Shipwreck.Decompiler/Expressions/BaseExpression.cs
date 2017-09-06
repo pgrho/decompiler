@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class BaseExpression : Expression
+    public sealed partial class BaseExpression : Expression
     {
         internal BaseExpression(Type type)
         {

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class MethodCallExpression : CallExpression
+    public sealed partial class MethodCallExpression : CallExpression
     {
         public MethodCallExpression(MethodBase method, IEnumerable<Expression> parameters)
             : base(parameters)

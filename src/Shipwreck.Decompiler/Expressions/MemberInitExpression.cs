@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class MemberInitExpression : Expression
+    public sealed partial class MemberInitExpression : Expression
     {
         public MemberInitExpression(NewExpression newExpression, IEnumerable<MemberBinding> bindings)
         {

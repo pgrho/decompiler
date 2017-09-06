@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class ParameterExpression : Expression
+    public sealed partial class ParameterExpression : Expression
     {
         public ParameterExpression(string name, Type type)
         {

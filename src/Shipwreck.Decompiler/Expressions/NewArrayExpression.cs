@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class NewArrayExpression : Expression
+    public sealed partial class NewArrayExpression : Expression
     {
         public NewArrayExpression(Type elementType, Expression length)
         {

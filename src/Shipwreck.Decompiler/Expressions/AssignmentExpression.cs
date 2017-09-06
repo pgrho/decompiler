@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class AssignmentExpression : Expression
+    public sealed partial class AssignmentExpression : Expression
     {
         internal AssignmentExpression(Expression left, Expression right, BinaryOperator @operator = BinaryOperator.Default)
         {

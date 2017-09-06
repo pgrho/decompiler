@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class IndexExpression : CallExpression
+    public sealed partial class IndexExpression : CallExpression
     {
         internal IndexExpression(Expression @object, params Expression[] parameters)
             : base(parameters)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class AwaitExpression : Expression
+    public sealed partial class AwaitExpression : Expression
     {
         public AwaitExpression(Expression expression)
         {

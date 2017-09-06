@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class UnaryExpression : Expression
+    public sealed partial class UnaryExpression : Expression
     {
         private Type _Type;
 

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class ConditionalExpression : Expression
+    public sealed partial class ConditionalExpression : Expression
     {
         internal ConditionalExpression(Expression condition, Expression truePart, Expression falsePart)
         {

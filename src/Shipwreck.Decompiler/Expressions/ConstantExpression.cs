@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class ConstantExpression : Expression
+    public sealed partial class ConstantExpression : Expression
     {
         internal ConstantExpression(object value, Type type = null)
         {

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class MemberExpression : Expression
+    public sealed partial class MemberExpression : Expression
     {
         public MemberExpression(MemberInfo member)
             : this(null, member)

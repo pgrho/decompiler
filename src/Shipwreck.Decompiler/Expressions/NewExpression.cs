@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class NewExpression : CallExpression
+    public sealed partial class NewExpression : CallExpression
     {
         public NewExpression(Type type)
             : base(null)

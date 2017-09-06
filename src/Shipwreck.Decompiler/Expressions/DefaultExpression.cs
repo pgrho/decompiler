@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class DefaultExpression : Expression
+    public sealed partial class DefaultExpression : Expression
     {
         public DefaultExpression(Type type)
         {

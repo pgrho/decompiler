@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class TypeBinaryExpression : Expression
+    public sealed partial class TypeBinaryExpression : Expression
     {
         internal TypeBinaryExpression(Expression expression, Type type)
         {

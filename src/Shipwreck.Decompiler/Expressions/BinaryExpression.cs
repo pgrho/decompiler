@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    public sealed class BinaryExpression : Expression
+    public sealed partial class BinaryExpression : Expression
     {
         internal BinaryExpression(Expression left, Expression right, BinaryOperator @operator, MethodInfo method = null)
         {
