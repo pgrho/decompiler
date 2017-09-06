@@ -10,6 +10,8 @@ namespace Shipwreck.Decompiler.Instructions
         {
         }
 
+        protected override bool HasThis => false;
+
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is NewObjectInstruction noi && Method == noi.Method);

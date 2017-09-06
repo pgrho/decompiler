@@ -25,6 +25,8 @@ namespace Shipwreck.Decompiler.Instructions
         public override int PushCount
             => 1;
 
+        protected abstract bool HasThis { get; }
+
         internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
             if (context.GetFromCount(this) <= 1)
@@ -49,7 +51,7 @@ namespace Shipwreck.Decompiler.Instructions
                 }
 
                 Expression obj;
-                if ((Method as MethodInfo)?.IsStatic == false)
+                if (HasThis)
                 {
                     i--;
 

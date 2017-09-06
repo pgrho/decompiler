@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Shipwreck.Decompiler.Expressions;
@@ -29,18 +31,33 @@ namespace Shipwreck.Decompiler.Instructions
 
             if (context.GetFromCount(this) <= 1 && index >= 2)
             {
-                if (context.RootStatements[index - 1] is DuplicateInstruction)
-                {
-                    var j = index - 2;
+                var j = index - 1;
 
-                    if (context.TryCreateExpression(ref j, out var e))
+                if (context.TryCreateExpression(ref j, out var e))
+                {
+                    if (context.RootStatements[j - 1] is DuplicateInstruction)
                     {
-                        j--;
+                        j -= 2;
                         if (context.TryCreateExpression(ref j, out var ie))
                         {
-                            index = j;
-                            expression = CreateStoreExpression(context, ie, e);
-                            return true;
+                            IEnumerable<MemberBinding> bs = null;
+                            var ne = ie as NewExpression;
+                            if (ne != null)
+                            {
+                                bs = new[] { new MemberAssignment(Field, e) };
+                            }
+                            else if (ie is MemberInitExpression mie)
+                            {
+                                ne = mie.NewExpression;
+                                bs = mie.Bindings.Concat(new[] { new MemberAssignment(Field, e) });
+                            }
+
+                            if (ne != null)
+                            {
+                                index = j;
+                                expression = new MemberInitExpression(ne, bs);
+                                return true;
+                            }
                         }
                     }
                 }

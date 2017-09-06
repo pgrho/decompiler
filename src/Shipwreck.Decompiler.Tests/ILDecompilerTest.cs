@@ -212,27 +212,11 @@ namespace Shipwreck.Decompiler
 
         [Fact]
         public void StoreLocalTest()
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(nameof(StoreLocal)));
-
-            // TODO: Test
-            foreach (var s in ret)
-            {
-                Output?.WriteLine(s.ToString());
-            }
-        }
+            => AssertMethod(GetMethod(nameof(StoreLocal)));
 
         [Fact]
         public void StoreLocalTest_Expression()
-        {
-            var ret = ILDecompiler.Decompile(GetMethod(nameof(StoreLocal_Expression)));
-
-            // TODO: Test
-            foreach (var s in ret)
-            {
-                Output?.WriteLine(s.ToString());
-            }
-        }
+            => AssertMethod(GetMethod(nameof(StoreLocal_Expression)));
 
         #endregion Local
 
@@ -1019,7 +1003,6 @@ namespace Shipwreck.Decompiler
 
         private static int[] NewArray() => new int[0];
 
-
         #region StoreElement
 
         private static void StoreElement(DateTime[] a) => a[1] = new DateTime(1, 2, 3);
@@ -1072,6 +1055,16 @@ namespace Shipwreck.Decompiler
             }
             catch
             {
+                if (Output != null)
+                {
+                    try
+                    {
+                        var ils = ILDecompiler.DecompileToInstructions(method);
+
+                        Output.WriteLine(string.Join(Environment.NewLine, ils));
+                    }
+                    catch { }
+                }
                 throw;
             }
 
@@ -1116,19 +1109,34 @@ namespace Shipwreck.Decompiler
             }
         }
 
-
-
         [Fact]
         public void DecompileAll()
         {
-            var bf = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var bf = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
             foreach (var t in typeof(ILDecompiler).Assembly.GetExportedTypes())
             {
                 Output?.WriteLine(t.ToString());
                 foreach (var mb in t.GetMethods(bf).Cast<MethodBase>().Concat(t.GetConstructors(bf)))
                 {
                     Output?.WriteLine(mb.ToString());
-                    WriteStatements(ILDecompiler.Decompile(mb));
+                    try
+                    {
+                        WriteStatements(ILDecompiler.Decompile(mb));
+                    }
+                    catch
+                    {
+                        if (Output != null)
+                        {
+                            try
+                            {
+                                var ils = ILDecompiler.DecompileToInstructions(mb);
+
+                                Output.WriteLine(string.Join(Environment.NewLine, ils));
+                            }
+                            catch { }
+                        }
+                        throw;
+                    }
                 }
             }
         }

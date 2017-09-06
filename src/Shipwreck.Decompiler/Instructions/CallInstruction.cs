@@ -13,6 +13,9 @@ namespace Shipwreck.Decompiler.Instructions
 
         public bool IsVirtual { get; }
 
+        protected override bool HasThis
+            => !Method.IsStatic;
+
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is CallInstruction ci && Method == ci.Method && IsVirtual == ci.IsVirtual);
@@ -26,7 +29,14 @@ namespace Shipwreck.Decompiler.Instructions
             {
                 obj = ue.Operand;
             }
-            return new MethodCallExpression(IsVirtual && obj is ThisExpression ? new BaseExpression(Method.DeclaringType) : obj, (MethodInfo)Method, parameters);
+
+            if (Method is ConstructorInfo ci)
+            {
+                // TODO: constructor call
+                return new MethodCallExpression(null, Method, parameters);
+            }
+
+            return new MethodCallExpression(IsVirtual && obj is ThisExpression ? new BaseExpression(Method.DeclaringType) : obj, Method, parameters);
         }
     }
 }

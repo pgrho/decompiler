@@ -29,5 +29,32 @@ namespace Shipwreck.Decompiler.Instructions
             expression = null;
             return false;
         }
+
+        public static bool TryCreatenStatement(this DecompilationContext context, ref int index, out Statement statement)
+        {
+            var j = index;
+            if (0 <= j && j < context.RootStatements.Count)
+            {
+                var s = context.RootStatements[j];
+                var k = index;
+
+                if (s is Instruction il)
+                {
+                    if (il.TryCreateStatement(context, ref j, ref k, out statement)
+                        && k == index)
+                    {
+                        index = j;
+                        return true;
+                    }
+                }
+                else if (s is Statement es)
+                {
+                    statement = es;
+                    return true;
+                }
+            }
+            statement = null;
+            return false;
+        }
     }
 }

@@ -8,20 +8,20 @@ namespace Shipwreck.Decompiler.Expressions
 {
     public sealed class MethodCallExpression : CallExpression
     {
-        public MethodCallExpression(MethodInfo method, IEnumerable<Expression> parameters)
+        public MethodCallExpression(MethodBase method, IEnumerable<Expression> parameters)
             : base(parameters)
         {
             Method = method;
         }
 
-        public MethodCallExpression(Expression obj, MethodInfo method, IEnumerable<Expression> parameters)
+        public MethodCallExpression(Expression obj, MethodBase method, IEnumerable<Expression> parameters)
             : base(parameters)
         {
             Object = obj;
             Method = method;
         }
 
-        internal MethodCallExpression(Expression obj, MethodInfo method, IEnumerable<Expression> parameters, bool shouldCopy)
+        internal MethodCallExpression(Expression obj, MethodBase method, IEnumerable<Expression> parameters, bool shouldCopy)
             : base(parameters)
         {
             Object = obj;
@@ -30,10 +30,10 @@ namespace Shipwreck.Decompiler.Expressions
 
         public Expression Object { get; }
 
-        public MethodInfo Method { get; }
+        public MethodBase Method { get; }
 
         public override Type Type
-            => Method.ReturnType;
+            => Method is MethodInfo mi ? mi.ReturnType : typeof(void);
 
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
@@ -130,12 +130,12 @@ namespace Shipwreck.Decompiler.Expressions
 
                     case "op_Implicit":
                     case "op_Explicit":
-                        return Parameters[0].Convert(Method.ReturnType);
+                        return Parameters[0].Convert(Type);
 
                     default:
                         if (BinaryOperatorHelper.FromMethodName(Method.Name, out var bop))
                         {
-                            return Parameters[0].MakeBinary(Parameters[1], bop, Method);
+                            return Parameters[0].MakeBinary(Parameters[1], bop, (MethodInfo)Method);
                         }
                         break;
                 }

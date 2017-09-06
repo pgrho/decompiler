@@ -11,6 +11,29 @@ namespace Shipwreck.Decompiler
 {
     public static class ILDecompiler
     {
+        public static unsafe List<Instruction> DecompileToInstructions(MethodBase method)
+        {
+            var ctx = new DecompilationContext(method);
+            var l = new List<Instruction>();
+            var bytes = method.GetMethodBody().GetILAsByteArray();
+            fixed (byte* bp = bytes)
+            {
+                for (var i = 0; i < bytes.Length; i++)
+                {
+                    var offset = i;
+                    var il = GetInstruction(ctx, bp, ref i);
+
+                    // TODO: include ignorable instructions
+                    if (il != null)
+                    {
+                        l.Add(il);
+                    }
+                }
+            }
+
+            return l;
+        }
+
         // TODO: change return type to DecompiledMethod
         public static unsafe List<Statement> Decompile(MethodBase method)
         {
@@ -25,6 +48,7 @@ namespace Shipwreck.Decompiler
                     var offset = i;
                     var il = GetInstruction(ctx, bp, ref i);
 
+                    // TODO: include ignorable instructions
                     if (il != null)
                     {
                         ctx.RootStatements.Add(il);
@@ -537,12 +561,12 @@ namespace Shipwreck.Decompiler
                     return new StoreElementInstruction();
 
                 case 0xa3: // ldelem {type}
-                    // method.Module.ResolveType( *(int*)(bp + i + 1))
+                           // method.Module.ResolveType( *(int*)(bp + i + 1))
                     i += 4;
                     return new LoadElementInstruction();
 
                 case 0xa4: // stelem {type}
-                    // method.Module.ResolveType( *(int*)(bp + i + 1))
+                           // method.Module.ResolveType( *(int*)(bp + i + 1))
                     i += 4;
                     return new StoreElementInstruction();
 
