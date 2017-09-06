@@ -61,6 +61,7 @@ namespace Shipwreck.Decompiler.Expressions
                 {
                     case UnaryOperator.Convert:
                     case UnaryOperator.ConvertChecked:
+                    case UnaryOperator.TypeAs:
                         return _Type;
 
                     case UnaryOperator.LogicalNot:
@@ -113,6 +114,7 @@ namespace Shipwreck.Decompiler.Expressions
 
                 case UnaryOperator.PostIncrement:
                 case UnaryOperator.PostDecrement:
+                case UnaryOperator.TypeAs:
                     break;
 
                 case UnaryOperator.Convert:
@@ -128,13 +130,20 @@ namespace Shipwreck.Decompiler.Expressions
 
             writer.WriteFirstChild(Operand, this);
 
-            if (Operator == UnaryOperator.PostIncrement)
+            switch (Operator)
             {
-                writer.Write("++");
-            }
-            else if (Operator == UnaryOperator.PostDecrement)
-            {
-                writer.Write("--");
+                case UnaryOperator.PostIncrement:
+                    writer.Write("++");
+                    break;
+
+                case UnaryOperator.PostDecrement:
+                    writer.Write("--");
+                    break;
+
+                case UnaryOperator.TypeAs:
+                    writer.Write(" as ");
+                    writer.Write(_Type.FullName);
+                    break;
             }
         }
 
@@ -236,6 +245,9 @@ namespace Shipwreck.Decompiler.Expressions
                     case UnaryOperator.PostIncrement:
                     case UnaryOperator.PostDecrement:
                         return ExpressionPrecedence.Primary;
+
+                    case UnaryOperator.TypeAs:
+                        return ExpressionPrecedence.Relational;
                 }
                 return ExpressionPrecedence.Unary;
             }

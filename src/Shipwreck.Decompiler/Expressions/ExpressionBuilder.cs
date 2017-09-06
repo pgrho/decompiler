@@ -67,6 +67,9 @@ namespace Shipwreck.Decompiler.Expressions
         public static UnaryExpression ConvertChecked(this Expression operand, Type type)
             => new UnaryExpression(operand, UnaryOperator.ConvertChecked, type);
 
+        public static UnaryExpression TypeAs(this Expression operand, Type type)
+            => new UnaryExpression(operand, UnaryOperator.TypeAs, type);
+
         #endregion UnaryExpression
 
         #region BinaryExpression

@@ -15,6 +15,7 @@ namespace Shipwreck.Decompiler.Expressions
         AddressOf,
 
         Convert,
-        ConvertChecked
+        ConvertChecked,
+        TypeAs
     }
 }
