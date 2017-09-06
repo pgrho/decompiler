@@ -20,14 +20,7 @@ namespace Shipwreck.Decompiler
             {
                 for (var i = 0; i < bytes.Length; i++)
                 {
-                    var offset = i;
-                    var il = GetInstruction(ctx, bp, ref i);
-
-                    // TODO: include ignorable instructions
-                    if (il != null)
-                    {
-                        l.Add(il);
-                    }
+                    l.Add(GetInstruction(ctx, bp, ref i));
                 }
             }
 
@@ -48,8 +41,7 @@ namespace Shipwreck.Decompiler
                     var offset = i;
                     var il = GetInstruction(ctx, bp, ref i);
 
-                    // TODO: include ignorable instructions
-                    if (il != null)
+                    if (il != null && !(il is IIgnorableInstruction))
                     {
                         ctx.RootStatements.Add(il);
                         ctx.SetOffset(il, offset);
@@ -81,9 +73,16 @@ namespace Shipwreck.Decompiler
 
                             var offset = ctx.GetOffset(s);
                             ctx.ReplaceInstructionFlow(st, ctx.RootStatements.Skip(s).Take(e - s + 1));
-                            ctx.RootStatements.RemoveRange(s + 1, e - s);
-                            ctx.RootStatements[s] = st;
-                            ctx.SetOffset(st, offset);
+                            if (st != null)
+                            {
+                                ctx.RootStatements.RemoveRange(s + 1, e - s);
+                                ctx.RootStatements[s] = st;
+                                ctx.SetOffset(st, offset);
+                            }
+                            else
+                            {
+                                ctx.RootStatements.RemoveRange(s, e - s + 1);
+                            }
 
                             transformed = true;
                             break;
@@ -225,8 +224,7 @@ namespace Shipwreck.Decompiler
             switch (b)
             {
                 case 0x00: // nop
-                case 0xdc: // endfinally
-                    return null;
+                    return IgnorableInstruction.Nop;
 
                 case 0x02: // ldarg.0
                 case 0x03: // ldarg.1
@@ -605,6 +603,9 @@ namespace Shipwreck.Decompiler
                 case 0xd5: // conv.ovf.u
                     return new ConvertInstruction(b == 0xd5 ? typeof(UIntPtr) : typeof(IntPtr), b != 0xd3);
 
+                case 0xdc: // endfinally
+                    return IgnorableInstruction.EndFinally;
+
                 case 0xdd: // leave {num}
                     i += 4;
                     return new LeaveInstruction(i + 1 + *(int*)(bp + i - 3));
@@ -660,7 +661,7 @@ namespace Shipwreck.Decompiler
 
                         case 0x16: // constrained {type}
                             i += 4;
-                            return null;
+                            return new IgnorableTypeInstruction(0xfe16, "constrained", context.Method.Module.ResolveType(*(int*)(bp + i - 3)));
 
                         default:
                             throw new NotImplementedException($"Invalid IL '{b:x2} {b2:x2}'");

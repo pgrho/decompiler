@@ -114,12 +114,32 @@ namespace Shipwreck.Decompiler
                 ClearTo(r);
             }
 
-            foreach (var f in froms)
+            if (newNode != null)
             {
-                SetTo(f, GetTo(f).Except(removing).Union(new[] { newNode }));
-            }
 
-            SetTo(newNode, tos);
+                foreach (var f in froms)
+                {
+                    SetTo(f, GetTo(f).Except(removing).Union(new[] { newNode }));
+                }
+
+                SetTo(newNode, tos);
+            }
+            else
+            {
+                var to = tos.SingleOrDefault();
+
+                foreach (var f in froms)
+                {
+                    if (to != null)
+                    {
+                        SetTo(f, GetTo(f).Except(removing).Union(new[] { to }));
+                    }
+                    else
+                    {
+                        SetTo(f, GetTo(f).Except(removing));
+                    }
+                }
+            }
         }
         public void ReplaceInstructionFlow(IEnumerable<Syntax> newNodes, params Syntax[] oldNodes)
             => ReplaceInstructionFlow(newNodes, (IEnumerable<Syntax>)oldNodes);
