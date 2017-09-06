@@ -1,5 +1,3 @@
-using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,53 +33,6 @@ namespace Shipwreck.Decompiler.Statements
             || (other is UsingStatement ws
                 && Resource.IsEquivalentTo(ws.Resource)
                 && _Statements.IsEquivalentTo(ws._Statements));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("using (");
-
-            if (Resource is VariableDeclarationStatement ds)
-            {
-                if (ds.Declarators.Count == 1)
-                {
-                    ds.WriteDeclaration(writer);
-                }
-                else
-                {
-                    throw new InvalidOperationException();
-                }
-            }
-            else if (Resource is ExpressionStatement es)
-            {
-                es.Expression.WriteTo(writer);
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
-
-            Resource.WriteTo(writer);
-            writer.WriteLine(")");
-
-            if (_Statements?.Count == 1 && _Statements[0] is UsingStatement)
-            {
-                _Statements[0].WriteTo(writer);
-            }
-            else
-            {
-                writer.WriteLine('{');
-                if (ShouldSerializeStatements())
-                {
-                    writer.Indent++;
-                    foreach (var s in _Statements)
-                    {
-                        s.WriteTo(writer);
-                    }
-                    writer.Indent--;
-                }
-                writer.WriteLine('}');
-            }
-        }
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {

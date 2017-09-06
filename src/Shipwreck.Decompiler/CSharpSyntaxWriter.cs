@@ -3,12 +3,410 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using Shipwreck.Decompiler.Expressions;
+using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler
 {
-    public class CSharpSyntaxWriter : IParameteredExpressionVisitor<TextWriter>
+    public class CSharpSyntaxWriter : IParameteredExpressionVisitor<TextWriter>, IParameteredStatementVisitor<IndentedTextWriter>
     {
         public static readonly CSharpSyntaxWriter Default = new CSharpSyntaxWriter();
+
+        #region IParameteredStatementVisitor<IndentedTextWriter>
+
+        public void VisitBreakStatement(BreakStatement breakStatement, IndentedTextWriter writer)
+            => writer.WriteLine("break;");
+
+        public void VisitConstantDeclarationStatement(ConstantDeclarationStatement constantDeclarationStatement, IndentedTextWriter writer)
+        {
+            if (constantDeclarationStatement.ShouldSerializeDeclarators())
+            {
+                writer.Write("const ");
+                writer.Write(constantDeclarationStatement.Type.FullName);
+                writer.Write(' ');
+
+                WriteDeclaration(constantDeclarationStatement, writer);
+
+                writer.WriteLine(';');
+            }
+        }
+
+        public void VisitContinueStatement(ContinueStatement continueStatement, IndentedTextWriter writer)
+            => writer.WriteLine("continue;");
+
+        public void VisitDoWhileStatement(DoWhileStatement doWhileStatement, IndentedTextWriter writer)
+        {
+            writer.WriteLine("do");
+            writer.WriteLine('{');
+            if (doWhileStatement.ShouldSerializeStatements())
+            {
+                writer.Indent++;
+                foreach (var s in doWhileStatement.Statements)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.Write("} while (");
+            doWhileStatement.Condition.AcceptVisitor(this, writer);
+            writer.WriteLine(");");
+        }
+
+        public void VisitExpressionStatement(ExpressionStatement expressionStatement, IndentedTextWriter writer)
+        {
+            expressionStatement.Expression.AcceptVisitor(this, writer);
+            writer.WriteLine(';');
+        }
+
+        public void VisitForEachStatement(ForEachStatement forEachStatement, IndentedTextWriter writer)
+        {
+            writer.Write("foreach (");
+
+            writer.Write(forEachStatement.Type?.FullName ?? "var");
+            writer.Write(' ');
+
+            writer.Write(forEachStatement.Identifier);
+
+            writer.Write(" in ");
+            forEachStatement.Expression.AcceptVisitor(this, writer);
+            writer.WriteLine(")");
+            writer.WriteLine('{');
+            if (forEachStatement.ShouldSerializeStatements())
+            {
+                writer.Indent++;
+                foreach (var s in forEachStatement.Statements)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+        }
+
+        public void VisitForStatement(ForStatement forStatement, IndentedTextWriter writer)
+        {
+            writer.Write("for (");
+            forStatement.Initializer?.AcceptVisitor(this, writer);
+            writer.Write("; ");
+            forStatement.Condition?.AcceptVisitor(this, writer);
+            writer.Write("; ");
+            forStatement.Iterator?.AcceptVisitor(this, writer);
+            writer.WriteLine(")");
+            writer.WriteLine('{');
+            if (forStatement.ShouldSerializeStatements())
+            {
+                writer.Indent++;
+                foreach (var s in forStatement.Statements)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+        }
+
+        public void VisitGoToStatement(GoToStatement goToStatement, IndentedTextWriter writer)
+        {
+            writer.Write("goto ");
+            writer.Write(goToStatement.Target.Name);
+            writer.WriteLine(';');
+        }
+
+        public void VisitIfStatement(IfStatement ifStatement, IndentedTextWriter writer)
+        {
+            writer.Write("if (");
+            ifStatement.Condition.AcceptVisitor(this, writer);
+            writer.WriteLine(')');
+
+            writer.WriteLine('{');
+            if (ifStatement.ShouldSerializeTruePart())
+            {
+                writer.Indent++;
+                foreach (var s in ifStatement.TruePart)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+
+            if (ifStatement.ShouldSerializeFalsePart())
+            {
+                if (ifStatement.FalsePart.Count == 1 && ifStatement.FalsePart[0] is IfStatement cib)
+                {
+                    writer.Write("else ");
+                    cib.AcceptVisitor(this, writer);
+                }
+                else
+                {
+                    writer.WriteLine("else");
+                    writer.WriteLine('{');
+                    writer.Indent++;
+                    foreach (var s in ifStatement.FalsePart)
+                    {
+                        s.AcceptVisitor(this, writer);
+                    }
+                    writer.Indent--;
+                    writer.WriteLine('}');
+                }
+            }
+        }
+
+        public void VisitLabelTarget(LabelTarget labelTarget, IndentedTextWriter writer)
+        {
+            writer.Write(labelTarget.Name);
+            writer.WriteLine(':');
+        }
+
+        public void VisitLockStatement(LockStatement lockStatement, IndentedTextWriter writer)
+        {
+            writer.Write("lock (");
+            lockStatement.Object.AcceptVisitor(this, writer);
+            writer.WriteLine(")");
+            writer.WriteLine('{');
+            if (lockStatement.ShouldSerializeStatements())
+            {
+                writer.Indent++;
+                foreach (var s in lockStatement.Statements)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+        }
+
+        public void VisitReturnStatement(ReturnStatement returnStatement, IndentedTextWriter writer)
+        {
+            writer.Write("return");
+            if (returnStatement.Value != null)
+            {
+                writer.Write(' ');
+                returnStatement.Value.AcceptVisitor(this, writer);
+            }
+            writer.WriteLine(';');
+        }
+
+        public void VisitSwitchStatement(SwitchStatement switchStatement, IndentedTextWriter writer)
+        {
+            writer.Write("switch (");
+            switchStatement.Expression.AcceptVisitor(this, writer);
+            writer.WriteLine(')');
+            writer.WriteLine('{');
+            if (switchStatement.ShouldSerializeSections())
+            {
+                writer.Indent++;
+                foreach (var s in switchStatement.Sections)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+        }
+
+        public void VisitThrowStatement(ThrowStatement throwStatement, IndentedTextWriter writer)
+        {
+            writer.Write("throw");
+            if (throwStatement.Value != null)
+            {
+                writer.Write(' ');
+                throwStatement.Value.AcceptVisitor(this, writer);
+            }
+            writer.WriteLine(';');
+        }
+
+        public void VisitTryStatement(TryStatement tryStatement, IndentedTextWriter writer)
+        {
+            writer.WriteLine("try");
+            writer.WriteLine('{');
+            if (tryStatement.ShouldSerializeBlock())
+            {
+                writer.Indent++;
+                foreach (var s in tryStatement.Block)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+
+            if (tryStatement.ShouldSerializeCatchClauses())
+            {
+                foreach (var c in tryStatement.CatchClauses)
+                {
+                    c.AcceptVisitor(this, writer);
+                }
+            }
+
+            if (tryStatement.ShouldSerializeFinallyStatements() || !tryStatement.ShouldSerializeCatchClauses())
+            {
+                writer.WriteLine("finally");
+                writer.WriteLine('{');
+                writer.Indent++;
+                foreach (var s in tryStatement.Finally)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+                writer.WriteLine('}');
+            }
+        }
+
+        public void VisitUsingStatement(UsingStatement usingStatement, IndentedTextWriter writer)
+        {
+            writer.Write("using (");
+
+            if (usingStatement.Resource is VariableDeclarationStatement ds)
+            {
+                if (ds.Declarators.Count == 1)
+                {
+                    WriteDeclaration(ds, writer);
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+            else if (usingStatement.Resource is ExpressionStatement es)
+            {
+                es.Expression.AcceptVisitor(this, writer);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+
+            usingStatement.Resource.AcceptVisitor(this, writer);
+            writer.WriteLine(")");
+
+            if (usingStatement.Statements?.Count == 1 && usingStatement.Statements[0] is UsingStatement)
+            {
+                usingStatement.Statements[0].AcceptVisitor(this, writer);
+            }
+            else
+            {
+                writer.WriteLine('{');
+                if (usingStatement.ShouldSerializeStatements())
+                {
+                    writer.Indent++;
+                    foreach (var s in usingStatement.Statements)
+                    {
+                        s.AcceptVisitor(this, writer);
+                    }
+                    writer.Indent--;
+                }
+                writer.WriteLine('}');
+            }
+        }
+
+        public void VisitVariableDeclarationStatement(VariableDeclarationStatement variableDeclarationStatement, IndentedTextWriter writer)
+        {
+            if (variableDeclarationStatement.ShouldSerializeDeclarators())
+            {
+                writer.Write(variableDeclarationStatement.Type?.FullName ?? "var");
+                writer.Write(' ');
+
+                WriteDeclaration(variableDeclarationStatement, writer);
+
+                writer.WriteLine(';');
+            }
+        }
+
+        public void VisitWhileStatement(WhileStatement whileStatement, IndentedTextWriter writer)
+        {
+            writer.Write("while (");
+            whileStatement.Condition.AcceptVisitor(this, writer);
+            writer.WriteLine(")");
+            WriteStatementsCore(writer, whileStatement);
+        }
+
+        public void VisitCatchClause(CatchClause catchClause, IndentedTextWriter writer)
+        {
+            writer.Write("catch");
+
+            if (catchClause.CatchType != null && catchClause.CatchType != typeof(object))
+            {
+                writer.Write(" (");
+                writer.Write(catchClause.CatchType.FullName);
+                writer.Write(')');
+            }
+
+            writer.WriteLine();
+            writer.WriteLine('{');
+            if (catchClause.ShouldSerializeStatements())
+            {
+                writer.Indent++;
+                foreach (var s in catchClause.Statements)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+        }
+
+        public void VisitSwitchSection(SwitchSection switchSection, IndentedTextWriter writer)
+        {
+            if (switchSection.ShouldSerializeLabels() && switchSection.ShouldSerializeStatements())
+            {
+                foreach (var v in switchSection.Labels)
+                {
+                    if (v == null)
+                    {
+                        writer.WriteLine("default:");
+                    }
+                    else
+                    {
+                        writer.Write("case ");
+                        v.AcceptVisitor(this, writer);
+                        writer.WriteLine(';');
+                    }
+                }
+
+                writer.Indent++;
+                foreach (var ss in switchSection.Statements)
+                {
+                    ss.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+        }
+
+        private void WriteStatementsCore(IndentedTextWriter writer, IContinuableStatement iterationStatement)
+        {
+            writer.WriteLine('{');
+            if (iterationStatement.ShouldSerializeStatements())
+            {
+                writer.Indent++;
+                foreach (var s in iterationStatement.Statements)
+                {
+                    s.AcceptVisitor(this, writer);
+                }
+                writer.Indent--;
+            }
+            writer.WriteLine('}');
+        }
+
+        internal void WriteDeclaration(DeclarationStatement declarationStatement, IndentedTextWriter writer)
+        {
+            for (int i = 0; i < declarationStatement.Declarators.Count; i++)
+            {
+                if (i > 0)
+                {
+                    writer.Write(", ");
+                }
+                var d = declarationStatement.Declarators[i];
+
+                writer.Write(d.Identifier);
+                if (d.Initializer == null)
+                {
+                    writer.Write(" = ");
+                    d.Initializer.AcceptVisitor(this, writer);
+                }
+            }
+        }
+
+        #endregion IParameteredStatementVisitor<IndentedTextWriter>
 
         #region IParameteredExpressionVisitor<TextWriter>
 
@@ -266,8 +664,8 @@ namespace Shipwreck.Decompiler
             writer.Write(')');
         }
 
-        public void VisitParameterExpression(ParameterExpression parameterExpression, TextWriter writer)
-            => writer.Write(parameterExpression.Name);
+        public void VisitParameterExpression(ParameterExpression writerExpression, TextWriter writer)
+            => writer.Write(writerExpression.Name);
 
         public void VisitThisExpression(ThisExpression thisExpression, TextWriter writer)
             => writer.Write("this");
@@ -361,17 +759,17 @@ namespace Shipwreck.Decompiler
             memberAssignment.Expression.AcceptVisitor(this, writer);
         }
 
-        #endregion IParameteredExpressionVisitor<TextWriter>
+        #region Helper methods
 
-        private void WriteParametersTo(TextWriter writer, IList<Expression> parameters)
+        private void WriteParametersTo(TextWriter writer, IList<Expression> writers)
         {
-            for (int i = 0; i < parameters.Count; i++)
+            for (int i = 0; i < writers.Count; i++)
             {
                 if (i > 0)
                 {
                     writer.Write(", ");
                 }
-                parameters[i].AcceptVisitor(this, writer);
+                writers[i].AcceptVisitor(this, writer);
             }
         }
 
@@ -410,5 +808,9 @@ namespace Shipwreck.Decompiler
                 }
             }
         }
+
+        #endregion Helper methods
+
+        #endregion IParameteredExpressionVisitor<TextWriter>
     }
 }

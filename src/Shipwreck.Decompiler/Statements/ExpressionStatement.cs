@@ -1,4 +1,3 @@
-using System.CodeDom.Compiler;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
@@ -15,12 +14,6 @@ namespace Shipwreck.Decompiler.Statements
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is ExpressionStatement es && (Expression?.IsEquivalentTo(es?.Expression) == true));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            Expression.WriteTo(writer);
-            writer.WriteLine(';');
-        }
 
         public override bool Reduce()
         {

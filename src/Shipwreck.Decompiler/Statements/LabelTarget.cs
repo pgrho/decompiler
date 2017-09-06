@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,12 +18,6 @@ namespace Shipwreck.Decompiler.Statements
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is LabelTarget lb && Name == lb.Name);
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write(Name);
-            writer.WriteLine(':');
-        }
 
         public override bool Reduce()
         {

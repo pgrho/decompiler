@@ -54,31 +54,7 @@ namespace Shipwreck.Decompiler.Statements
         #endregion Statements
 
         internal void WriteTo(IndentedTextWriter writer)
-        {
-            if (ShouldSerializeLabels() && ShouldSerializeStatements())
-            {
-                foreach (var v in Labels)
-                {
-                    if (v == null)
-                    {
-                        writer.WriteLine("default:");
-                    }
-                    else
-                    {
-                        writer.Write("case ");
-                        v.WriteTo(writer);
-                        writer.WriteLine(';');
-                    }
-                }
-
-                writer.Indent++;
-                foreach (var ss in Statements)
-                {
-                    ss.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-        }
+            => AcceptVisitor(CSharpSyntaxWriter.Default, writer);
 
         public override string ToString()
         {
@@ -92,5 +68,21 @@ namespace Shipwreck.Decompiler.Statements
                 return sw.ToString();
             }
         }
+
+        #region AcceptVisitor
+
+        public void AcceptVisitor(IStatementVisitor visitor)
+            => visitor.VisitSwitchSection(this);
+
+        public TResult AcceptVisitor<TResult>(IStatementVisitor<TResult> visitor)
+            => visitor.VisitSwitchSection(this);
+
+        public void AcceptVisitor<TParameter>(IParameteredStatementVisitor<TParameter> visitor, TParameter parameter)
+            => visitor.VisitSwitchSection(this, parameter);
+
+        public TResult AcceptVisitor<TParameter, TResult>(IParameteredStatementVisitor<TParameter, TResult> visitor, TParameter parameter)
+            => visitor.VisitSwitchSection(this, parameter);
+
+        #endregion AcceptVisitor
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.CodeDom.Compiler;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -17,13 +16,6 @@ namespace Shipwreck.Decompiler.Statements
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is GoToStatement gt && Target == gt.Target);
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("goto ");
-            writer.Write(Target.Name);
-            writer.WriteLine(';');
-        }
 
         public override bool Reduce()
         {

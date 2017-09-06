@@ -9,7 +9,8 @@ namespace Shipwreck.Decompiler.Statements
     {
         public StatementCollection Collection { get; internal set; }
 
-        public abstract void WriteTo(IndentedTextWriter writer);
+        public void WriteTo(IndentedTextWriter writer)
+            => AcceptVisitor(CSharpSyntaxWriter.Default, writer);
 
         public override string ToString()
         {

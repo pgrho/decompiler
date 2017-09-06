@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Shipwreck.Decompiler.Expressions;
@@ -33,31 +32,6 @@ namespace Shipwreck.Decompiler.Statements
                 && Identifier == ws.Identifier
                 && Expression.IsEquivalentTo(ws.Expression)
                 && _Statements.IsEquivalentTo(ws._Statements));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("foreach (");
-
-            writer.Write(Type?.FullName ?? "var");
-            writer.Write(' ');
-
-            writer.Write(Identifier);
-
-            writer.Write(" in ");
-            Expression.WriteTo(writer);
-            writer.WriteLine(")");
-            writer.WriteLine('{');
-            if (ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in _Statements)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-        }
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {

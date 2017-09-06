@@ -1,4 +1,3 @@
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Shipwreck.Decompiler.Expressions;
@@ -32,28 +31,6 @@ namespace Shipwreck.Decompiler.Statements
                 && (Condition?.IsEquivalentTo(ws.Condition) ?? ws.Condition == null)
                 && (Iterator?.IsEquivalentTo(ws.Iterator) ?? ws.Iterator == null)
                 && _Statements.IsEquivalentTo(ws._Statements));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("for (");
-            Initializer?.WriteTo(writer);
-            writer.Write("; ");
-            Condition?.WriteTo(writer);
-            writer.Write("; ");
-            Iterator?.WriteTo(writer);
-            writer.WriteLine(")");
-            writer.WriteLine('{');
-            if (ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in _Statements)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-        }
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {

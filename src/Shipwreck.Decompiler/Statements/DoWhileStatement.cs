@@ -1,4 +1,3 @@
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Shipwreck.Decompiler.Expressions;
@@ -36,24 +35,6 @@ namespace Shipwreck.Decompiler.Statements
             || (other is DoWhileStatement dw
                 && Condition.IsEquivalentTo(dw.Condition)
                 && _Statements.IsEquivalentTo(dw._Statements));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.WriteLine("do");
-            writer.WriteLine('{');
-            if (ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in _Statements)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.Write("} while (");
-            Condition.WriteTo(writer);
-            writer.WriteLine(");");
-        }
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {
@@ -122,6 +103,7 @@ namespace Shipwreck.Decompiler.Statements
 
             return thisReduced;
         }
+
         public override Statement Clone()
         {
             var r = new DoWhileStatement(Condition);

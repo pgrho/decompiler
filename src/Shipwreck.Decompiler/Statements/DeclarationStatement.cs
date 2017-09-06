@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 
 namespace Shipwreck.Decompiler.Statements
 {
@@ -67,39 +66,5 @@ namespace Shipwreck.Decompiler.Statements
             }
             return reduced;
         }
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            if (ShouldSerializeDeclarators())
-            {
-                WriteDeclaration(writer);
-
-                writer.WriteLine(';');
-            }
-        }
-
-        internal void WriteDeclaration(IndentedTextWriter writer)
-        {
-            WriteTypeTo(writer);
-
-            for (int i = 0; i < Declarators.Count; i++)
-            {
-                if (i > 0)
-                {
-                    writer.Write(", ");
-                }
-                var d = Declarators[i];
-
-                writer.Write(d.Identifier);
-                if (d.Initializer == null)
-                {
-                    writer.Write(" = ");
-                    d.Initializer.WriteTo(writer);
-                }
-            }
-        }
-
-        internal abstract void WriteTypeTo(IndentedTextWriter writer);
     }
-
 }

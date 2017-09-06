@@ -1,6 +1,4 @@
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Shipwreck.Decompiler.Expressions;
 
@@ -36,24 +34,6 @@ namespace Shipwreck.Decompiler.Statements
             || (other is LockStatement ws
                 && Object.IsEquivalentTo(ws.Object)
                 && _Statements.IsEquivalentTo(ws._Statements));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("lock (");
-            Object.WriteTo(writer);
-            writer.WriteLine(")");
-            writer.WriteLine('{');
-            if (ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in _Statements)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-        }
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {

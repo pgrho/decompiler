@@ -49,29 +49,7 @@ namespace Shipwreck.Decompiler.Statements
         #endregion Statements
 
         internal void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("catch");
-
-            if (CatchType != null && CatchType != typeof(object))
-            {
-                writer.Write(" (");
-                writer.Write(CatchType.FullName);
-                writer.Write(')');
-            }
-
-            writer.WriteLine();
-            writer.WriteLine('{');
-            if (ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in Statements)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-        }
+            => AcceptVisitor(CSharpSyntaxWriter.Default, writer);
 
         public override string ToString()
         {
@@ -85,5 +63,21 @@ namespace Shipwreck.Decompiler.Statements
                 return sw.ToString();
             }
         }
+
+        #region AcceptVisitor
+
+        public void AcceptVisitor(IStatementVisitor visitor)
+            => visitor.VisitCatchClause(this);
+
+        public TResult AcceptVisitor<TResult>(IStatementVisitor<TResult> visitor)
+            => visitor.VisitCatchClause(this);
+
+        public void AcceptVisitor<TParameter>(IParameteredStatementVisitor<TParameter> visitor, TParameter parameter)
+            => visitor.VisitCatchClause(this, parameter);
+
+        public TResult AcceptVisitor<TParameter, TResult>(IParameteredStatementVisitor<TParameter, TResult> visitor, TParameter parameter)
+            => visitor.VisitCatchClause(this, parameter);
+
+        #endregion AcceptVisitor
     }
 }

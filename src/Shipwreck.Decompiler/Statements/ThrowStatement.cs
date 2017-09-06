@@ -1,4 +1,3 @@
-using System.CodeDom.Compiler;
 using Shipwreck.Decompiler.Expressions;
 
 namespace Shipwreck.Decompiler.Statements
@@ -19,17 +18,6 @@ namespace Shipwreck.Decompiler.Statements
         public override bool IsEquivalentTo(Syntax other)
             => this == (object)other
             || (other is ThrowStatement rs && (Value?.IsEquivalentTo(rs?.Value) ?? rs.Value == null));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("throw");
-            if (Value != null)
-            {
-                writer.Write(' ');
-                Value.WriteTo(writer);
-            }
-            writer.WriteLine(';');
-        }
 
         public override bool Reduce()
         {

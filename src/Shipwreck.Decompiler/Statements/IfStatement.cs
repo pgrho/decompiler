@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Shipwreck.Decompiler.Expressions;
@@ -50,46 +49,6 @@ namespace Shipwreck.Decompiler.Statements
                 && Condition.IsEquivalentTo(gt.Condition)
                 && _TruePart.IsEquivalentTo(gt._TruePart)
                 && _FalsePart.IsEquivalentTo(gt._FalsePart));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("if (");
-            Condition.WriteTo(writer);
-            writer.WriteLine(')');
-
-            writer.WriteLine('{');
-            if (ShouldSerializeTruePart())
-            {
-                writer.Indent++;
-                foreach (var s in _TruePart)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-
-            if (ShouldSerializeFalsePart())
-            {
-                if (_FalsePart.Count == 1 && _FalsePart[0] is IfStatement cib)
-                {
-                    writer.Write("else ");
-                    cib.WriteTo(writer);
-                }
-                else
-                {
-                    writer.WriteLine("else");
-                    writer.WriteLine('{');
-                    writer.Indent++;
-                    foreach (var s in _FalsePart)
-                    {
-                        s.WriteTo(writer);
-                    }
-                    writer.Indent--;
-                    writer.WriteLine('}');
-                }
-            }
-        }
 
         public override bool Reduce()
         {

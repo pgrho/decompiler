@@ -1,5 +1,4 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Shipwreck.Decompiler.Expressions;
 
@@ -30,24 +29,6 @@ namespace Shipwreck.Decompiler.Statements
             => _Sections?.Count > 0;
 
         #endregion Sections
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.Write("switch (");
-            Expression.WriteTo(writer);
-            writer.WriteLine(')');
-            writer.WriteLine('{');
-            if (ShouldSerializeSections())
-            {
-                writer.Indent++;
-                foreach (var s in _Sections)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-        }
 
         public override Statement Clone()
         {

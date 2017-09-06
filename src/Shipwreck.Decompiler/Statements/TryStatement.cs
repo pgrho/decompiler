@@ -1,4 +1,3 @@
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,43 +46,6 @@ namespace Shipwreck.Decompiler.Statements
             || (other is TryStatement gt
                 && _Block.IsEquivalentTo(gt._Block)
                 && _Finally.IsEquivalentTo(gt._Finally));
-
-        public override void WriteTo(IndentedTextWriter writer)
-        {
-            writer.WriteLine("try");
-            writer.WriteLine('{');
-            if (ShouldSerializeBlock())
-            {
-                writer.Indent++;
-                foreach (var s in _Block)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
-
-            if (ShouldSerializeCatchClauses())
-            {
-                foreach (var c in _CatchClauses)
-                {
-                    c.WriteTo(writer);
-                }
-            }
-
-            if (ShouldSerializeFinallyStatements() || !ShouldSerializeCatchClauses())
-            {
-                writer.WriteLine("finally");
-                writer.WriteLine('{');
-                writer.Indent++;
-                foreach (var s in _Finally)
-                {
-                    s.WriteTo(writer);
-                }
-                writer.Indent--;
-                writer.WriteLine('}');
-            }
-        }
 
         public override bool Reduce()
         {
