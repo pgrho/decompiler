@@ -14,7 +14,20 @@ namespace Shipwreck.Decompiler.Expressions
             Method = method;
         }
 
+        public MethodCallExpression(MethodBase method, params Expression[] parameters)
+            : base(parameters)
+        {
+            Method = method;
+        }
+
         public MethodCallExpression(Expression obj, MethodBase method, IEnumerable<Expression> parameters)
+            : base(parameters)
+        {
+            Object = obj;
+            Method = method;
+        }
+
+        public MethodCallExpression(Expression obj, MethodBase method, params Expression[] parameters)
             : base(parameters)
         {
             Object = obj;

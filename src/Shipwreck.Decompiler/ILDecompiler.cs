@@ -226,11 +226,14 @@ namespace Shipwreck.Decompiler
                 case 0x00: // nop
                     return IgnorableInstruction.Nop;
 
+                case 0x01: // break
+                    return BreakInstruction.Default;
+
                 case 0x02: // ldarg.0
                 case 0x03: // ldarg.1
                 case 0x04: // ldarg.2
                 case 0x05: // ldarg.3
-                    return new LoadArgumentInstruction(b - 0x02);
+                    return LoadArgumentInstruction.GetMacro(b - 0x02);
 
                 case 0x06: // ldloc.0
                 case 0x07: // ldloc.1
@@ -245,7 +248,7 @@ namespace Shipwreck.Decompiler
                     return new StoreLocalInstruction(b - 0x0a);
 
                 case 0x0e: // ldarg.s {index}
-                    return new LoadArgumentInstruction(bp[++i]);
+                    return new LoadArgumentInstruction(bp[++i], 1);
 
                 case 0x0f: // ldarga.s {index}
                     return new LoadArgumentAddressInstruction(bp[++i]);

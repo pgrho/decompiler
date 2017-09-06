@@ -16,6 +16,8 @@ namespace Shipwreck.Decompiler.Instructions
         public override int PushCount
             => 0;
 
+        public ushort OpCode => 0x2a;
+
         internal override bool TryCreateExpression(DecompilationContext context, ref int index, out Expression expression)
         {
             expression = null;
@@ -45,7 +47,7 @@ namespace Shipwreck.Decompiler.Instructions
         }
 
         public override bool IsEquivalentTo(Syntax other)
-            => other is ReturnInstruction;
+            => this == other || other is ReturnInstruction;
 
         public override string ToString()
             => "ret";
