@@ -81,7 +81,14 @@ namespace Shipwreck.Decompiler.ILDecompilerTests
         [Theory]
         [InlineData(nameof(Store_255))]
         [InlineData(nameof(Store_256))]
-        public void NotImplementedTest(string m)
-            => AssertMethod(GetMethod(m));
+        public void StoreTest(string m)
+        {
+            var p = new ParameterExpression("a" + m.Split('_')[1], typeof(int));
+            var rs = p.AddAssign(5.ToExpression())
+                        .Call(typeof(int).GetMethod(nameof(ToString), Type.EmptyTypes))
+                        .ToReturnStatement();
+
+            AssertMethod(GetMethod(m), rs);
+        }
     }
 }
