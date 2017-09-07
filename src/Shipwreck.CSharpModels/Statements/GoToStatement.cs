@@ -63,7 +63,7 @@ namespace Shipwreck.CSharpModels.Statements
                         && ans?.Collection != null)
                     {
                         var inBreakable = ans.Collection.Owner is IBreakableStatement;
-                        var inLoop = ans.Collection.Owner is IContinuableStatement;
+                        var inLoop = ans.Collection.Owner is IIterationStatement;
 
                         var ai = ans.Collection.IndexOf(ans);
                         var k = ans.Collection.IndexOf(Target);

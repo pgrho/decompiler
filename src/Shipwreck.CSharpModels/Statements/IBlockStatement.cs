@@ -1,6 +1,9 @@
 namespace Shipwreck.CSharpModels.Statements
 {
-    internal interface IContinuableStatement : IStatementNode
+    /// <summary>
+    /// Represents a statement with up to one block.
+    /// </summary>
+    internal interface IBlockStatement : IStatementNode
     {
         StatementCollection Statements { get; }
 

@@ -5,7 +5,7 @@ using Shipwreck.CSharpModels.Expressions;
 
 namespace Shipwreck.CSharpModels.Statements
 {
-    public sealed partial class ForEachStatement : Statement
+    public sealed partial class ForEachStatement : Statement, IIterationStatement
     {
         public Type Type { get; set; }
 

@@ -69,17 +69,7 @@ namespace Shipwreck.CSharpModels
             writer.Write(" in ");
             forEachStatement.Expression.AcceptVisitor(this, writer);
             writer.WriteLine(")");
-            writer.WriteLine('{');
-            if (forEachStatement.ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in forEachStatement.Statements)
-                {
-                    s.AcceptVisitor(this, writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
+            WriteBlockStatementCore(writer, forEachStatement);
         }
 
         public void VisitForStatement(ForStatement forStatement, IndentedTextWriter writer)
@@ -91,17 +81,7 @@ namespace Shipwreck.CSharpModels
             writer.Write("; ");
             forStatement.Iterator?.AcceptVisitor(this, writer);
             writer.WriteLine(")");
-            writer.WriteLine('{');
-            if (forStatement.ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in forStatement.Statements)
-                {
-                    s.AcceptVisitor(this, writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
+            WriteBlockStatementCore(writer, forStatement);
         }
 
         public void VisitGoToStatement(GoToStatement goToStatement, IndentedTextWriter writer)
@@ -162,17 +142,7 @@ namespace Shipwreck.CSharpModels
             writer.Write("lock (");
             lockStatement.Object.AcceptVisitor(this, writer);
             writer.WriteLine(")");
-            writer.WriteLine('{');
-            if (lockStatement.ShouldSerializeStatements())
-            {
-                writer.Indent++;
-                foreach (var s in lockStatement.Statements)
-                {
-                    s.AcceptVisitor(this, writer);
-                }
-                writer.Indent--;
-            }
-            writer.WriteLine('}');
+            WriteBlockStatementCore(writer, lockStatement);
         }
 
         public void VisitReturnStatement(ReturnStatement returnStatement, IndentedTextWriter writer)
@@ -285,17 +255,7 @@ namespace Shipwreck.CSharpModels
             }
             else
             {
-                writer.WriteLine('{');
-                if (usingStatement.ShouldSerializeStatements())
-                {
-                    writer.Indent++;
-                    foreach (var s in usingStatement.Statements)
-                    {
-                        s.AcceptVisitor(this, writer);
-                    }
-                    writer.Indent--;
-                }
-                writer.WriteLine('}');
+                WriteBlockStatementCore(writer, usingStatement);
             }
         }
 
@@ -317,7 +277,7 @@ namespace Shipwreck.CSharpModels
             writer.Write("while (");
             whileStatement.Condition.AcceptVisitor(this, writer);
             writer.WriteLine(")");
-            WriteStatementsCore(writer, whileStatement);
+            WriteBlockStatementCore(writer, whileStatement);
         }
 
         public void VisitCatchClause(CatchClause catchClause, IndentedTextWriter writer)
@@ -372,13 +332,13 @@ namespace Shipwreck.CSharpModels
             }
         }
 
-        private void WriteStatementsCore(IndentedTextWriter writer, IContinuableStatement iterationStatement)
+        private void WriteBlockStatementCore(IndentedTextWriter writer, IBlockStatement blockStatement)
         {
             writer.WriteLine('{');
-            if (iterationStatement.ShouldSerializeStatements())
+            if (blockStatement.ShouldSerializeStatements())
             {
                 writer.Indent++;
-                foreach (var s in iterationStatement.Statements)
+                foreach (var s in blockStatement.Statements)
                 {
                     s.AcceptVisitor(this, writer);
                 }

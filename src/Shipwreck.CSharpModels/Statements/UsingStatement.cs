@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Shipwreck.CSharpModels.Statements
 {
-    public sealed partial class UsingStatement : Statement
+    public sealed partial class UsingStatement : Statement, IBlockStatement
     {
         public UsingStatement()
         {

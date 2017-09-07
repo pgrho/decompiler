@@ -4,7 +4,7 @@ using Shipwreck.CSharpModels.Expressions;
 
 namespace Shipwreck.CSharpModels.Statements
 {
-    public sealed partial class LockStatement : Statement
+    public sealed partial class LockStatement : Statement, IBlockStatement
     {
         public LockStatement()
         {

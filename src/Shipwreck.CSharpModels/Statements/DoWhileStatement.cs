@@ -4,7 +4,7 @@ using Shipwreck.CSharpModels.Expressions;
 
 namespace Shipwreck.CSharpModels.Statements
 {
-    public sealed partial class DoWhileStatement : Statement, IBreakableStatement, IContinuableStatement
+    public sealed partial class DoWhileStatement : Statement,  IIterationStatement
     {
         public DoWhileStatement()
         {

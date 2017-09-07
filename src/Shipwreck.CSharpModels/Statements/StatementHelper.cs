@@ -72,7 +72,7 @@ namespace Shipwreck.CSharpModels.Statements
                 return true;
             }
 
-            if (!(s is IContinuableStatement))
+            if (!(s is IIterationStatement))
             {
                 if (s is TryStatement ts)
                 {

@@ -4,7 +4,7 @@ using Shipwreck.CSharpModels.Expressions;
 
 namespace Shipwreck.CSharpModels.Statements
 {
-    public sealed partial class ForStatement : Statement, IBreakableStatement, IContinuableStatement
+    public sealed partial class ForStatement : Statement, IIterationStatement
     {
         // TODO: allow variable declaration
         public Expression Initializer { get; set; }

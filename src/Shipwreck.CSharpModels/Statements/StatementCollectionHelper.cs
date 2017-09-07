@@ -50,7 +50,7 @@ namespace Shipwreck.CSharpModels.Statements
                 }
 
                 if (!(block.Owner is TryStatement ts && block == ts.Finally)
-                    && !(block.Owner is IContinuableStatement))
+                    && !(block.Owner is IIterationStatement))
                 {
                     var ls = block.LastOrDefault();
 
@@ -73,7 +73,7 @@ namespace Shipwreck.CSharpModels.Statements
                 }
 
                 if (block.NextStatement() == null
-                    && (block.Owner as Statement)?.Ancestors().OfType<IContinuableStatement>().Any() != true)
+                    && (block.Owner as Statement)?.Ancestors().OfType<IIterationStatement>().Any() != true)
                 {
                     if (block.LastOrDefault() is ReturnStatement rs && rs.Value == null)
                     {
@@ -88,7 +88,7 @@ namespace Shipwreck.CSharpModels.Statements
 
         internal static Statement NextStatement(this StatementCollection block)
         {
-            if (block.Owner?.Collection == null || block.Owner is IContinuableStatement)
+            if (block.Owner?.Collection == null || block.Owner is IIterationStatement)
             {
                 return null;
             }
