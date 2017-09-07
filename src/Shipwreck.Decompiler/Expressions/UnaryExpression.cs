@@ -74,9 +74,9 @@ namespace Shipwreck.Decompiler.Expressions
             }
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => other is UnaryExpression ue
-                && Operand.IsEquivalentTo(ue.Operand)
+                && Operand.IsEqualTo(ue.Operand)
                 && Operator == ue.Operator
                 && _Type == ue._Type;
 
@@ -156,7 +156,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

@@ -9,7 +9,7 @@ namespace Shipwreck.Decompiler.Statements
 
         public int Target { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is TemporalGoToStatement gt && Target == gt.Target);
 

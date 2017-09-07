@@ -133,8 +133,8 @@ namespace Shipwreck.Decompiler.Statements
                 && pae.Left.IsLocalVariable())
             {
                 // TODO: consider side effect
-                if (!reducedValue.EnumeratePostOrder().Any(n => n is AssignmentExpression ne && ne.Left.IsEquivalentTo(pae.Left))
-                    && reducedValue.EnumeratePostOrder().Count(n => n.IsEquivalentTo(pae.Left)) == 1)
+                if (!reducedValue.EnumeratePostOrder().Any(n => n is AssignmentExpression ne && ne.Left.IsEqualTo(pae.Left))
+                    && reducedValue.EnumeratePostOrder().Count(n => n.IsEqualTo(pae.Left)) == 1)
                 {
                     if (reducedValue.TryReplace(pae.Left, pae.Right, out var replaced))
                     {

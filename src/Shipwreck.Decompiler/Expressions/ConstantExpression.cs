@@ -14,7 +14,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override Type Type { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => other is ConstantExpression ce && Equals(Value, ce.Value);
 
         public override ExpressionPrecedence Precedence

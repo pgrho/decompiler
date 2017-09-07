@@ -24,12 +24,12 @@ namespace Shipwreck.Decompiler.Expressions
         public override Type Type
             => TruePart.Type.IsAssignableFrom(FalsePart.Type) ? TruePart.Type : FalsePart.Type;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
                 || (other is ConditionalExpression be
-                    && Condition.IsEquivalentTo(be.Condition)
-                    && TruePart.IsEquivalentTo(be.TruePart)
-                    && FalsePart.IsEquivalentTo(be.FalsePart));
+                    && Condition.IsEqualTo(be.Condition)
+                    && TruePart.IsEqualTo(be.TruePart)
+                    && FalsePart.IsEqualTo(be.FalsePart));
 
         internal override Expression ReduceCore()
         {

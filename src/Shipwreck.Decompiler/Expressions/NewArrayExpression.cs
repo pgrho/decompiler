@@ -18,11 +18,11 @@ namespace Shipwreck.Decompiler.Expressions
 
         public Expression Length { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == other
             || (other is NewArrayExpression de
                 && Type == de.Type
-                && Length.IsEquivalentTo(Length));
+                && Length.IsEqualTo(Length));
 
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;
 
@@ -34,7 +34,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

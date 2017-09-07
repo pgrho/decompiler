@@ -20,10 +20,10 @@ namespace Shipwreck.Decompiler.Expressions
         public override Type Type
             => typeof(bool);
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
                 || (other is TypeBinaryExpression be
-                    && Expression.IsEquivalentTo(be.Expression)
+                    && Expression.IsEqualTo(be.Expression)
                     && TypeOperand == TypeOperand);
 
         internal override Expression ReduceCore()
@@ -38,7 +38,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

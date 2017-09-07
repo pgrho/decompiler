@@ -15,9 +15,9 @@ namespace Shipwreck.Decompiler.Expressions
 
         public Expression Expression { get; }
 
-        public override bool IsEquivalentTo(MemberBinding other)
+        public override bool IsEqualTo(MemberBinding other)
             => this == other
-            || (other is MemberAssignment ma && ma.Member == Member && ma.Expression.IsEquivalentTo(Expression));
+            || (other is MemberAssignment ma && ma.Member == Member && ma.Expression.IsEqualTo(Expression));
 
         internal override MemberBinding ReduceCore()
         {

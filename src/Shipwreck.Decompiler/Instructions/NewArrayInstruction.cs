@@ -17,7 +17,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
             => new NewArrayExpression(Type, value);
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == other
             || (other is NewArrayInstruction ui && Type == ui.Type);
 

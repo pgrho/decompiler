@@ -54,7 +54,7 @@ namespace Shipwreck.Decompiler.ILDecompilerTests
                     Assert.Equal(expectedStatement.Length, dm.Count);
                     for (int i = 0; i < dm.Count; i++)
                     {
-                        Assert.True(expectedStatement[i].IsEquivalentTo(dm[i])
+                        Assert.True(expectedStatement[i].IsEqualTo(dm[i])
                                     || expectedStatement[i].ToString() == dm[i].ToString());
                     }
                 }

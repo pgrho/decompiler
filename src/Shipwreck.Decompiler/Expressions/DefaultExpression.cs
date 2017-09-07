@@ -12,7 +12,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override Type Type { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == other
             || (other is DefaultExpression de && Type == de.Type);
 

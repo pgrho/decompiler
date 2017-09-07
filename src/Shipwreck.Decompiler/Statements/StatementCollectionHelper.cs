@@ -117,7 +117,7 @@ namespace Shipwreck.Decompiler.Statements
             return null;
         }
 
-        public static bool IsEquivalentTo(this StatementCollection collection, StatementCollection other)
+        public static bool IsEqualTo(this StatementCollection collection, StatementCollection other)
         {
             if (collection == null)
             {
@@ -130,7 +130,7 @@ namespace Shipwreck.Decompiler.Statements
 
             for (int i = 0; i < collection.Count; i++)
             {
-                if (!collection[i].IsEquivalentTo(other[i]))
+                if (!collection[i].IsEqualTo(other[i]))
                 {
                     return false;
                 }

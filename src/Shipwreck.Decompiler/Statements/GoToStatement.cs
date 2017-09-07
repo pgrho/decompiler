@@ -13,7 +13,7 @@ namespace Shipwreck.Decompiler.Statements
 
         public LabelTarget Target { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is GoToStatement gt && Target == gt.Target);
 

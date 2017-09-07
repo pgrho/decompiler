@@ -127,11 +127,11 @@ namespace Shipwreck.Decompiler.Expressions
             return typeof(int);
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
                 || (other is BinaryExpression be
-                    && Left.IsEquivalentTo(be.Left)
-                    && Right.IsEquivalentTo(be.Right)
+                    && Left.IsEqualTo(be.Left)
+                    && Right.IsEqualTo(be.Right)
                     && Operator == be.Operator);
 
         internal override Expression ReduceCore()
@@ -186,7 +186,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

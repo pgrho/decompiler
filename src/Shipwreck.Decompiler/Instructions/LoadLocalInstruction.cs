@@ -22,7 +22,7 @@ namespace Shipwreck.Decompiler.Instructions
                 var e = (prev as ExpressionStatement)?.Expression;
                 while (e is AssignmentExpression ae)
                 {
-                    if (ae.Left.IsEquivalentTo(expression))
+                    if (ae.Left.IsEqualTo(expression))
                     {
                         expression = (prev as ExpressionStatement).Expression;
                         index = pi;
@@ -36,7 +36,7 @@ namespace Shipwreck.Decompiler.Instructions
             return true;
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is LoadLocalInstruction li && Index == li.Index);
 

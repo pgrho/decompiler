@@ -28,7 +28,7 @@ namespace Shipwreck.Decompiler.Instructions
             return true;
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => other is LoadArgumentAddressInstruction li && Index == li.Index;
 
         public override string ToString()

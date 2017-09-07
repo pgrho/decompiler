@@ -30,7 +30,7 @@ namespace Shipwreck.Decompiler.Instructions
 
         public override int PushCount => 0;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == other || (other is SwitchInstruction si && Targets.SequenceEqual(si.Targets));
 
         internal override void SetTo(DecompilationContext context, int index)

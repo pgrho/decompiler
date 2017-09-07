@@ -39,11 +39,11 @@ namespace Shipwreck.Decompiler.Expressions
 
         public ConstructorInfo Constructor { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is NewExpression ne
                 && Constructor == ne.Constructor
-                && base.IsEquivalentTo(other));
+                && base.IsEqualTo(other));
 
         public override ExpressionPrecedence Precedence
             => ExpressionPrecedence.Primary;

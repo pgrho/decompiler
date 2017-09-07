@@ -17,11 +17,11 @@ namespace Shipwreck.Decompiler.Expressions
 
         public ReadOnlyCollection<Expression> Parameters { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is CallExpression ne
                 && (Parameters.Count == ne.Parameters.Count
-                && Enumerable.Range(0, Parameters.Count).All(i => Parameters[i].IsEquivalentTo(ne.Parameters[i]))));
+                && Enumerable.Range(0, Parameters.Count).All(i => Parameters[i].IsEqualTo(ne.Parameters[i]))));
 
         protected bool TryReduceParameters(out Expression[] parameters)
         {

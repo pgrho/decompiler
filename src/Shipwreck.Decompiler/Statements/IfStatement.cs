@@ -43,12 +43,12 @@ namespace Shipwreck.Decompiler.Statements
 
         #endregion FalsePart
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is IfStatement gt
-                && Condition.IsEquivalentTo(gt.Condition)
-                && _TruePart.IsEquivalentTo(gt._TruePart)
-                && _FalsePart.IsEquivalentTo(gt._FalsePart));
+                && Condition.IsEqualTo(gt.Condition)
+                && _TruePart.IsEqualTo(gt._TruePart)
+                && _FalsePart.IsEqualTo(gt._FalsePart));
 
         public override bool Reduce()
         {

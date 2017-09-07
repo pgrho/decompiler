@@ -93,7 +93,7 @@ namespace Shipwreck.Decompiler.Instructions
         private Expression CreateStoreExpression(DecompilationContext context, Expression @object, Expression value)
             => @object.MakeMemberAccess(Field).Assign(value);
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is StoreFieldInstruction sts && Field == sts.Field);
 

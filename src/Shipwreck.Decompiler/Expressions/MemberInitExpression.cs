@@ -25,21 +25,21 @@ namespace Shipwreck.Decompiler.Expressions
         public override Type Type => NewExpression.Type;
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
         {
             if (this == other)
             {
                 return true;
             }
             if (!(other is MemberInitExpression mie)
-                || !NewExpression.IsEquivalentTo(mie.NewExpression)
+                || !NewExpression.IsEqualTo(mie.NewExpression)
                 || Bindings.Count != mie.Bindings.Count)
             {
                 return false;
             }
             for (int i = 0; i < Bindings.Count; i++)
             {
-                if (!Bindings[i].IsEquivalentTo(mie.Bindings[i]))
+                if (!Bindings[i].IsEqualTo(mie.Bindings[i]))
                 {
                     return false;
                 }

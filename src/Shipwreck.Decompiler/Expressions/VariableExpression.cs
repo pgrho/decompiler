@@ -16,7 +16,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         public int Index { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
                 || (other is VariableExpression ve && Index == ve.Index);
 

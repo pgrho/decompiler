@@ -58,10 +58,10 @@ namespace Shipwreck.Decompiler.Expressions
                 : Member is FieldInfo f ? f.FieldType
                 : ((EventInfo)Member).EventHandlerType;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is MemberExpression ne
-                && (Object?.IsEquivalentTo(ne.Object) ?? ne.Object == null)
+                && (Object?.IsEqualTo(ne.Object) ?? ne.Object == null)
                 && Member == ne.Member);
 
         internal override Expression ReduceCore()

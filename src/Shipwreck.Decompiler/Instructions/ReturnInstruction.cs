@@ -46,7 +46,7 @@ namespace Shipwreck.Decompiler.Instructions
             return false;
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == other || other is ReturnInstruction;
 
         public override string ToString()

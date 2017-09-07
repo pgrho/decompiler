@@ -14,7 +14,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         public MemberInfo Member { get; }
 
-        public abstract bool IsEquivalentTo(MemberBinding other);
+        public abstract bool IsEqualTo(MemberBinding other);
          
         internal abstract MemberBinding ReduceCore();
 

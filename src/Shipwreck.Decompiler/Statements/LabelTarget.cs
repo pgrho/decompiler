@@ -15,7 +15,7 @@ namespace Shipwreck.Decompiler.Statements
 
         public string Name { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is LabelTarget lb && Name == lb.Name);
 

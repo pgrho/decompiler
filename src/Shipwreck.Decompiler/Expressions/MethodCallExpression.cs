@@ -48,12 +48,12 @@ namespace Shipwreck.Decompiler.Expressions
         public override Type Type
             => Method is MethodInfo mi ? mi.ReturnType : typeof(void);
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is MethodCallExpression ne
-                && (Object?.IsEquivalentTo(ne.Object) ?? ne.Object == null)
+                && (Object?.IsEqualTo(ne.Object) ?? ne.Object == null)
                 && Method == ne.Method
-                && base.IsEquivalentTo(other));
+                && base.IsEqualTo(other));
 
         internal override Expression ReduceCore()
         {

@@ -15,7 +15,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
                 => new MemberExpression(Field).Assign(value);
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is StoreStaticFieldInstruction sts && Field == sts.Field);
 

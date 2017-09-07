@@ -26,18 +26,18 @@ namespace Shipwreck.Decompiler.Expressions
 
         public override Type Type => Left.Type;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
                 || (other is AssignmentExpression ae
-                    && Left.IsEquivalentTo(ae.Left)
-                    && Right.IsEquivalentTo(ae.Right)
+                    && Left.IsEqualTo(ae.Left)
+                    && Right.IsEqualTo(ae.Right)
                     && Operator == ae.Operator);
 
         internal override Expression ReduceCore()
         {
             if (Operator == BinaryOperator.Default
                 && Right is BinaryExpression b
-                && b.Left.IsEquivalentTo(Left))
+                && b.Left.IsEqualTo(Left))
             {
                 return Left.Assign(b.Right, b.Operator);
             }
@@ -52,7 +52,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

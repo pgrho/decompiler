@@ -41,11 +41,11 @@ namespace Shipwreck.Decompiler.Statements
 
         #endregion Finally
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is TryStatement gt
-                && _Block.IsEquivalentTo(gt._Block)
-                && _Finally.IsEquivalentTo(gt._Finally));
+                && _Block.IsEqualTo(gt._Block)
+                && _Finally.IsEqualTo(gt._Finally));
 
         public override bool Reduce()
         {

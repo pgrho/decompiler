@@ -42,16 +42,16 @@ namespace Shipwreck.Decompiler.Expressions
             }
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => other is AwaitExpression ae
-                && Expression.IsEquivalentTo(ae.Expression);
+                && Expression.IsEqualTo(ae.Expression);
 
         internal override Expression ReduceCore()
             => Expression.TryReduce(out var v) ? new AwaitExpression(v) : this;
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

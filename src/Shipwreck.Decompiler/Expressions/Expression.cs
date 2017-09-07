@@ -48,7 +48,7 @@ namespace Shipwreck.Decompiler.Expressions
             => (result = ReplaceCore(currentExpression, newExpression, false, false)) != this;
 
         internal virtual Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
-            => IsEquivalentTo(currentExpression) ? newExpression : this;
+            => IsEqualTo(currentExpression) ? newExpression : this;
 
         #endregion Replace
 

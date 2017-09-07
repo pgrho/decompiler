@@ -76,7 +76,7 @@ namespace Shipwreck.Decompiler.Instructions
         private static Expression CreateStoreExpression(DecompilationContext context, Expression array, Expression index, Expression value)
             => array.MakeIndex(index).Assign(value);
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == other
             || other is StoreElementInstruction;
 

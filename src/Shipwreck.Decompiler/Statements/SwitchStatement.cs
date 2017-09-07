@@ -53,14 +53,14 @@ namespace Shipwreck.Decompiler.Statements
             return r;
         }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
         {
             if (other == this)
             {
                 return true;
             }
             if (other is SwitchStatement ss
-                && Expression.IsEquivalentTo(ss.Expression)
+                && Expression.IsEqualTo(ss.Expression)
                 && (_Sections?.Count ?? 0) == (ss._Sections?.Count ?? 0))
             {
                 if (ShouldSerializeSections())
@@ -79,13 +79,13 @@ namespace Shipwreck.Decompiler.Statements
                             var mv = ms.Labels[j];
                             var ov = os.Labels[j];
 
-                            if (!(mv?.IsEquivalentTo(ov) ?? ov == null))
+                            if (!(mv?.IsEqualTo(ov) ?? ov == null))
                             {
                                 return false;
                             }
                         }
 
-                        if (!ms.Statements.IsEquivalentTo(os.Statements))
+                        if (!ms.Statements.IsEqualTo(os.Statements))
                         {
                             return false;
                         }

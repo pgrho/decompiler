@@ -15,9 +15,9 @@ namespace Shipwreck.Decompiler.Statements
 
         public Expression Value { get; set; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
-            || (other is ThrowStatement rs && (Value?.IsEquivalentTo(rs?.Value) ?? rs.Value == null));
+            || (other is ThrowStatement rs && (Value?.IsEqualTo(rs?.Value) ?? rs.Value == null));
 
         public override bool Reduce()
         {

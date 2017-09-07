@@ -24,13 +24,13 @@ namespace Shipwreck.Decompiler.Statements
 
         #endregion Statements
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is ForStatement ws
-                && (Initializer?.IsEquivalentTo(ws.Initializer) ?? ws.Initializer == null)
-                && (Condition?.IsEquivalentTo(ws.Condition) ?? ws.Condition == null)
-                && (Iterator?.IsEquivalentTo(ws.Iterator) ?? ws.Iterator == null)
-                && _Statements.IsEquivalentTo(ws._Statements));
+                && (Initializer?.IsEqualTo(ws.Initializer) ?? ws.Initializer == null)
+                && (Condition?.IsEqualTo(ws.Condition) ?? ws.Condition == null)
+                && (Iterator?.IsEqualTo(ws.Iterator) ?? ws.Iterator == null)
+                && _Statements.IsEqualTo(ws._Statements));
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {

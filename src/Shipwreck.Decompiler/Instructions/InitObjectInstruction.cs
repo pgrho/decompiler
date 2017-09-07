@@ -31,7 +31,7 @@ namespace Shipwreck.Decompiler.Instructions
         public override string ToString()
             => "initobj " + Type.FullName;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             && (other is InitObjectInstruction li && Type == li.Type);
     }

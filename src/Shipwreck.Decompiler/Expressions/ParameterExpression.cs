@@ -22,7 +22,7 @@ namespace Shipwreck.Decompiler.Expressions
         public string Name { get; }
         public override Type Type { get; }
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
                 || (other is ParameterExpression pe && Name == pe.Name && Type == pe.Type);
 

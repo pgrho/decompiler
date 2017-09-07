@@ -59,11 +59,11 @@ namespace Shipwreck.Decompiler.Expressions
         public override Type Type
             => Indexer?.PropertyType ?? Object.Type.GetElementType();
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is IndexExpression ie
-                    && Object.IsEquivalentTo(ie.Object)
-                    && base.IsEquivalentTo(other));
+                    && Object.IsEqualTo(ie.Object)
+                    && base.IsEqualTo(other));
 
         internal override Expression ReduceCore()
         {
@@ -77,7 +77,7 @@ namespace Shipwreck.Decompiler.Expressions
 
         internal override Expression ReplaceCore(Expression currentExpression, Expression newExpression, bool replaceAll, bool allowConditional)
         {
-            if (IsEquivalentTo(currentExpression))
+            if (IsEqualTo(currentExpression))
             {
                 return newExpression;
             }

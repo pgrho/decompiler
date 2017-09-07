@@ -30,11 +30,11 @@ namespace Shipwreck.Decompiler.Statements
 
         #endregion Statements
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is DoWhileStatement dw
-                && Condition.IsEquivalentTo(dw.Condition)
-                && _Statements.IsEquivalentTo(dw._Statements));
+                && Condition.IsEqualTo(dw.Condition)
+                && _Statements.IsEqualTo(dw._Statements));
 
         public override IEnumerable<StatementCollection> GetChildCollections()
         {

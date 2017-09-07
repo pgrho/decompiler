@@ -14,7 +14,7 @@ namespace Shipwreck.Decompiler.Statements
         public bool ShouldSerializeDeclarators()
             => _Declarators?.Count > 0;
 
-        public override bool IsEquivalentTo(Syntax other)
+        public override bool IsEqualTo(Syntax other)
         {
             if (other == this)
             {
@@ -31,7 +31,7 @@ namespace Shipwreck.Decompiler.Statements
                         var d = _Declarators[i];
                         var od = ss._Declarators[i];
                         if (d.Identifier != od.Identifier
-                            || !(d.Initializer?.IsEquivalentTo(od.Initializer) ?? od.Initializer == null))
+                            || !(d.Initializer?.IsEqualTo(od.Initializer) ?? od.Initializer == null))
                         {
                             return false;
                         }
