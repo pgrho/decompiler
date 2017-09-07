@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 
 namespace Shipwreck.Decompiler
 {
@@ -39,7 +39,7 @@ namespace Shipwreck.Decompiler
         public int GetFromCount(object syntax)
             => GetInfo(syntax).From?.Count ?? 0;
 
-        public IEnumerable<object> GetFrom(Syntax syntax)
+        public IEnumerable<object> GetFrom(object syntax)
             => GetInfo(syntax).From ?? Enumerable.Empty<object>();
 
         public object GetSyntaxAt(int offset)
@@ -69,7 +69,7 @@ namespace Shipwreck.Decompiler
             }
         }
 
-        public void SetTo(Syntax from, IEnumerable<Syntax> to)
+        public void SetTo(object from, IEnumerable<object> to)
         {
             var fi = GetInfo(from);
 

@@ -2,8 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RootNamespace>Shipwreck.Decompiler</RootNamespace>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <IsPackable>false</IsPackable>
+
+    <RootNamespace>Shipwreck.CSharpModels</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shipwreck.CSharpModels\Shipwreck.CSharpModels.csproj" />
-    <ProjectReference Include="..\Shipwreck.Decompiler\Shipwreck.Decompiler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,4 +23,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
 </Project>

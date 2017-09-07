@@ -1,6 +1,6 @@
 using System;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed class StatementCollection : OwnedCollection<IStatementNode, Statement>
     {

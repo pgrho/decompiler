@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 using Xunit;
 using Xunit.Abstractions;
 

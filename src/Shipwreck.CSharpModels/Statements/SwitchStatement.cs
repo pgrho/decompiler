@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed partial class SwitchStatement : Statement, IBreakableStatement
     {

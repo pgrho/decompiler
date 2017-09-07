@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed partial class TryStatement : Statement
     {

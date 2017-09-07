@@ -2,10 +2,10 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
-using Shipwreck.Decompiler.Expressions;
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels.Expressions;
+using Shipwreck.CSharpModels.Statements;
 
-namespace Shipwreck.Decompiler
+namespace Shipwreck.CSharpModels
 {
     public class CSharpSyntaxWriter : IParameteredExpressionVisitor<TextWriter>, IParameteredStatementVisitor<IndentedTextWriter>
     {

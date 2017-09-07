@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public enum ExpressionPrecedence
     {

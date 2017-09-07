@@ -5,58 +5,55 @@ using System.Text.RegularExpressions;
 
 var dir = Path.GetDirectoryName(Path.GetFullPath("a"));
 
-using (var sw = new StreamWriter(Path.Combine(dir, "../Shipwreck.Decompiler/Expressions/Generated Codes/ExpressionTypes.cs")))
+using (var sw = new StreamWriter(Path.Combine(dir, "../Shipwreck.CSharpModels/Statements/Generated Codes/StatementTypes.cs")))
 {
     var types = new[]
     {
-        "AssignmentExpression",
-        "AwaitExpression",
-        "BaseExpression",
-        "BinaryExpression",
-        "ConditionalExpression",
-        "ConstantExpression",
-        "DefaultExpression",
-        "IndexExpression",
-        "MemberExpression",
-        "MemberInitExpression",
-        "MethodCallExpression",
-        "NewArrayExpression",
-        "NewExpression",
-        "ParameterExpression",
-        "ThisExpression",
-        "TypeBinaryExpression",
-        "UnaryExpression",
-        "VariableExpression",
-
-        "MemberAssignment"
+        "BreakStatement",
+        "ConstantDeclarationStatement",
+        "ContinueStatement",
+        "DoWhileStatement",
+        "ExpressionStatement",
+        "ForEachStatement",
+        "ForStatement",
+        "GoToStatement",
+        "IfStatement",
+        "LabelTarget",
+        "LockStatement",
+        "ReturnStatement",
+        "SwitchStatement",
+        "ThrowStatement",
+        "TryStatement",
+        "UsingStatement",
+        "VariableDeclarationStatement",
+        "WhileStatement"
     };
 
-    sw.WriteLine("namespace Shipwreck.Decompiler.Expressions");
+    sw.WriteLine("namespace Shipwreck.CSharpModels.Statements");
     sw.WriteLine("{");
 
     foreach (var t in types)
     {
         sw.WriteLine("    partial class " + t);
         sw.WriteLine("    {");
-        sw.WriteLine("        public override void AcceptVisitor(IExpressionVisitor visitor)");
+        sw.WriteLine("        public override void AcceptVisitor(IStatementVisitor visitor)");
         sw.WriteLine("            => visitor.Visit" + t + "(this);");
         sw.WriteLine();
-        sw.WriteLine("        public override TResult AcceptVisitor<TResult>(IExpressionVisitor<TResult> visitor)");
+        sw.WriteLine("        public override TResult AcceptVisitor<TResult>(IStatementVisitor<TResult> visitor)");
         sw.WriteLine("            => visitor.Visit" + t + "(this);");
         sw.WriteLine();
-        sw.WriteLine("        public override void AcceptVisitor<TParameter>(IParameteredExpressionVisitor<TParameter> visitor, TParameter parameter)");
+        sw.WriteLine("        public override void AcceptVisitor<TParameter>(IParameteredStatementVisitor<TParameter> visitor, TParameter parameter)");
         sw.WriteLine("            => visitor.Visit" + t + "(this, parameter);");
         sw.WriteLine();
-        sw.WriteLine("        public override TResult AcceptVisitor<TParameter, TResult>(IParameteredExpressionVisitor<TParameter, TResult> visitor, TParameter parameter)");
+        sw.WriteLine("        public override TResult AcceptVisitor<TParameter, TResult>(IParameteredStatementVisitor<TParameter, TResult> visitor, TParameter parameter)");
         sw.WriteLine("            => visitor.Visit" + t + "(this, parameter);");
         sw.WriteLine("    }");
         sw.WriteLine();
     }
 
     string camel(string pascal) => char.ToLower(pascal[0]) + pascal.Substring(1);
-        
 
-    sw.WriteLine("    partial interface IExpressionVisitor");
+    sw.WriteLine("    partial interface IStatementVisitor");
     sw.WriteLine("    {");
     foreach (var t in types)
     {
@@ -65,7 +62,7 @@ using (var sw = new StreamWriter(Path.Combine(dir, "../Shipwreck.Decompiler/Expr
     sw.WriteLine("    }");
 
     sw.WriteLine();
-    sw.WriteLine("    partial interface IExpressionVisitor<TResult>");
+    sw.WriteLine("    partial interface IStatementVisitor<TResult>");
     sw.WriteLine("    {");
     foreach (var t in types)
     {
@@ -75,7 +72,7 @@ using (var sw = new StreamWriter(Path.Combine(dir, "../Shipwreck.Decompiler/Expr
 
     sw.WriteLine();
 
-    sw.WriteLine("    partial interface IParameteredExpressionVisitor<TParameter>");
+    sw.WriteLine("    partial interface IParameteredStatementVisitor<TParameter>");
     sw.WriteLine("    {");
     foreach (var t in types)
     {
@@ -84,7 +81,7 @@ using (var sw = new StreamWriter(Path.Combine(dir, "../Shipwreck.Decompiler/Expr
     sw.WriteLine("    }");
 
     sw.WriteLine();
-    sw.WriteLine("    partial interface IParameteredExpressionVisitor<TParameter, TResult>");
+    sw.WriteLine("    partial interface IParameteredStatementVisitor<TParameter, TResult>");
     sw.WriteLine("    {");
     foreach (var t in types)
     {

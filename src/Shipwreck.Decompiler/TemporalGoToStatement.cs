@@ -1,4 +1,5 @@
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels;
+using Shipwreck.CSharpModels.Statements;
 
 namespace Shipwreck.Decompiler
 {

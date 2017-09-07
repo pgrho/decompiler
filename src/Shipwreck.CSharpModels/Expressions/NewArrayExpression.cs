@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public sealed partial class NewArrayExpression : Expression
     {

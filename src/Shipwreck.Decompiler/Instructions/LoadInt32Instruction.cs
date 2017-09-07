@@ -1,5 +1,5 @@
 using System.Reflection.Emit;
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 
 namespace Shipwreck.Decompiler.Instructions
 {

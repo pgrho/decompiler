@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public abstract class Expression : Syntax
     {

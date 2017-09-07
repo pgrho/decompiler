@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public sealed partial class MemberInitExpression : Expression
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels.Statements;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public static class ExpressionBuilder
     {

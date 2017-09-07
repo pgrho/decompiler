@@ -1,6 +1,6 @@
 using System;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public abstract class DeclarationStatement : Statement
     {

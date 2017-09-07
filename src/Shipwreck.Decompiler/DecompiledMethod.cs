@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels.Statements;
 
 namespace Shipwreck.Decompiler
 {

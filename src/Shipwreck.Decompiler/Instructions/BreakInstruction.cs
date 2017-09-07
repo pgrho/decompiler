@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection.Emit;
-using Shipwreck.Decompiler.Expressions;
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels.Expressions;
+using Shipwreck.CSharpModels.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {

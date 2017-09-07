@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed class VariableDeclaratorCollection : Collection<VariableDeclarator>
     {

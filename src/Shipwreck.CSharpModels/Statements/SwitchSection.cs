@@ -1,9 +1,9 @@
 using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
 using System.IO;
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed class SwitchSection
     {

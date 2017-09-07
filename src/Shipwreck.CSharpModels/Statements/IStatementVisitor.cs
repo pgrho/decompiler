@@ -1,4 +1,4 @@
-﻿namespace Shipwreck.Decompiler.Statements
+﻿namespace Shipwreck.CSharpModels.Statements
 {
     public partial interface IStatementVisitor
     {

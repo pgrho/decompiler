@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Shipwreck.Decompiler
+namespace Shipwreck.CSharpModels
 {
     public abstract class OwnedCollection<TOwner, TItem> : Collection<TItem>
         where TOwner : class

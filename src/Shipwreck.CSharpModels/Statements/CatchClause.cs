@@ -2,7 +2,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.IO;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed class CatchClause
     {

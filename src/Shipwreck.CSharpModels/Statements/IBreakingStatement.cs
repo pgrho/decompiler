@@ -1,4 +1,4 @@
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     /// <summary>
     /// Represents a statement such as <c>break</c>, <c>return</c>, <c>throw</c> and <c>goto</c>.

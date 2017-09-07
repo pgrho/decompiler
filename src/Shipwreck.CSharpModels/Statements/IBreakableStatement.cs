@@ -1,4 +1,4 @@
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     internal interface IBreakableStatement
     {

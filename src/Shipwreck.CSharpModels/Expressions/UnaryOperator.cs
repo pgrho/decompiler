@@ -1,4 +1,4 @@
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public enum UnaryOperator
     {

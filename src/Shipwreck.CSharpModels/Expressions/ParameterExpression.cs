@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public sealed partial class ParameterExpression : Expression
     {

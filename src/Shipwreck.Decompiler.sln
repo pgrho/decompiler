@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipwreck.Decompiler", "Shi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipwreck.Decompiler.Tests", "Shipwreck.Decompiler.Tests\Shipwreck.Decompiler.Tests.csproj", "{31E0827D-B3CD-4CB7-955B-EEB6DD088EFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipwreck.Decompiler.CodeGeneration", "Shipwreck.Decompiler.CodeGeneration\Shipwreck.Decompiler.CodeGeneration.csproj", "{D5FB65AB-DA88-4C33-AA56-7D1985E5A1F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipwreck.CSharpModels", "Shipwreck.CSharpModels\Shipwreck.CSharpModels.csproj", "{C905C7D3-4E94-4C19-8C85-E6D593B8EA5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipwreck.CSharpModels", "Shipwreck.CSharpModels\Shipwreck.CSharpModels.csproj", "{C905C7D3-4E94-4C19-8C85-E6D593B8EA5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shipwreck.CSharpModels.CodeGeneration", "Shipwreck.CSharpModels.CodeGeneration\Shipwreck.CSharpModels.CodeGeneration.csproj", "{5134DB17-DB91-4D8D-B7EC-B67A8495D564}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shipwreck.CSharpModels.Tests", "Shipwreck.CSharpModels.Tests\Shipwreck.CSharpModels.Tests.csproj", "{B4B1086F-6175-4B4B-947D-CDF31CC87E86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +27,18 @@ Global
 		{31E0827D-B3CD-4CB7-955B-EEB6DD088EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31E0827D-B3CD-4CB7-955B-EEB6DD088EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31E0827D-B3CD-4CB7-955B-EEB6DD088EFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D5FB65AB-DA88-4C33-AA56-7D1985E5A1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D5FB65AB-DA88-4C33-AA56-7D1985E5A1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D5FB65AB-DA88-4C33-AA56-7D1985E5A1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D5FB65AB-DA88-4C33-AA56-7D1985E5A1F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C905C7D3-4E94-4C19-8C85-E6D593B8EA5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C905C7D3-4E94-4C19-8C85-E6D593B8EA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C905C7D3-4E94-4C19-8C85-E6D593B8EA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C905C7D3-4E94-4C19-8C85-E6D593B8EA5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5134DB17-DB91-4D8D-B7EC-B67A8495D564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5134DB17-DB91-4D8D-B7EC-B67A8495D564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5134DB17-DB91-4D8D-B7EC-B67A8495D564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5134DB17-DB91-4D8D-B7EC-B67A8495D564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4B1086F-6175-4B4B-947D-CDF31CC87E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4B1086F-6175-4B4B-947D-CDF31CC87E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4B1086F-6175-4B4B-947D-CDF31CC87E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4B1086F-6175-4B4B-947D-CDF31CC87E86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

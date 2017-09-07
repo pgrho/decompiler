@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
-using Shipwreck.Decompiler.Expressions;
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels.Expressions;
+using Shipwreck.CSharpModels.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime;
 
-namespace Shipwreck.CSharpModels
+namespace Shipwreck.Decompiler
 {
     internal static class EX
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 using Shipwreck.Decompiler.Instructions;
-using Shipwreck.Decompiler.Statements;
+using Shipwreck.CSharpModels.Statements;
 
 namespace Shipwreck.Decompiler
 {

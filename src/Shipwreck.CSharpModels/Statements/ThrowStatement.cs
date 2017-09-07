@@ -1,6 +1,6 @@
-using Shipwreck.Decompiler.Expressions;
+using Shipwreck.CSharpModels.Expressions;
 
-namespace Shipwreck.Decompiler.Statements
+namespace Shipwreck.CSharpModels.Statements
 {
     public sealed partial class ThrowStatement : Statement, IBreakingStatement
     {

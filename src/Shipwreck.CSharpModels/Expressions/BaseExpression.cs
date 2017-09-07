@@ -1,6 +1,6 @@
 using System;
 
-namespace Shipwreck.Decompiler.Expressions
+namespace Shipwreck.CSharpModels.Expressions
 {
     public sealed partial class BaseExpression : Expression
     {

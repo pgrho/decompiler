@@ -1,4 +1,4 @@
-namespace Shipwreck.Decompiler
+namespace Shipwreck.CSharpModels
 {
     public abstract class Syntax
     {
