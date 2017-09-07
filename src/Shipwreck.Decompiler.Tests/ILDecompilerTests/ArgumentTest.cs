@@ -85,7 +85,7 @@ namespace Shipwreck.Decompiler.ILDecompilerTests
         {
             var p = new ParameterExpression("a" + m.Split('_')[1], typeof(int));
             var rs = p.AddAssign(5.ToExpression())
-                        .Call(typeof(int).GetMethod(nameof(ToString), Type.EmptyTypes))
+                        .Call(typeof(int).GetMethod(nameof(ToString), new[] { typeof(string) }))
                         .ToReturnStatement();
 
             AssertMethod(GetMethod(m), rs);

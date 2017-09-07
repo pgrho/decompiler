@@ -63,6 +63,7 @@ namespace Shipwreck.CSharpModels.Expressions
             => this == (object)other
             || (other is IndexExpression ie
                     && Object.IsEqualTo(ie.Object)
+                    && Indexer.IsEqualTo(ie.Indexer)
                     && base.IsEqualTo(other));
 
         internal override Expression ReduceCore()

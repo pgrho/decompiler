@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Shipwreck.CSharpModels.Statements;
 
@@ -281,18 +282,31 @@ namespace Shipwreck.CSharpModels.Expressions
         public static MemberExpression Property(this Expression @object, PropertyInfo property)
             => new MemberExpression(@object, property);
 
-        // TODO:   public static MemberExpression Property(this Expression @object, string propertyName)=>@object.Property(@object.Type.GetProperty(propertyName));
+        public static MemberExpression Property(this Expression @object, string propertyName)
+            => @object.Property(@object.Type.GetProperty(propertyName));
 
         public static MemberExpression Event(this Expression @object, EventInfo property)
             => new MemberExpression(@object, property);
 
-        // TODO:   public static MemberExpression Event(this Expression @object, string propertyName)=>@object.Property(@object.Type.GetEvent(propertyName));
+        public static MemberExpression Event(this Expression @object, string eventName)
+            => @object.Event(@object.Type.GetEvent(eventName));
 
         public static IndexExpression MakeIndex(this Expression @object, params Expression[] parameters)
-            => new IndexExpression(@object, parameters);
+            => @object.MakeIndex((IEnumerable<Expression>)parameters);
 
         public static IndexExpression MakeIndex(this Expression @object, IEnumerable<Expression> parameters)
-            => new IndexExpression(@object, parameters);
+        {
+            if (@object.Type.IsArray)
+            {
+                return new IndexExpression(@object, parameters);
+            }
+
+            var mn = @object.Type.GetCustomAttribute<DefaultMemberAttribute>()?.MemberName;
+
+            var indexer = @object.Type.GetProperty(mn, parameters.Select(p => p.Type).ToArray());
+
+            return new IndexExpression(@object, indexer, parameters);
+        }
 
         public static IndexExpression MakeIndex(this Expression @object, PropertyInfo indexer, params Expression[] parameters)
             => new IndexExpression(@object, indexer, parameters);

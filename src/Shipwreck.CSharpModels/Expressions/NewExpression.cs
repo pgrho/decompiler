@@ -42,7 +42,7 @@ namespace Shipwreck.CSharpModels.Expressions
         public override bool IsEqualTo(Syntax other)
             => this == (object)other
             || (other is NewExpression ne
-                && Constructor == ne.Constructor
+                && Constructor.IsEqualTo(ne.Constructor)
                 && base.IsEqualTo(other));
 
         public override ExpressionPrecedence Precedence

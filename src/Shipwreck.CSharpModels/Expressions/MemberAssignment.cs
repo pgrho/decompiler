@@ -17,7 +17,7 @@ namespace Shipwreck.CSharpModels.Expressions
 
         public override bool IsEqualTo(MemberBinding other)
             => this == other
-            || (other is MemberAssignment ma && ma.Member == Member && ma.Expression.IsEqualTo(Expression));
+            || (other is MemberAssignment ma && ma.Member.IsEqualTo(Member) && ma.Expression.IsEqualTo(Expression));
 
         internal override MemberBinding ReduceCore()
         {

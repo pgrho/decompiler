@@ -78,7 +78,7 @@ namespace Shipwreck.CSharpModels.Expressions
             => other is UnaryExpression ue
                 && Operand.IsEqualTo(ue.Operand)
                 && Operator == ue.Operator
-                && _Type == ue._Type;
+                && _Type.IsEqualTo(ue._Type);
 
         internal override Expression ReduceCore()
         {

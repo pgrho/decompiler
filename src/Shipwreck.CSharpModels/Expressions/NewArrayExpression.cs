@@ -21,7 +21,7 @@ namespace Shipwreck.CSharpModels.Expressions
         public override bool IsEqualTo(Syntax other)
             => this == other
             || (other is NewArrayExpression de
-                && Type == de.Type
+                && Type.IsEqualTo(de.Type)
                 && Length.IsEqualTo(Length));
 
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;

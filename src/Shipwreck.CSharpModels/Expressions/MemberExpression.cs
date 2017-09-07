@@ -62,7 +62,7 @@ namespace Shipwreck.CSharpModels.Expressions
             => this == (object)other
             || (other is MemberExpression ne
                 && (Object?.IsEqualTo(ne.Object) ?? ne.Object == null)
-                && Member == ne.Member);
+                && Member.IsEqualTo(ne.Member));
 
         internal override Expression ReduceCore()
         {

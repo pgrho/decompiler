@@ -14,7 +14,7 @@ namespace Shipwreck.CSharpModels.Expressions
 
         public override bool IsEqualTo(Syntax other)
             => this == other
-            || (other is DefaultExpression de && Type == de.Type);
+            || (other is DefaultExpression de && Type.IsEqualTo(de.Type));
 
         public override ExpressionPrecedence Precedence => ExpressionPrecedence.Primary;
     }

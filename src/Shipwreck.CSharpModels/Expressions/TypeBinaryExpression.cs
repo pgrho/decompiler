@@ -24,7 +24,7 @@ namespace Shipwreck.CSharpModels.Expressions
             => this == (object)other
                 || (other is TypeBinaryExpression be
                     && Expression.IsEqualTo(be.Expression)
-                    && TypeOperand == TypeOperand);
+                    && TypeOperand.IsEqualTo(TypeOperand));
 
         internal override Expression ReduceCore()
         {
