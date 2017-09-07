@@ -16,7 +16,7 @@ namespace Shipwreck.Decompiler.Instructions
         protected override bool HasThis
             => !Method.IsStatic;
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == (object)other
             || (other is CallInstruction ci && Method == ci.Method && IsVirtual == ci.IsVirtual);
 

@@ -72,7 +72,7 @@ namespace Shipwreck.Decompiler.Instructions
             return false;
         }
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => other is BranchBinaryInstruction bi
                 && Target == bi.Target
                 && Operator == bi.Operator

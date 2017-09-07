@@ -8,7 +8,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
             => value.Property(typeof(Array).GetProperty(nameof(Array.Length)));
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == other
             || other is LoadLengthInstruction;
 

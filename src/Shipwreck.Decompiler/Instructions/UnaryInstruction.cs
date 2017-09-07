@@ -17,7 +17,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
             => value.MakeUnary(Operator);
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == other
             || (other is UnaryInstruction ui && Operator == ui.Operator);
 

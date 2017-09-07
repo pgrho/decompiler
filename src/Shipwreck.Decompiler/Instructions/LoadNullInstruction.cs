@@ -10,7 +10,7 @@ namespace Shipwreck.Decompiler.Instructions
             return true;
         }
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => other is LoadNullInstruction;
 
         public override string ToString()

@@ -17,7 +17,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
             => value.MakeMemberAccess(Field);
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == other
             || (other is LoadFieldAddressInstruction ui && Field == ui.Field);
 

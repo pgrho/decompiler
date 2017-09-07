@@ -11,41 +11,41 @@ namespace Shipwreck.Decompiler
         public DecompilationContext(MethodBase method)
         {
             Method = method;
-            RootStatements = new List<Syntax>();
+            RootStatements = new List<object>();
         }
 
         #region SyntaxInfo Methods
 
-        private readonly ConditionalWeakTable<Syntax, SyntaxInfo> _Infos = new ConditionalWeakTable<Syntax, SyntaxInfo>();
+        private readonly ConditionalWeakTable<object, SyntaxInfo> _Infos = new ConditionalWeakTable<object, SyntaxInfo>();
 
-        private SyntaxInfo GetInfo(Syntax syntax)
+        private SyntaxInfo GetInfo(object syntax)
             => _Infos.GetOrCreateValue(syntax);
 
         public int? GetOffset(int rootIndex)
             => GetInfo(RootStatements[rootIndex]).Offset;
 
-        public int? GetOffset(Syntax syntax)
+        public int? GetOffset(object syntax)
             => GetInfo(syntax).Offset;
 
-        public void SetOffset(Syntax syntax, int? value)
+        public void SetOffset(object syntax, int? value)
             => GetInfo(syntax).Offset = value;
 
-        public int GetToCount(Syntax syntax)
+        public int GetToCount(object syntax)
             => GetInfo(syntax).To?.Count ?? 0;
 
-        public IEnumerable<Syntax> GetTo(Syntax syntax)
-            => GetInfo(syntax).To ?? Enumerable.Empty<Syntax>();
+        public IEnumerable<object> GetTo(object syntax)
+            => GetInfo(syntax).To ?? Enumerable.Empty<object>();
 
-        public int GetFromCount(Syntax syntax)
+        public int GetFromCount(object syntax)
             => GetInfo(syntax).From?.Count ?? 0;
 
-        public IEnumerable<Syntax> GetFrom(Syntax syntax)
-            => GetInfo(syntax).From ?? Enumerable.Empty<Syntax>();
+        public IEnumerable<object> GetFrom(Syntax syntax)
+            => GetInfo(syntax).From ?? Enumerable.Empty<object>();
 
-        public Syntax GetSyntaxAt(int offset)
+        public object GetSyntaxAt(int offset)
             => RootStatements.FirstOrDefault(s => GetOffset(s) >= offset);
 
-        public void SetTo(Syntax from, Syntax to)
+        public void SetTo(object from, object to)
         {
             var fi = GetInfo(from);
 
@@ -62,10 +62,10 @@ namespace Shipwreck.Decompiler
 
             if (to != null)
             {
-                (fi.To ?? (fi.To = new HashSet<Syntax>())).Add(to);
+                (fi.To ?? (fi.To = new HashSet<object>())).Add(to);
 
                 var ti = GetInfo(to);
-                (ti.From ?? (ti.From = new HashSet<Syntax>())).Add(from);
+                (ti.From ?? (ti.From = new HashSet<object>())).Add(from);
             }
         }
 
@@ -86,28 +86,28 @@ namespace Shipwreck.Decompiler
 
             if (to != null)
             {
-                (fi.To ?? (fi.To = new HashSet<Syntax>())).UnionWith(to);
+                (fi.To ?? (fi.To = new HashSet<object>())).UnionWith(to);
 
                 foreach (var t in to)
                 {
                     var ti = GetInfo(t);
-                    (ti.From ?? (ti.From = new HashSet<Syntax>())).Add(from);
+                    (ti.From ?? (ti.From = new HashSet<object>())).Add(from);
                 }
             }
         }
 
-        public void ClearTo(Syntax syntax)
-            => SetTo(syntax, (Syntax)null);
+        public void ClearTo(object syntax)
+            => SetTo(syntax, (object)null);
 
-        public void ReplaceInstructionFlow(Syntax newNode, params Syntax[] oldNodes)
-            => ReplaceInstructionFlow(newNode, (IEnumerable<Syntax>)oldNodes);
+        public void ReplaceInstructionFlow(object newNode, params object[] oldNodes)
+            => ReplaceInstructionFlow(newNode, (IEnumerable<object>)oldNodes);
 
-        public void ReplaceInstructionFlow(Syntax newNode, IEnumerable<Syntax> oldNodes)
+        public void ReplaceInstructionFlow(object newNode, IEnumerable<object> oldNodes)
         {
-            var removing = oldNodes as IReadOnlyCollection<Syntax> ?? oldNodes.ToList();
+            var removing = oldNodes as IReadOnlyCollection<object> ?? oldNodes.ToList();
 
-            var froms = removing.SelectMany(r => GetInfo(r).From ?? Enumerable.Empty<Syntax>()).Distinct().Except(removing).ToList();
-            var tos = removing.SelectMany(r => GetInfo(r).To ?? Enumerable.Empty<Syntax>()).Distinct().Except(removing).ToList();
+            var froms = removing.SelectMany(r => GetInfo(r).From ?? Enumerable.Empty<object>()).Distinct().Except(removing).ToList();
+            var tos = removing.SelectMany(r => GetInfo(r).To ?? Enumerable.Empty<object>()).Distinct().Except(removing).ToList();
 
             foreach (var r in removing)
             {
@@ -141,18 +141,18 @@ namespace Shipwreck.Decompiler
                 }
             }
         }
-        public void ReplaceInstructionFlow(IEnumerable<Syntax> newNodes, params Syntax[] oldNodes)
-            => ReplaceInstructionFlow(newNodes, (IEnumerable<Syntax>)oldNodes);
+        public void ReplaceInstructionFlow(IEnumerable<object> newNodes, params object[] oldNodes)
+            => ReplaceInstructionFlow(newNodes, (IEnumerable<object>)oldNodes);
 
-        public void ReplaceInstructionFlow(IEnumerable<Syntax> newNodes, IEnumerable<Syntax> oldNodes)
+        public void ReplaceInstructionFlow(IEnumerable<object> newNodes, IEnumerable<object> oldNodes)
         {
-            var removing = oldNodes as IReadOnlyCollection<Syntax> ?? oldNodes.ToList();
+            var removing = oldNodes as IReadOnlyCollection<object> ?? oldNodes.ToList();
 
             var nf = newNodes.First();
             var nl = newNodes.Last();
 
-            var froms = removing.SelectMany(r => GetInfo(r).From ?? Enumerable.Empty<Syntax>()).Distinct().Except(removing).ToList();
-            var tos = removing.SelectMany(r => GetInfo(r).To ?? Enumerable.Empty<Syntax>()).Distinct().Except(removing).ToList();
+            var froms = removing.SelectMany(r => GetInfo(r).From ?? Enumerable.Empty<object>()).Distinct().Except(removing).ToList();
+            var tos = removing.SelectMany(r => GetInfo(r).To ?? Enumerable.Empty<object>()).Distinct().Except(removing).ToList();
 
             foreach (var r in removing)
             {
@@ -171,7 +171,7 @@ namespace Shipwreck.Decompiler
 
         public MethodBase Method { get; }
 
-        public List<Syntax> RootStatements { get; }
+        public List<object> RootStatements { get; }
 
         private ThisExpression _This;
 

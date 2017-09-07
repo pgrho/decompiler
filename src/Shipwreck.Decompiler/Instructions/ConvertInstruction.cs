@@ -29,7 +29,7 @@ namespace Shipwreck.Decompiler.Instructions
         public override int PushCount
             => 1;
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => other is ConvertInstruction ci
                 && Type == ci.Type
                 && IsChecked == ci.IsChecked

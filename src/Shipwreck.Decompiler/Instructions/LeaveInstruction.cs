@@ -15,7 +15,7 @@ namespace Shipwreck.Decompiler.Instructions
         public override int PopCount
             => 0;
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == (object)other
             || (other is LeaveInstruction li && Target == li.Target);
 

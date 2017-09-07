@@ -14,7 +14,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(DecompilationContext context, Expression value)
                 => new VariableExpression(Index, context.Method.GetMethodBody().LocalVariables[Index].LocalType).Assign(value);
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == (object)other
             || (other is StoreLocalInstruction sl && Index == sl.Index);
 

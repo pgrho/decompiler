@@ -22,7 +22,7 @@ namespace Shipwreck.Decompiler.Instructions
                     (IsUnsigned && !Operator.IsShift()) ? arg2.AsUnsigned() : arg2,
                     Operator);
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => other is BinaryInstruction bi
                 && Operator == bi.Operator
                 && IsUnsigned == bi.IsUnsigned;

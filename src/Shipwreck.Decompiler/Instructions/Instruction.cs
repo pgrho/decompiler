@@ -5,7 +5,7 @@ using Shipwreck.Decompiler.Statements;
 
 namespace Shipwreck.Decompiler.Instructions
 {
-    public abstract class Instruction : Syntax
+    public abstract class Instruction
     {
         public abstract FlowControl FlowControl { get; }
 
@@ -31,5 +31,6 @@ namespace Shipwreck.Decompiler.Instructions
             }
             throw new NotImplementedException();
         }
+        public abstract bool IsEqualTo(Instruction other);
     }
 }

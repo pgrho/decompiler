@@ -7,7 +7,7 @@ namespace Shipwreck.Decompiler.Instructions
         internal override Expression CreateExpression(Expression arg1, Expression arg2)
             => arg1.MakeIndex(arg2);
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == other || other is LoadElementInstruction;
 
         public override string ToString()

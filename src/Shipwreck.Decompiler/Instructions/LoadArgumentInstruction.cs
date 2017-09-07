@@ -59,7 +59,7 @@ namespace Shipwreck.Decompiler.Instructions
             return true;
         }
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == other
             || (other is LoadArgumentInstruction li
                 && Index == li.Index

@@ -6,7 +6,7 @@ namespace Shipwreck.Decompiler
     {
         public int? Offset { get; set; }
 
-        public HashSet<Syntax> From { get; set; }
-        public HashSet<Syntax> To { get; set; }
+        public HashSet<object> From { get; set; }
+        public HashSet<object> To { get; set; }
     }
 }

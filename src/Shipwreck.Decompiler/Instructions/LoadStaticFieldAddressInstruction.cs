@@ -19,7 +19,7 @@ namespace Shipwreck.Decompiler.Instructions
             return true;
         }
 
-        public override bool IsEqualTo(Syntax other)
+        public override bool IsEqualTo(Instruction other)
             => this == (object)other
             && (other is LoadStaticFieldAddressInstruction li && Field == li.Field);
 
