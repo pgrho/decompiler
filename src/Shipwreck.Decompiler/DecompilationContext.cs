@@ -188,7 +188,7 @@ namespace Shipwreck.Decompiler
                 _Parameters = new ParameterExpression[@params.Length];
             }
 
-            return _Parameters[index] ?? (_Parameters[index] = new ParameterExpression(@params[index]));
+            return _Parameters[index] ?? (_Parameters[index] = new ParameterExpression(@params[index].Name, @params[index].ParameterType));
         }
     }
 }

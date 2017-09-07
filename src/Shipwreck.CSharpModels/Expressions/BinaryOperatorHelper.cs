@@ -2,7 +2,7 @@ using System;
 
 namespace Shipwreck.Decompiler.Expressions
 {
-    internal static class BinaryOperatorHelper
+    public static class BinaryOperatorHelper
     {
         public static bool IsChecked(this BinaryOperator @operator)
             => @operator == BinaryOperator.AddChecked

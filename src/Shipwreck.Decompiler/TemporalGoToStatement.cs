@@ -1,4 +1,6 @@
-namespace Shipwreck.Decompiler.Statements
+using Shipwreck.Decompiler.Statements;
+
+namespace Shipwreck.Decompiler
 {
     internal sealed class TemporalGoToStatement : Statement
     {

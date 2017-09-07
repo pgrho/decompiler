@@ -4,7 +4,7 @@ namespace Shipwreck.Decompiler.Expressions
 {
     public sealed partial class BaseExpression : Expression
     {
-        internal BaseExpression(Type type)
+        public BaseExpression(Type type)
         {
             type.ArgumentIsNotNull(nameof(type));
 
